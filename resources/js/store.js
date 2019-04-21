@@ -80,6 +80,20 @@
           }
           return u
         },
+        getProjectByClientId: (state) => (id) => {
+          id = Number(id)
+          //return undefined
+          var u;
+          if(state.projects!=[]){
+            console.log(state.users)
+            u = state.projects.find(u => u.client_id == id)
+          }
+          if(u==undefined){
+            u={id:0,name:"None",admin:false,avatar:'/img/404/avatar.png',background:'/img/404/background.png'}
+            //u=new User(0,"None","/img/404/avatar.png","/img/404/background.png","None-profile",{},"",false)
+          }
+          return u
+        },
         getCSRF: (state) => () => {
           let that = this
           $.getJSON('/internal-api/refresh-csrf').done(function(data){

@@ -31,6 +31,7 @@ class Project extends JsonResource
           'background' => $background,
           'status' => $this->status,
           'url' => $this->url,
+          'client_id' => $this->client_id,
           'version' => $this->version,
           'direct_login_url' => $this->direct_login_url,
           'created_at' => $this->created_at,

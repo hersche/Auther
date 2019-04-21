@@ -25,7 +25,7 @@
                             <tr v-for="token in tokens">
                                 <!-- Client Name -->
                                 <td style="vertical-align: middle;">
-                                    {{ token.client.name }}
+                                    <a :href="projectByClientId(token.client.id).id" >{{ token.client.name }}</a>
                                 </td>
 
                                 <!-- Scopes -->
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+  import { store } from '../../store.js';
 const axios = require('axios')
     export default {
         /*
@@ -83,7 +84,9 @@ const axios = require('axios')
             prepareComponent() {
                 this.getTokens();
             },
-
+            projectByClientId(id) {
+              return store.getters.getProjectByClientId(id)
+            },
             /**
              * Get all of the authorized tokens for the user.
              */

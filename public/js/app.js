@@ -4087,6 +4087,7 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../store.js */ "./resources/js/store.js");
 //
 //
 //
@@ -4139,6 +4140,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
+
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -4170,6 +4173,9 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
      */
     prepareComponent: function prepareComponent() {
       this.getTokens();
+    },
+    projectByClientId: function projectByClientId(id) {
+      return _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getProjectByClientId(id);
     },
 
     /**
@@ -5213,6 +5219,202 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       });
       return false;
     }
+  },
+  data: function data() {
+    return {
+      mediaType: '',
+      checkTwofactorCode: '',
+      public: false,
+      editpicloaded: false,
+      showdismissiblealert: false,
+      avatarCropped: null,
+      tmpBio: '',
+      showUserpassword: false,
+      userpassword: '',
+      showOldPass: false,
+      showNewPass: false,
+      showNewPass2: false,
+      backgroundCropped: null
+    };
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/settings/password.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/settings/password.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../store.js */ "./resources/js/store.js");
+/* harmony import */ var _eventBus_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../eventBus.js */ "./resources/js/eventBus.js");
+/* harmony import */ var _MarkdownCreator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../MarkdownCreator */ "./resources/js/components/MarkdownCreator.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+
+var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['baseUrl'],
+  components: {
+    MarkdownCreator: _MarkdownCreator__WEBPACK_IMPORTED_MODULE_2__["default"]
+  },
+  mounted: function mounted() {//  this.$refs.croppieBackgroundRef.bind({
+    //  url: '/img/404/background.png',
+    //})
+  },
+  updated: function updated() {},
+  computed: {
+    enableRefreshLabel: function enableRefreshLabel() {
+      if (this.twofactor.enabled == '1' || this.twofactor.url != '') {
+        return "Refresh";
+      } else {
+        return "Enable";
+      }
+    },
+    twofactorstatenr: function twofactorstatenr() {
+      console.log("on nr ", this.twofactor);
+
+      if (this.twofactor.enabled == '1' && this.twofactor.url != '' && this.twofactor.url != undefined) {
+        return 2;
+      } else if (this.twofactor.enabled == '0' && this.twofactor.url != '' && this.twofactor.url != undefined) {
+        return 1;
+      } else {
+        return 0;
+      }
+    },
+    twofactor: function twofactor() {
+      return _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.twofactor;
+    },
+    loggeduserid: function loggeduserid() {
+      return _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId;
+    },
+    csrf: function csrf() {
+      return _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getCSRF();
+    },
+    currentuser: function currentuser() {
+      var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId);
+
+      if (u != undefined) {
+        this.tmpBio = u.bio;
+      }
+
+      return u;
+    }
+  },
+  methods: {
+    rmBr: function rmBr(str) {
+      return str.replace(/<br\s*\/?>/mg, "");
+    },
+    changePassword: function changePassword() {
+      axios.post("/internal-api/settings/password", {
+        "oldpass": this.oldPass,
+        "newpass": this.newPass,
+        "newpass2": this.newPass2
+      }).then(function (response) {
+        //store.commit("setTwofactor",JSON.parse(response.request.response).data)
+        console.log("get twofactor", JSON.parse(response.request.response).data);
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
+    testTwofactor: function testTwofactor() {
+      var that = this;
+      axios.post("/internal-api/settings/2faTest", {
+        "one_time_test_password": this.checkTwofactorCode,
+        "userpass": this.userpassword
+      }).then(function (response) {
+        if (response.request.response != '{"twofactor":testinvalid}') {
+          that.userpassword = '';
+          _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].commit("setTwofactor", JSON.parse(response.request.response).data);
+          console.log("refresh twofactor", JSON.parse(response.request.response).data);
+          _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$emit('alert', "2-factor auth passed");
+        }
+      }).catch(function (error) {
+        _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$emit('alert', "2-factor test failed");
+        console.log(error);
+      });
+    },
+    refreshTwofactor: function refreshTwofactor() {
+      axios.post("/internal-api/settings/refresh/twofactor", {
+        "userpass": this.userpassword
+      }).then(function (response) {
+        _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].commit("setTwofactor", JSON.parse(response.request.response).data);
+        console.log("refresh twofactor", JSON.parse(response.request.response).data);
+        _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$emit('alert', "2-factor refresh passed");
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
+    disableTwofactor: function disableTwofactor() {
+      var that = this;
+      axios.post("/internal-api/settings/disable/twofactor", {
+        "userpass": this.userpassword
+      }).then(function (response) {
+        that.userpassword = '';
+        _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].commit("setTwofactor", JSON.parse(response.request.response).data);
+        console.log("disable twofactor", JSON.parse(response.request.response).data);
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
+    submitAction: function submitAction() {
+      var that = this;
+      $.ajax({
+        url: '/internal-api/profiles/edit/' + this.currentuser.id,
+        type: 'POST',
+        data: new FormData($("#theForm")[0]),
+        cache: false,
+        contentType: false,
+        processData: false,
+        complete: function complete(res) {
+          if (res.status == 200) {} //eventBus.$emit('userEdited',that.currentuser.id)
+
+        }
+      });
+      return false;
+    },
+    // CALBACK USAGE
+    resultAvatar: function resultAvatar(output) {},
+    resultBackground: function resultBackground(output) {},
+    updateAvatar: function updateAvatar(val) {},
+    updateBackground: function updateBackground(val) {},
+    rotateAvatar: function rotateAvatar(rotationAngle, event) {// Rotates the image
+    },
+    rotateBackground: function rotateBackground(rotationAngle, event) {}
   },
   data: function data() {
     return {
@@ -45632,7 +45834,7 @@ var render = function() {
                         [
                           _c(
                             "v-list-tile-action",
-                            [_c("v-icon", [_vm._v("account_box")])],
+                            [_c("v-icon", [_vm._v("supervised_user_circle")])],
                             1
                           ),
                           _vm._v(" "),
@@ -45651,7 +45853,7 @@ var render = function() {
                         [
                           _c(
                             "v-list-tile-action",
-                            [_c("v-icon", [_vm._v("account_box")])],
+                            [_c("v-icon", [_vm._v("reorder")])],
                             1
                           ),
                           _vm._v(" "),
@@ -45670,7 +45872,7 @@ var render = function() {
                         [
                           _c(
                             "v-list-tile-action",
-                            [_c("v-icon", [_vm._v("account_box")])],
+                            [_c("v-icon", [_vm._v("whatshot")])],
                             1
                           ),
                           _vm._v(" "),
@@ -45695,7 +45897,11 @@ var render = function() {
                       _c(
                         "v-list-tile",
                         { attrs: { slot: "activator" }, slot: "activator" },
-                        [_c("v-list-tile-title", [_vm._v("Settings")])],
+                        [
+                          _c("v-list-tile-title", [
+                            _vm._v(_vm._s(_vm.$t("Settings")))
+                          ])
+                        ],
                         1
                       ),
                       _vm._v(" "),
@@ -45711,7 +45917,11 @@ var render = function() {
                           _vm._v(" "),
                           _c(
                             "v-list-tile-content",
-                            [_c("v-list-tile-title", [_vm._v("Profile")])],
+                            [
+                              _c("v-list-tile-title", [
+                                _vm._v(_vm._s(_vm.$t("Profile")))
+                              ])
+                            ],
                             1
                           )
                         ],
@@ -45730,7 +45940,11 @@ var render = function() {
                           _vm._v(" "),
                           _c(
                             "v-list-tile-content",
-                            [_c("v-list-tile-title", [_vm._v("Friends")])],
+                            [
+                              _c("v-list-tile-title", [
+                                _vm._v(_vm._s(_vm.$t("Friends")))
+                              ])
+                            ],
                             1
                           )
                         ],
@@ -45791,7 +46005,11 @@ var render = function() {
                           _vm._v(" "),
                           _c(
                             "v-list-tile-content",
-                            [_c("v-list-tile-title", [_vm._v("Password")])],
+                            [
+                              _c("v-list-tile-title", [
+                                _vm._v(_vm._s(_vm.$t("Password")))
+                              ])
+                            ],
                             1
                           )
                         ],
@@ -48446,10 +48664,14 @@ var render = function() {
                         "td",
                         { staticStyle: { "vertical-align": "middle" } },
                         [
-                          _vm._v(
-                            "\n                                " +
-                              _vm._s(token.client.name) +
-                              "\n                            "
+                          _c(
+                            "a",
+                            {
+                              attrs: {
+                                href: _vm.projectByClientId(token.client.id).id
+                              }
+                            },
+                            [_vm._v(_vm._s(token.client.name))]
                           )
                         ]
                       ),
@@ -49893,6 +50115,92 @@ var render = function() {
         2
       )
     : _vm._e()
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/settings/password.vue?vue&type=template&id=519ff8cc&":
+/*!********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/settings/password.vue?vue&type=template&id=519ff8cc& ***!
+  \********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "div",
+      { staticClass: "text-center" },
+      [
+        _c("h1", [
+          _vm._v(_vm._s(_vm.$t("Change")) + " " + _vm._s(_vm.$t("password")))
+        ]),
+        _vm._v(" "),
+        _c("v-text-field", {
+          attrs: {
+            label: "Old password",
+            "append-icon": _vm.showOldPass ? "visibility_off" : "visibility",
+            type: _vm.showOldPass ? "text" : "password"
+          },
+          on: {
+            "click:append": function($event) {
+              _vm.showOldPass = !_vm.showOldPass
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("v-text-field", {
+          attrs: {
+            label: "New password",
+            "append-icon": _vm.showNewPass ? "visibility_off" : "visibility",
+            type: _vm.showNewPass ? "text" : "password"
+          },
+          on: {
+            "click:append": function($event) {
+              _vm.showNewPass = !_vm.showNewPass
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("v-text-field", {
+          attrs: {
+            label: "Confirm new password",
+            "append-icon": _vm.showNewPass2 ? "visibility_off" : "visibility",
+            type: _vm.showNewPass2 ? "text" : "password"
+          },
+          on: {
+            "click:append": function($event) {
+              _vm.showNewPass2 = !_vm.showNewPass2
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c(
+          "v-btn",
+          {
+            on: {
+              click: function($event) {
+                return _vm.getTwofactor()
+              }
+            }
+          },
+          [_vm._v("Change password")]
+        )
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -92417,6 +92725,7 @@ var profileComp = vue__WEBPACK_IMPORTED_MODULE_3___default.a.component('profile'
 var searchComp = vue__WEBPACK_IMPORTED_MODULE_3___default.a.component('search', __webpack_require__(/*! ./components/Search.vue */ "./resources/js/components/Search.vue").default);
 var editProfileComp = vue__WEBPACK_IMPORTED_MODULE_3___default.a.component('editprofile', __webpack_require__(/*! ./components/settings/EditProfile.vue */ "./resources/js/components/settings/EditProfile.vue").default);
 var friendsComp = vue__WEBPACK_IMPORTED_MODULE_3___default.a.component('friends', __webpack_require__(/*! ./components/settings/Friends.vue */ "./resources/js/components/settings/Friends.vue").default);
+var passwordComp = vue__WEBPACK_IMPORTED_MODULE_3___default.a.component('friends', __webpack_require__(/*! ./components/settings/password.vue */ "./resources/js/components/settings/password.vue").default);
 var loginComp = vue__WEBPACK_IMPORTED_MODULE_3___default.a.component('login', __webpack_require__(/*! ./components/auth/Login.vue */ "./resources/js/components/auth/Login.vue").default);
 var faLoginComp = vue__WEBPACK_IMPORTED_MODULE_3___default.a.component('twofaLogin', __webpack_require__(/*! ./components/auth/twofaLogin.vue */ "./resources/js/components/auth/twofaLogin.vue").default);
 var twofaSettings = vue__WEBPACK_IMPORTED_MODULE_3___default.a.component('twofasettings', __webpack_require__(/*! ./components/settings/twofa.vue */ "./resources/js/components/settings/twofa.vue").default);
@@ -92481,6 +92790,9 @@ var routes = [{
 }, {
   path: '/settings/friends',
   component: friendsComp
+}, {
+  path: '/settings/password',
+  component: passwordComp
 }, {
   path: '/passport/clients',
   component: clientsComp
@@ -93940,6 +94252,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/settings/password.vue":
+/*!*******************************************************!*\
+  !*** ./resources/js/components/settings/password.vue ***!
+  \*******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _password_vue_vue_type_template_id_519ff8cc___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./password.vue?vue&type=template&id=519ff8cc& */ "./resources/js/components/settings/password.vue?vue&type=template&id=519ff8cc&");
+/* harmony import */ var _password_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./password.vue?vue&type=script&lang=js& */ "./resources/js/components/settings/password.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _password_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _password_vue_vue_type_template_id_519ff8cc___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _password_vue_vue_type_template_id_519ff8cc___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/settings/password.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/settings/password.vue?vue&type=script&lang=js&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/components/settings/password.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_password_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./password.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/settings/password.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_password_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/settings/password.vue?vue&type=template&id=519ff8cc&":
+/*!**************************************************************************************!*\
+  !*** ./resources/js/components/settings/password.vue?vue&type=template&id=519ff8cc& ***!
+  \**************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_password_vue_vue_type_template_id_519ff8cc___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./password.vue?vue&type=template&id=519ff8cc& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/settings/password.vue?vue&type=template&id=519ff8cc&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_password_vue_vue_type_template_id_519ff8cc___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_password_vue_vue_type_template_id_519ff8cc___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/settings/twofa.vue":
 /*!****************************************************!*\
   !*** ./resources/js/components/settings/twofa.vue ***!
@@ -94140,6 +94521,33 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
           console.log(state.users);
           u = state.projects.find(function (u) {
             return u.id == id;
+          });
+        }
+
+        if (u == undefined) {
+          u = {
+            id: 0,
+            name: "None",
+            admin: false,
+            avatar: '/img/404/avatar.png',
+            background: '/img/404/background.png' //u=new User(0,"None","/img/404/avatar.png","/img/404/background.png","None-profile",{},"",false)
+
+          };
+        }
+
+        return u;
+      };
+    },
+    getProjectByClientId: function getProjectByClientId(state) {
+      return function (id) {
+        id = Number(id); //return undefined
+
+        var u;
+
+        if (state.projects != []) {
+          console.log(state.users);
+          u = state.projects.find(function (u) {
+            return u.client_id == id;
           });
         }
 

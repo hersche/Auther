@@ -26,6 +26,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         Passport::routes();
+        Passport::tokensCan([
+          'profile' => 'User profile',
+          'notifications' => 'Notification-exchange',
+        ]);
         //
     }
 }

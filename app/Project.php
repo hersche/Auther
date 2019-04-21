@@ -9,7 +9,7 @@ class Project extends Model
     //
     
     protected $fillable = [
-        'title','description','version','url','direct_login_url','avatar','background'
+        'title','client_id','description','version','url','direct_login_url','avatar','background'
     ];
     
     protected $hidden = [

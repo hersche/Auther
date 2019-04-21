@@ -17,7 +17,7 @@ use App\Http\Resources\User as UserResource;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return new UserResource($request->user());
-});//->middleware('scope:profile');
+})->middleware('scope:profile');
 
 Route::middleware('auth:api')->post('/createNotification', function (Request $request) {
     $request->user()->notify(new GenericNotification($request->except("_token")));
