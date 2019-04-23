@@ -3516,19 +3516,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['baseUrl'],
+  props: ['baseUrl', 'mixconfig'],
   data: function data() {
     return {
       valid: true,
       email: '',
       password: '',
-      show1: false,
-      checkbox: false,
+      showPassword: false,
+      rememberMe: false,
       rules: {
         required: function required(value) {
           return !!value || 'Required.';
@@ -3599,60 +3608,8 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../store.js */ "./resources/js/store.js");
-/* harmony import */ var _MarkdownCreator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../MarkdownCreator */ "./resources/js/components/MarkdownCreator.vue");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+/* harmony import */ var _cropp__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../cropp */ "./resources/js/components/cropp.vue");
+/* harmony import */ var _MarkdownCreator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../MarkdownCreator */ "./resources/js/components/MarkdownCreator.vue");
 //
 //
 //
@@ -3727,9 +3684,11 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    MarkdownCreator: _MarkdownCreator__WEBPACK_IMPORTED_MODULE_1__["default"]
+    MarkdownCreator: _MarkdownCreator__WEBPACK_IMPORTED_MODULE_2__["default"],
+    Cropper: _cropp__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   props: ['baseUrl'],
   mounted: function mounted() {
@@ -47985,9 +47944,9 @@ var render = function() {
           _vm._v(" "),
           _c("v-text-field", {
             attrs: {
-              "append-icon": _vm.show1 ? "visibility_off" : "visibility",
+              "append-icon": _vm.showPassword ? "visibility_off" : "visibility",
               rules: [_vm.rules.required, _vm.rules.min],
-              type: _vm.show1 ? "text" : "password",
+              type: _vm.showPassword ? "text" : "password",
               name: "password",
               label: _vm.$t("Password"),
               hint: "At least 8 characters",
@@ -48004,7 +47963,7 @@ var render = function() {
                 return _vm.submitLogin()
               },
               "click:append": function($event) {
-                _vm.show1 = !_vm.show1
+                _vm.showPassword = !_vm.showPassword
               }
             },
             model: {
@@ -48019,11 +47978,11 @@ var render = function() {
           _c("v-checkbox", {
             attrs: { label: "Remember me", name: "remember", required: "" },
             model: {
-              value: _vm.checkbox,
+              value: _vm.rememberMe,
               callback: function($$v) {
-                _vm.checkbox = $$v
+                _vm.rememberMe = $$v
               },
-              expression: "checkbox"
+              expression: "rememberMe"
             }
           })
         ],
@@ -48039,20 +47998,96 @@ var render = function() {
             }
           }
         },
-        [
-          _vm._v(
-            "\n                          " +
-              _vm._s(_vm.$t("Login")) +
-              "\n                      "
-          )
-        ]
+        [_vm._v("\n      " + _vm._s(_vm.$t("Login")) + "\n    ")]
       ),
       _vm._v(" "),
       _c("a", { staticClass: "btn btn-link", attrs: { href: "" } }, [
-        _vm._v(
-          "\n                            Forgot Your Password?\n                        "
-        )
-      ])
+        _vm._v("\n      Forgot Your Password?\n    ")
+      ]),
+      _vm._v(" "),
+      _vm.mixconfig.MIX_GOOGLE_AUTH_ENABLED == "1"
+        ? _c("v-btn", { attrs: { href: "/oauth/google" } }, [
+            _vm._v(
+              "\n      " +
+                _vm._s(_vm.$t("Login")) +
+                " " +
+                _vm._s(_vm.$t("with")) +
+                " Google\n    "
+            )
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.mixconfig.MIX_GITHUB_AUTH_ENABLED == "1"
+        ? _c("v-btn", { attrs: { href: "/oauth/github" } }, [
+            _vm._v(
+              "\n      " +
+                _vm._s(_vm.$t("Login")) +
+                " " +
+                _vm._s(_vm.$t("with")) +
+                " Github\n    "
+            )
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.mixconfig.MIX_GITLAB_AUTH_ENABLED == "1"
+        ? _c("v-btn", { attrs: { href: "/oauth/gitlab" } }, [
+            _vm._v(
+              "\n      " +
+                _vm._s(_vm.$t("Login")) +
+                " " +
+                _vm._s(_vm.$t("with")) +
+                " Google\n    "
+            )
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.mixconfig.MIX_FACEBOOK_AUTH_ENABLED == "1"
+        ? _c("v-btn", { attrs: { href: "/oauth/facebook" } }, [
+            _vm._v(
+              "\n      " +
+                _vm._s(_vm.$t("Login")) +
+                " " +
+                _vm._s(_vm.$t("with")) +
+                " Facebook\n    "
+            )
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.mixconfig.MIX_TWITTER_AUTH_ENABLED == "1"
+        ? _c("v-btn", { attrs: { href: "/oauth/twitter" } }, [
+            _vm._v(
+              "\n      " +
+                _vm._s(_vm.$t("Login")) +
+                " " +
+                _vm._s(_vm.$t("with")) +
+                " Twitter\n    "
+            )
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.mixconfig.MIX_BITBUCKET_AUTH_ENABLED == "1"
+        ? _c("v-btn", { attrs: { href: "/oauth/bitbucket" } }, [
+            _vm._v(
+              "\n      " +
+                _vm._s(_vm.$t("Login")) +
+                " " +
+                _vm._s(_vm.$t("with")) +
+                " Bitbucket\n    "
+            )
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.mixconfig.MIX_BITBUCKET_AUTH_ENABLED == "1"
+        ? _c("v-btn", { attrs: { href: "/oauth/linkedin" } }, [
+            _vm._v(
+              "\n      " +
+                _vm._s(_vm.$t("Login")) +
+                " " +
+                _vm._s(_vm.$t("with")) +
+                " Bitbucket\n    "
+            )
+          ])
+        : _vm._e()
     ],
     1
   )
@@ -48120,66 +48155,14 @@ var render = function() {
                 [_vm._v("Avatar")]
               ),
               _vm._v(" "),
-              _c("vue-croppie", {
-                ref: "croppieAvatarRef",
+              _c("Cropper", {
                 attrs: {
-                  enableOrientation: true,
-                  enableResize: false,
-                  viewport: { width: 180, height: 180, type: "circle" },
-                  boundary: { width: 200, height: 200 }
-                },
-                on: { result: _vm.resultAvatar, update: _vm.updateAvatar }
-              }),
-              _vm._v(" "),
-              _c("input", {
-                attrs: { type: "hidden", id: "avatarBase", name: "avatar" },
-                domProps: { value: _vm.avatarCropped }
-              }),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "col-md-8 col-form-label text-md-right" },
-                [
-                  _c(
-                    "button",
-                    {
-                      on: {
-                        click: function($event) {
-                          return _vm.rotateAvatar(-90, $event)
-                        }
-                      }
-                    },
-                    [_vm._v("Rotate Left")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      on: {
-                        click: function($event) {
-                          return _vm.rotateAvatar(90, $event)
-                        }
-                      }
-                    },
-                    [_vm._v("Rotate Right")]
-                  ),
-                  _vm._v(" "),
-                  _c("input", {
-                    attrs: {
-                      id: "avatarUpload",
-                      name: "avatarf",
-                      type: "file"
-                    },
-                    on: {
-                      change: function($event) {
-                        return _vm.avatarChange()
-                      }
-                    }
-                  })
-                ]
-              ),
-              _vm._v(" "),
-              _c("div", { attrs: { id: "avatar" } })
+                  width: 180,
+                  height: 180,
+                  type: "circle",
+                  name: "avatar"
+                }
+              })
             ],
             1
           ),
@@ -48194,73 +48177,14 @@ var render = function() {
                 [_vm._v("Background")]
               ),
               _vm._v(" "),
-              _c("vue-croppie", {
-                ref: "croppieBackgroundRef",
+              _c("Cropper", {
                 attrs: {
-                  enableOrientation: true,
-                  enableResize: false,
-                  viewport: { width: 1200, height: 394, type: "square" },
-                  boundary: { width: 800, height: 394 }
-                },
-                on: {
-                  result: _vm.resultBackground,
-                  update: _vm.updateBackground
-                }
-              }),
-              _vm._v(" "),
-              _c("input", {
-                attrs: {
-                  type: "hidden",
-                  id: "backgroundBase",
+                  width: 800,
+                  height: 394,
+                  type: "square",
                   name: "background"
-                },
-                domProps: { value: _vm.backgroundCropped }
-              }),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "col-md-8 col-form-label text-md-right" },
-                [
-                  _c(
-                    "button",
-                    {
-                      on: {
-                        click: function($event) {
-                          return _vm.rotateBackground(-90, $event)
-                        }
-                      }
-                    },
-                    [_vm._v("Rotate Left")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      on: {
-                        click: function($event) {
-                          return _vm.rotateBackground(90, $event)
-                        }
-                      }
-                    },
-                    [_vm._v("Rotate Right")]
-                  ),
-                  _vm._v(" "),
-                  _c("input", {
-                    attrs: {
-                      id: "backgroundUpload",
-                      name: "backgroundf",
-                      type: "file"
-                    },
-                    on: {
-                      change: function($event) {
-                        return _vm.backgroundChange()
-                      }
-                    }
-                  })
-                ]
-              ),
-              _vm._v(" "),
-              _c("div", { attrs: { id: "background" } })
+                }
+              })
             ],
             1
           ),
@@ -92827,7 +92751,7 @@ $(document).ready(function () {
     i18n: i18n,
     data: {
       appname: "Auther",
-      mixconfig: Object({"MIX_APP_NAME":"Auther","MIX_APP_URL":"https://auth.host","MIX_APP_ADMINLEVEL":"99","MIX_PUSHER_APP_KEY":"","MIX_PUSHER_APP_CLUSTER":"mt1","NODE_ENV":"development"}),
+      mixconfig: Object({"MIX_APP_NAME":"Auther","MIX_APP_URL":"https://auth.host","MIX_APP_ADMINLEVEL":"99","MIX_GOOGLE_AUTH_ENABLED":"1","MIX_GITHUB_AUTH_ENABLED":"1","MIX_FACEBOOK_AUTH_ENABLED":"0","MIX_TWITTER_AUTH_ENABLED":"0","MIX_GITLAB_AUTH_ENABLED":"0","MIX_BITBUCKET_AUTH_ENABLED":"0","MIX_LINKEDIN_AUTH_ENABLED":"0","MIX_PUSHER_APP_KEY":"","MIX_PUSHER_APP_CLUSTER":"mt1","NODE_ENV":"development"}),
       search: undefined,
       treecatptions: undefined,
       canloadmore: true,

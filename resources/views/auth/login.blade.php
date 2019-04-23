@@ -66,6 +66,46 @@
                                 @endif
                             </div>
                         </div>
+                        <div class="form-group row mb-0">
+    <div class="col-md-8 offset-md-4">
+      @if (config("app.googleauthenabled")=="1")
+        <a href="{{route('oauth.login','google')}}" class="btn btn-outline-danger">
+            Log in with Google
+        </a>
+      @endif
+      @if (config("app.githubauthenabled")=="1")
+        <a href="{{route('oauth.login','github')}}" class="btn btn-outline-secondary">
+            Log in with Github
+        </a>
+      @endif
+      @if (config("app.gitlabauthenabled")=="1")
+        <a href="{{route('oauth.login','gitlab')}}" class="btn btn-outline-secondary">
+            Log in with Gitlab
+        </a>
+      @endif
+      @if (config("app.facebookauthenabled")=="1")
+        <a href="{{route('oauth.login','facebook')}}" class="btn btn-outline-secondary">
+            Log in with Facebook
+        </a>
+      @endif
+      @if (config("app.bitbucketauthenabled")=="1")
+        <a href="{{route('oauth.login','bitbucked')}}" class="btn btn-outline-secondary">
+            Log in with Bitbucket
+        </a>
+      @endif
+      
+      @if (config("app.linkedinauthenabled")=="1")
+        <a href="{{route('oauth.login','linkedin')}}" class="btn btn-outline-secondary">
+            Log in with Linkedin
+        </a>
+      @endif
+      @if (config("app.twitterauthenabled")=="1")
+        <a href="{{route('oauth.login','twitter')}}" class="btn btn-outline-secondary">
+            Log in with Twitter
+        </a>
+      @endif
+    </div>
+</div>
                     </form>
                 </div>
             </div>

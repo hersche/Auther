@@ -14,7 +14,13 @@ return [
     */
 
     'name' => env('MIX_APP_NAME', 'Auther'),
-    'adminlevel' => env('MIX_APP_ADMINLEVEL', '5'),
+    'googleauthenabled' => env('MIX_GOOGLE_AUTH_ENABLED', '5'),
+    'githubauthenabled' => env('MIX_GITHUB_AUTH_ENABLED', '0'),
+    'gitlabauthenabled' => env('MIX_GITLAB_AUTH_ENABLED', '0'),
+    'facebookauthenabled' => env('MIX_FACEBOOK_AUTH_ENABLED', '0'),
+    'linkedinauthenabled' => env('MIX_LINKEDIN_AUTH_ENABLED', '0'),
+    'twitterauthenabled' => env('MIX_TWITTER_AUTH_ENABLED', '0'),
+    
     /*
     |--------------------------------------------------------------------------
     | Application Environment

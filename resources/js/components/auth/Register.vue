@@ -1,133 +1,82 @@
 <template>
-      <div class="">
-        <h1 class="text-center">{{ $t('Register') }}</h1>
-        <v-form
-          ref="form"
-          id="theForm"
-          v-model="valid"
-          lazy-validation
-          >
-          <input type="hidden" name="ajaxLogin" value="1">
-                      <input type="hidden" name="_token" :value="csrf">
-                      <div class="form-group row">
-                          <label class="col-md-4 col-form-label text-md-right">Avatar</label>
-                          <!-- the result -->
-                          <vue-croppie
-                            ref="croppieAvatarRef"
-                            :enableOrientation="true"
-                            :enableResize="false"
-                            @result="resultAvatar"
-                            :viewport="{ width: 180, height: 180, type: 'circle' }"
-                            :boundary="{ width: 200, height: 200 }"
-                            @update="updateAvatar">
-                            </vue-croppie>
-
-                            <input type="hidden" id="avatarBase" name="avatar" :value="avatarCropped" />
-
-                            <!-- Rotate angle is Number -->
-                            <div class="col-md-8 col-form-label text-md-right">
-                            <button @click="rotateAvatar(-90,$event)">Rotate Left</button>
-                            <button @click="rotateAvatar(90,$event)">Rotate Right</button>
-                            <input id="avatarUpload" @change="avatarChange()" name="avatarf" type="file">
-                          </div>
-                          <div id="avatar"></div>
-                      </div>
-
-
-                      <div class="form-group row">
-                          <label class="col-md-4 col-form-label text-md-right">Background</label>
-                          <!-- the result -->
-                          <vue-croppie
-                            ref="croppieBackgroundRef"
-                            :enableOrientation="true"
-                            :enableResize="false"
-                            @result="resultBackground"
-                            :viewport="{ width: 1200, height: 394, type: 'square' }"
-                            :boundary="{ width: 800, height: 394 }"
-                            @update="updateBackground">
-                            </vue-croppie>
-
-                            <input type="hidden" id="backgroundBase" name="background" :value="backgroundCropped" />
-
-                            <!-- Rotate angle is Number -->
-                            <div class="col-md-8 col-form-label text-md-right">
-                            <button @click="rotateBackground(-90,$event)">Rotate Left</button>
-                            <button @click="rotateBackground(90,$event)">Rotate Right</button>
-                          <input id="backgroundUpload" @change="backgroundChange()" name="backgroundf" type="file">
-                        </div>
-                          <div id="background"></div>
-                      </div>
-                      <v-text-field
-                        v-model="name"
-                        :label="$t('Name')"
-                        name="name"
-                        hint="This is only a showed name, that can be changed anytime"
-                        required
-                        ></v-text-field>
-                        <v-text-field
-                          v-model="username"
-                          :label="$t('Username')"
-                          name="username"
-                          hint="You can not change this name after registration"
-                          required
-                          ></v-text-field>  
-                        <v-text-field
-                          v-model="email"
-                          :label="$t('E-mail')"
-                          name="email"
-                          required
-                          ></v-text-field>
-                      <MarkdownCreator theText="" theId="bio" :theTitle="$t('Biographie')" :theHint="$t('Some words about you')+'...'" ></MarkdownCreator>
-
-                              <v-switch v-model="public" :label="$t('Public')+' '+$t('account')"></v-switch>
-                              <input type="hidden" name="public" :value="Number(public)" />
-
-
-
-                      <v-text-field
-                        v-model="tags"
-                        label="Tags"
-                        name="tags"
-                        ></v-text-field>
-                      <v-text-field
-                        v-model="password"
-                        :append-icon="show1 ? 'visibility_off' : 'visibility'"
-                        :rules="[rules.required, rules.min]"
-                        :type="show1 ? 'text' : 'password'"
-                        name="password"
-                        :label="$t('Password')"
-                        hint="At least 8 characters"
-                        counter
-                        @click:append="show1 = !show1"
-                      ></v-text-field>
-                      <v-text-field
-                        v-model="password2"
-                        :append-icon="show2 ? 'visibility_off' : 'visibility'"
-                        :rules="[rules.required, rules.min]"
-                        :type="show2 ? 'text' : 'password'"
-                        :label="$t('Confirm Password')"
-                        hint="At least 8 characters"
-                        counter
-                        name="password_confirmation"
-                        @click:append="show2 = !show2"
-                      ></v-text-field>
-                    </v-form>
-                              <v-btn @click="submitAction()">{{ $t('Register') }}</v-btn>
-
-
-              </div>
-          </div>
-      </div>
+  <div class="">
+      <h1 class="text-center">{{ $t('Register') }}</h1>
+      <v-form ref="form" id="theForm" v-model="valid" lazy-validation>
+        <input type="hidden" name="ajaxLogin" value="1">
+        <input type="hidden" name="_token" :value="csrf">
+        <div class="form-group row">
+          <label class="col-md-4 col-form-label text-md-right">Avatar</label>
+          <Cropper v-bind:width="180" v-bind:height="180" type="circle" name="avatar" ></Cropper>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-4 col-form-label text-md-right">Background</label>
+          <Cropper v-bind:width="800" v-bind:height="394" type="square" name="background" ></Cropper>
+        </div>
+        <v-text-field
+          v-model="name"
+          :label="$t('Name')"
+          name="name"
+          hint="This is only a showed name, that can be changed anytime"
+          required
+        ></v-text-field>
+        <v-text-field
+          v-model="username"
+          :label="$t('Username')"
+          name="username"
+          hint="You can not change this name after registration"
+          required
+        ></v-text-field>  
+        <v-text-field
+          v-model="email"
+          :label="$t('E-mail')"
+          name="email"
+          required
+        ></v-text-field>
+        <MarkdownCreator theText="" theId="bio" :theTitle="$t('Biographie')" :theHint="$t('Some words about you')+'...'" ></MarkdownCreator>
+        <v-switch v-model="public" :label="$t('Public')+' '+$t('account')"></v-switch>
+        <input type="hidden" name="public" :value="Number(public)" />
+        <v-text-field
+          v-model="tags"
+          label="Tags"
+          name="tags"
+        ></v-text-field>
+        <v-text-field
+          v-model="password"
+          :append-icon="show1 ? 'visibility_off' : 'visibility'"
+          :rules="[rules.required, rules.min]"
+          :type="show1 ? 'text' : 'password'"
+          name="password"
+          :label="$t('Password')"
+          hint="At least 8 characters"
+          counter
+          @click:append="show1 = !show1"
+        ></v-text-field>
+        <v-text-field
+          v-model="password2"
+          :append-icon="show2 ? 'visibility_off' : 'visibility'"
+          :rules="[rules.required, rules.min]"
+          :type="show2 ? 'text' : 'password'"
+          :label="$t('Confirm Password')"
+          hint="At least 8 characters"
+          counter
+          name="password_confirmation"
+          @click:append="show2 = !show2"
+        ></v-text-field>
+        </v-form>
+        <v-btn @click="submitAction()">{{ $t('Register') }}</v-btn>
+  </div>
 </template>
 
 
 <script>
   const $ = require("jquery");
   import { store } from '../../store.js';
+  import Cropper from '../cropp'
   import MarkdownCreator from '../MarkdownCreator'
   export default {
     components: {
-      MarkdownCreator
+      MarkdownCreator,
+      Cropper
     },
     props: ['baseUrl'],
     mounted: function () {

@@ -19,6 +19,7 @@ class SocialiteController extends Controller
      */
     public function redirectToProvider($provider)
     {
+
         return Socialite::driver($provider)->redirect();
     }
     /**
@@ -31,6 +32,10 @@ class SocialiteController extends Controller
      */
     public function handleProviderCallback($provider)
     {
+      if(config("app.".$provider."authenabled")=="0"){
+        return redirect()->route('login')
+            ->with('error', __('Provider not enabled, ask your admin.'));
+      }
         try {
             $providerUser = Socialite::driver($provider)->user();
         } catch (\Throwable | \Exception $e) {
@@ -53,6 +58,7 @@ class SocialiteController extends Controller
         return $this->authenticated($user)
             ?: redirect()->intended($this->redirectPath());
     }
+    
     /**
      * Create a user if does not exist
      *
@@ -74,6 +80,7 @@ class SocialiteController extends Controller
         ]);
         if (!$user->exists) {
             $user->name = $providerUser->getName();
+            $user->username = str_random(10);
             $user->password = bcrypt(str_random(30));
             $user->save();
             event(new RegisteredEvent($user));

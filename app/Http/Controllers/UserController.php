@@ -32,6 +32,23 @@ class UserController extends Controller
       }
     }  
     
+    public function checkUsernameExists(Request $request){
+      if(!empty(User::where(['username' => $request->input('username')])->get())){
+        return response()->json(["userexists"=>true],200);
+      } else {
+        return response()->json(["userexists"=>false],200);
+      } 
+    }
+    
+    public function setUsername(Request $request){
+      if(Auth::id()!=0){
+        $u = User::find(Auth::id());
+        $u->username = $$request->input("username");
+        return response()->json(["csrf"=>csrf_token()],200);
+      } else {
+        return response()->json(["csrf"=>csrf_token()],401);
+      }
+    }    
     public function get(Request $request){
       return UserResource::collection(User::all());
     }

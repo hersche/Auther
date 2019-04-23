@@ -18,7 +18,11 @@ use Illuminate\Http\Request;
 Route::get('/', function () {
     return view('base');
 });
-
+Route::group(
+    ['prefix' => 'oauth', 'as' => 'oauth.', 'middleware' => ['guest', 'throttle']], function () {
+    Route::get('/{provider}', 'Auth\SocialiteController@redirectToProvider')->name('login')->where('provider', 'google|github');
+    Route::get('/{provider}/callback', 'Auth\SocialiteController@handleProviderCallback')->where('provider', 'google|github');
+});
 Route::get('/2fa','PasswordSecurityController@show2faForm');
 Route::post('/generate2faSecret','PasswordSecurityController@generate2faSecret')->name('generate2faSecret');
 Route::post('/2fa','PasswordSecurityController@enable2fa')->name('enable2fa');
@@ -82,5 +86,7 @@ Route::post('/internal-api/register', 'Auth\RegisterController@register');
 Route::post('/internal-api/settings/password','UserController@changePassword');
 Route::get('/internal-api/refresh-csrf', function(){
   return response()->json(["csrf"=>csrf_token()],200);
-});   
+});
 
+Route::post('/internal-api/setusername','UserController@setUsername');   
+Route::post('/internal-api/checkusername','UserController@checkUsernameExists');  
