@@ -21,8 +21,10 @@ return [
     'linkedinauthenabled' => env('MIX_LINKEDIN_AUTH_ENABLED', '0'),
     'twitterauthenabled' => env('MIX_TWITTER_AUTH_ENABLED', '0'),
     'userneedverify' => env('MIX_USER_NEED_VERIFY', '0'),
-    'disableregister' => env('MIX_DISABLE_REGISTER', '0'),    
+    'disableregister' => env('MIX_DISABLE_REGISTER', '0'),
+    'minpasswordlength' => env('MIX_MIN_PASSWORDLENGTH', '8'),
     /*
+    MIX_MIN_PASSWORDLENGTH
     |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------

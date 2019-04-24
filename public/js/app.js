@@ -3716,7 +3716,7 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
     MarkdownCreator: _MarkdownCreator__WEBPACK_IMPORTED_MODULE_2__["default"],
     Cropper: _cropp__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
-  props: ['baseUrl'],
+  props: ['baseUrl', 'mixconfig'],
   mounted: function mounted() {
     if (this.loggeduserid != 0) {
       this.$router.push("/");
@@ -3743,6 +3743,8 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
   },
   updated: function updated() {},
   data: function data() {
+    var _this = this;
+
     return {
       public: false,
       tmpBio: '',
@@ -3761,7 +3763,7 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
           return !!value || 'Required.';
         },
         min: function min(v) {
-          return v.length >= 8 || 'Min 8 characters';
+          return v.length >= Number(_this.mixconfig.MIX_MIN_PASSWORDLENGTH) || 'Min ' + _this.mixconfig.MIX_MIN_PASSWORDLENGTH + ' characters';
         },
         emailMatch: function emailMatch() {
           return 'The email and password you entered don\'t match';
@@ -4849,33 +4851,13 @@ __webpack_require__.r(__webpack_exports__);
 var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['baseUrl'],
+  props: ['baseUrl', 'mixconfig'],
   components: {
     MarkdownCreator: _MarkdownCreator__WEBPACK_IMPORTED_MODULE_2__["default"],
     Cropper: _cropp__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
-  mounted: function mounted() {//  this.$refs.croppieAvatarRef.bind({
-    //  url: '/img/404/avatar.png',
-    //})
-    //  this.$refs.croppieBackgroundRef.bind({
-    //  url: '/img/404/background.png',
-    //})
-  },
-  updated: function updated() {
-    this.$nextTick(function () {
-      if (this.$refs.croppieAvatarRef != undefined & this.editpicloaded == false) {
-        this.editpicloaded = true;
-        this.public = this.currentuser.publicState;
-        console.log("redo picture");
-        this.$refs.croppieAvatarRef.bind({
-          url: this.currentuser.avatar
-        });
-        this.$refs.croppieBackgroundRef.bind({
-          url: this.currentuser.background
-        });
-      }
-    });
-  },
+  mounted: function mounted() {},
+  updated: function updated() {},
   computed: {
     loggeduserid: function loggeduserid() {
       return _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId;
@@ -5008,14 +4990,11 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['baseUrl'],
+  props: ['baseUrl', 'mixconfig'],
   components: {
     MarkdownCreator: _MarkdownCreator__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
-  mounted: function mounted() {//  this.$refs.croppieBackgroundRef.bind({
-    //  url: '/img/404/background.png',
-    //})
-  },
+  mounted: function mounted() {},
   updated: function updated() {},
   computed: {
     usernameAvaible: function usernameAvaible() {
@@ -5046,9 +5025,6 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
     }
   },
   methods: {
-    rmBr: function rmBr(str) {
-      return str.replace(/<br\s*\/?>/mg, "");
-    },
     submitAction: function submitAction() {
       var that = this;
 
@@ -5070,6 +5046,8 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
     }
   },
   data: function data() {
+    var _this = this;
+
     return {
       username: '',
       password: '',
@@ -5081,7 +5059,7 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
           return !!value || 'Required.';
         },
         min: function min(v) {
-          return v.length >= 8 || 'Min 8 characters';
+          return v.length >= Number(_this.mixconfig.MIX_MIN_PASSWORDLENGTH) || 'Min ' + _this.mixconfig.MIX_MIN_PASSWORDLENGTH + ' characters';
         },
         emailMatch: function emailMatch() {
           return 'The email and password you entered don\'t match';
@@ -48462,7 +48440,10 @@ var render = function() {
               type: _vm.showPassword ? "text" : "password",
               name: "password",
               label: _vm.$t("Password"),
-              hint: "At least 8 characters",
+              hint:
+                "At least " +
+                _vm.mixconfig.MIX_MIN_PASSWORDLENGTH +
+                " characters",
               counter: ""
             },
             on: {
@@ -48487,7 +48468,10 @@ var render = function() {
               rules: [_vm.rules.required, _vm.rules.min],
               type: _vm.showConfirmPassword ? "text" : "password",
               label: _vm.$t("Confirm Password"),
-              hint: "At least 8 characters",
+              hint:
+                "At least " +
+                _vm.mixconfig.MIX_MIN_PASSWORDLENGTH +
+                " characters",
               counter: "",
               name: "password_confirmation"
             },
@@ -50047,7 +50031,10 @@ var render = function() {
                 type: _vm.showPassword ? "text" : "password",
                 name: "password",
                 label: _vm.$t("Password"),
-                hint: "At least 8 characters",
+                hint:
+                  "At least " +
+                  _vm.mixconfig.MIX_MIN_PASSWORDLENGTH +
+                  " characters",
                 counter: ""
               },
               on: {
@@ -50072,7 +50059,10 @@ var render = function() {
                 rules: [_vm.rules.required, _vm.rules.min],
                 type: _vm.showConfirmPassword ? "text" : "password",
                 label: _vm.$t("Confirm Password"),
-                hint: "At least 8 characters",
+                hint:
+                  "At least " +
+                  _vm.mixconfig.MIX_MIN_PASSWORDLENGTH +
+                  " characters",
                 counter: "",
                 name: "password_confirmation"
               },
@@ -93124,7 +93114,7 @@ $(document).ready(function () {
     i18n: i18n,
     data: {
       appname: "Auther",
-      mixconfig: Object({"MIX_APP_NAME":"Auther","MIX_APP_URL":"https://auth.host","MIX_APP_ADMINLEVEL":"99","MIX_GOOGLE_AUTH_ENABLED":"1","MIX_GITHUB_AUTH_ENABLED":"1","MIX_FACEBOOK_AUTH_ENABLED":"0","MIX_TWITTER_AUTH_ENABLED":"0","MIX_GITLAB_AUTH_ENABLED":"0","MIX_BITBUCKET_AUTH_ENABLED":"0","MIX_LINKEDIN_AUTH_ENABLED":"0","MIX_PUSHER_APP_KEY":"","MIX_PUSHER_APP_CLUSTER":"mt1","NODE_ENV":"development"}),
+      mixconfig: Object({"MIX_APP_NAME":"Auther","MIX_APP_URL":"https://auth.host","MIX_MIN_PASSWORDLENGTH":"2","MIX_APP_ADMINLEVEL":"99","MIX_GOOGLE_AUTH_ENABLED":"1","MIX_GITHUB_AUTH_ENABLED":"1","MIX_FACEBOOK_AUTH_ENABLED":"0","MIX_TWITTER_AUTH_ENABLED":"0","MIX_GITLAB_AUTH_ENABLED":"0","MIX_BITBUCKET_AUTH_ENABLED":"0","MIX_LINKEDIN_AUTH_ENABLED":"0","MIX_PUSHER_APP_KEY":"","MIX_PUSHER_APP_CLUSTER":"mt1","NODE_ENV":"development"}),
       search: undefined,
       treecatptions: undefined,
       canloadmore: true,

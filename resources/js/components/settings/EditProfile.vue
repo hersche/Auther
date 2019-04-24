@@ -40,33 +40,14 @@
   import Cropper from '../cropp'
   const $ = require("jquery");
   export default {
-    props: ['baseUrl'],
+    props: ['baseUrl','mixconfig'],
     components: {
       MarkdownCreator,
       Cropper
     },
     mounted: function () {
-    //  this.$refs.croppieAvatarRef.bind({
-      //  url: '/img/404/avatar.png',
-      //})
-    //  this.$refs.croppieBackgroundRef.bind({
-      //  url: '/img/404/background.png',
-      //})
     },
     updated: function () {
-      this.$nextTick(function () {
-        if(this.$refs.croppieAvatarRef!=undefined&this.editpicloaded==false){
-          this.editpicloaded=true;
-          this.public = this.currentuser.publicState;
-          console.log("redo picture")
-          this.$refs.croppieAvatarRef.bind({
-            url: this.currentuser.avatar,
-          })
-          this.$refs.croppieBackgroundRef.bind({
-            url: this.currentuser.background,
-          })
-        }
-      })
     },
     computed: {
       loggeduserid(){

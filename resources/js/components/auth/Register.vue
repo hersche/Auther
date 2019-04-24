@@ -62,7 +62,7 @@
           :type="showPassword ? 'text' : 'password'"
           name="password"
           :label="$t('Password')"
-          hint="At least 8 characters"
+          :hint="'At least ' +mixconfig.MIX_MIN_PASSWORDLENGTH+ ' characters'"
           counter
           @click:append="showPassword = !showPassword"
         ></v-text-field>
@@ -72,7 +72,7 @@
           :rules="[rules.required, rules.min]"
           :type="showConfirmPassword ? 'text' : 'password'"
           :label="$t('Confirm Password')"
-          hint="At least 8 characters"
+          :hint="'At least ' +mixconfig.MIX_MIN_PASSWORDLENGTH+ ' characters'"
           counter
           name="password_confirmation"
           @click:append="showConfirmPassword = !showConfirmPassword"
@@ -93,7 +93,7 @@
       MarkdownCreator,
       Cropper
     },
-    props: ['baseUrl'],
+    props: ['baseUrl','mixconfig'],
     mounted: function () {
       if(this.loggeduserid!=0){
         this.$router.push("/");
@@ -135,7 +135,7 @@
         tags:'',
         rules: {
           required: value => !!value || 'Required.',
-          min: v => v.length >= 8 || 'Min 8 characters',
+          min: v => v.length >= Number(this.mixconfig.MIX_MIN_PASSWORDLENGTH) || 'Min '+this.mixconfig.MIX_MIN_PASSWORDLENGTH+' characters',
           emailMatch: () => ('The email and password you entered don\'t match')
         }
       }
