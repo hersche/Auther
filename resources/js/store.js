@@ -17,12 +17,9 @@
       getters: {
         getUsersBySearch: (state) => (term) => {
           var sr = []
-          console.log("users rdy?",state.users)
           $.each(state.users, function(i, el){
             if(el.username.indexOf(term)>-1){
-              console.log("pass 1")
               if((el.public==1)&&(sr.indexOf(el)==-1)){
-                console.log("pass 2")
                 sr.push(el)
               }
             } else if(el.name.indexOf(term)>-1){
@@ -51,6 +48,14 @@
             }
           });
           return sr
+        },
+        getUserByUsername: (state) => (name) => {
+          //return undefined
+          var u;
+          if(state.users!=[]){
+            u = state.users.find(u => u.username == name)
+          }
+          return u
         },
         getUserById: (state) => (id) => {
           id = Number(id)
@@ -140,6 +145,9 @@
       mutations: {
         setUsers(state,users){
           state.users = users
+        },
+        addUser(state,user){
+          state.users.push(user)
         },
         setTokens(state,tokens){
           state.tokens = tokens

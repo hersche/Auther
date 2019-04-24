@@ -43,10 +43,15 @@ class UserController extends Controller
     public function setUsername(Request $request){
       if(Auth::id()!=0){
         $u = User::find(Auth::id());
-        $u->username = $$request->input("username");
-        return response()->json(["csrf"=>csrf_token()],200);
+        if($u->allow_username_change==false){
+          return response()->json(["msg"=>"Not allowed to set"],401);
+        }
+        $u->allow_username_change=false;
+        $u->username = $request->input("username");
+        $u->save();
+        return $this->get($request);
       } else {
-        return response()->json(["csrf"=>csrf_token()],401);
+        return response()->json(["msg"=>"Not allowed to set (no login)"],401);
       }
     }    
     public function get(Request $request){

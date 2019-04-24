@@ -69,7 +69,13 @@ class RegisterController extends Controller
         $this->validator($request->all())->validate();
 
         $user = User::create($request->all());
-
+        if(config("app.userneedverify")=="0"){
+          $role = config('roles.models.role')::where('slug', '=', 'user')->first();
+          $user->attachRole($role);
+        } else {
+          $role = config('roles.models.role')::where('slug', '=', 'unverified')->first();
+          $user->attachRole($role);
+        }
         $avatar = 'public/user/avatars/'.$user->username.'.png';
         $data = $request->input('avatar');
         if(!empty($data)){

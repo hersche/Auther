@@ -3,8 +3,9 @@
         <div class="row justify-content-center">
           <div class="col-md-8">
             <v-card class="text-center">
-              <v-card-title class="headline text-center">Your central place for your user</v-card-title>
+              
               <v-card-text>
+                <div class="headline text-center">Your central place for your user</div>
                   Here, you can manage your user for the following apps:
                   <div v-for="item in projects" :key="item.id" >        
                   <ProjectChip v-bind:item="item"></ProjectChip>

@@ -24,8 +24,6 @@
      primary: 'blue',
      secondary: '#b0bec5',
      accent: '#8c9eff',
-     success: 'green',
-     error: '#b71c1c'
    }
  })
  Vue.use(Vuex)
@@ -51,6 +49,7 @@
     var profileComp = Vue.component('profile', require("./components/ProfileComponent.vue").default);
     var searchComp = Vue.component('search', require("./components/Search.vue").default);
     var editProfileComp = Vue.component('editprofile', require("./components/settings/EditProfile.vue").default);
+    var editUsernameComp = Vue.component('editusername', require("./components/settings/EditUsername.vue").default);
     
     var friendsComp = Vue.component('friends', require("./components/settings/Friends.vue").default);
     var passwordComp = Vue.component('friends', require("./components/settings/password.vue").default);
@@ -95,6 +94,7 @@
    { path: '/admin/projects', component: projects },
    { path: '/admin/roles', component: roles },
    { path: '/twofaLogin', component: faLoginComp },
+   { path: '/settings/editusername', component: editUsernameComp },
    { path: '/settings/2fa', component: twofaSettings },
    { path: '/settings/friends', component: friendsComp },
    { path: '/settings/password', component: passwordComp },
@@ -109,7 +109,9 @@
  $( document ).ready(function() {
    
    store.getters.receiveUsers()
-   store.getters.receiveRoles()
+   if(store.state.loginId!=0){
+     store.getters.receiveRoles()
+   }
    store.getters.receiveProjects()
    lang = 'en';
    if(localStorage.getItem("language")!=''&&localStorage.getItem("language")!=undefined){

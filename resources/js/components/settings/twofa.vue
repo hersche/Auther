@@ -115,7 +115,7 @@
       },
       
       getTwofactor(){
-        axios.post("/internal-api/settings/get/twofactor",{"userpass":this.userpassword})  
+        axios.post("/internal-api/settings/get/twofactor",{"userpass":this.userpassword,"_token":this.csrf})  
         .then(function (response) {
           store.commit("setTwofactor",JSON.parse(response.request.response).data)
           console.log("get twofactor",JSON.parse(response.request.response).data);
@@ -126,7 +126,7 @@
       },
       testTwofactor(){
         let that = this;
-        axios.post("/internal-api/settings/2faTest",{"one_time_test_password":this.checkTwofactorCode,"userpass":this.userpassword})  
+        axios.post("/internal-api/settings/2faTest",{"one_time_test_password":this.checkTwofactorCode,"userpass":this.userpassword,"_token":this.csrf})  
         .then(function (response) {
           if(response.request.response!='{"twofactor":testinvalid}'){
             that.userpassword=''
@@ -141,7 +141,7 @@
        })
       },
       refreshTwofactor(){
-        axios.post("/internal-api/settings/refresh/twofactor",{"userpass":this.userpassword})  
+        axios.post("/internal-api/settings/refresh/twofactor",{"userpass":this.userpassword,"_token":this.csrf})  
         .then(function (response) {
           store.commit("setTwofactor",JSON.parse(response.request.response).data)
           console.log("refresh twofactor",JSON.parse(response.request.response).data);
@@ -153,7 +153,7 @@
       },
       disableTwofactor(){
         let that = this;
-        axios.post("/internal-api/settings/disable/twofactor",{"userpass":this.userpassword})  
+        axios.post("/internal-api/settings/disable/twofactor",{"userpass":this.userpassword,"_token":this.csrf})  
         .then(function (response) {
           that.userpassword=''
           store.commit("setTwofactor",JSON.parse(response.request.response).data)
@@ -181,24 +181,6 @@
         });
         return false;
       },
-// CALBACK USAGE
-resultAvatar(output) {
-  
-},
-resultBackground(output) {
-
-},
-updateAvatar(val) {
-
-},
-updateBackground(val) {
-
-},
-rotateAvatar(rotationAngle,event) {
-    // Rotates the image
-},
-rotateBackground(rotationAngle,event) {
-}
     },
     data(){
       return {

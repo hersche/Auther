@@ -202,6 +202,15 @@
       </v-list-tile-content>
     </v-list-tile>
   
+    <v-list-tile v-if="currentuser.allow_username_change" to="/settings/editusername">
+      <v-list-tile-action>
+        <v-icon>account_circle</v-icon>
+      </v-list-tile-action>
+      <v-list-tile-content>
+        <v-list-tile-title>{{ $t('Edit username') }}</v-list-tile-title>
+      </v-list-tile-content>
+    </v-list-tile>
+  
     <v-list-tile to="/settings/friends">
       <v-list-tile-action>
         <v-icon>accessibility</v-icon>

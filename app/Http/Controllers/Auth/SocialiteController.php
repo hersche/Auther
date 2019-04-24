@@ -55,6 +55,9 @@ class SocialiteController extends Controller
             'auth.social_id' => $providerUser->getId()
         ]);
         DB::commit();
+        if($user->allow_username_change){
+          return redirect('/#/settings/editusername');
+        }
         return $this->authenticated($user)
             ?: redirect()->intended($this->redirectPath());
     }
@@ -81,8 +84,17 @@ class SocialiteController extends Controller
         if (!$user->exists) {
             $user->name = $providerUser->getName();
             $user->username = str_random(10);
+            $user->allow_username_change=true;
             $user->password = bcrypt(str_random(30));
             $user->save();
+            if(config("app.userneedverify")=="0"){
+              $role = config('roles.models.role')::where('slug', '=', 'user')->first();
+              $user->attachRole($role);
+            } else {
+              $role = config('roles.models.role')::where('slug', '=', 'unverified')->first();
+              $user->attachRole($role);
+            }
+            
             event(new RegisteredEvent($user));
         }
         $social->user()->associate($user);

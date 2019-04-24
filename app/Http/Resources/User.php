@@ -77,6 +77,7 @@ class User extends JsonResource
           'public' => $this->public,
           'roles' => $simpleRoleArray,
           'admin' => $admin,
+          'allow_username_change' => $this->allow_username_change,
           'email' => $email,
           'friends' => [
             'pending' => $this->getUserIds($this->getPendingFriendships()),

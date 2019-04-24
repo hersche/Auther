@@ -29,6 +29,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->text('bio')->nullable();
             $table->boolean('public')->default(false);
+            $table->boolean('allow_username_change')->default(false);
             $table->string('avatar')->default('');
             $table->string('background')->default('');
             $table->rememberToken();

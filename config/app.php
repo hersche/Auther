@@ -20,7 +20,8 @@ return [
     'facebookauthenabled' => env('MIX_FACEBOOK_AUTH_ENABLED', '0'),
     'linkedinauthenabled' => env('MIX_LINKEDIN_AUTH_ENABLED', '0'),
     'twitterauthenabled' => env('MIX_TWITTER_AUTH_ENABLED', '0'),
-    
+    'userneedverify' => env('MIX_USER_NEED_VERIFY', '0'),
+    'disableregister' => env('MIX_DISABLE_REGISTER', '0'),    
     /*
     |--------------------------------------------------------------------------
     | Application Environment

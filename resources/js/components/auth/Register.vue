@@ -23,9 +23,24 @@
           v-model="username"
           :label="$t('Username')"
           name="username"
+          :rules="[rules.required, usernameAvaible]"
           hint="You can not change this name after registration"
           required
-        ></v-text-field>  
+        ></v-text-field>
+        <v-alert
+        :value="usernameAvaible"
+        type="success"
+        style="background-color:green"
+        >
+          Username is avaible
+        </v-alert>
+        <v-alert
+        :value="usernameAvaible==false"
+        type="error"
+        style="background-color:red"
+        >
+          Username is NOT avaible
+        </v-alert>
         <v-text-field
           v-model="email"
           :label="$t('E-mail')"
@@ -42,25 +57,25 @@
         ></v-text-field>
         <v-text-field
           v-model="password"
-          :append-icon="show1 ? 'visibility_off' : 'visibility'"
+          :append-icon="showPassword ? 'visibility_off' : 'visibility'"
           :rules="[rules.required, rules.min]"
-          :type="show1 ? 'text' : 'password'"
+          :type="showPassword ? 'text' : 'password'"
           name="password"
           :label="$t('Password')"
           hint="At least 8 characters"
           counter
-          @click:append="show1 = !show1"
+          @click:append="showPassword = !showPassword"
         ></v-text-field>
         <v-text-field
-          v-model="password2"
-          :append-icon="show2 ? 'visibility_off' : 'visibility'"
+          v-model="confirmPassword"
+          :append-icon="showConfirmPassword ? 'visibility_off' : 'visibility'"
           :rules="[rules.required, rules.min]"
-          :type="show2 ? 'text' : 'password'"
+          :type="showConfirmPassword ? 'text' : 'password'"
           :label="$t('Confirm Password')"
           hint="At least 8 characters"
           counter
           name="password_confirmation"
-          @click:append="show2 = !show2"
+          @click:append="showConfirmPassword = !showConfirmPassword"
         ></v-text-field>
         </v-form>
         <v-btn @click="submitAction()">{{ $t('Register') }}</v-btn>
@@ -80,37 +95,32 @@
     },
     props: ['baseUrl'],
     mounted: function () {
-      this.$refs.croppieAvatarRef.bind({
-        url: '/img/404/avatar.png',
-      })
-      this.$refs.croppieBackgroundRef.bind({
-        url: '/img/404/background.png',
-      })
+      if(this.loggeduserid!=0){
+        this.$router.push("/");
+      }
     },
     computed: {
+      loggeduserid(){
+        return store.state.loginId
+      },
+      usernameAvaible(){
+        if(this.username==""){
+          return false
+        }
+        if(store.getters.getUserByUsername(this.username)!=undefined){
+          return false
+        } else {
+          return true
+        }
+      },
       csrf: function(){
         return store.getters.getCSRF()
       },
     },
     updated: function () {
-      this.$nextTick(function () {
-        if(this.$refs.croppieRef!=undefined&this.editpicloaded==false){
-          this.editpicloaded=true;
-          /*console.log("redo picture")
-          this.$refs.croppieAvatarRef.bind({
-            url: this.currentuser.avatar,
-          })
-          this.$refs.croppieBackgroundRef.bind({
-            url: this.currentuser.background,
-          })
-          */
-        }
-      })
     },
     data(){
       return {
-        avatarCropped: null,
-        backgroundCropped: null,
         public: false,
         tmpBio:'',
         name:'',
@@ -118,9 +128,9 @@
         email:'',
         username:'',
         password:'',
-        password2:'',
-        show1:false,
-        show2:false,
+        confirmPassword:'',
+        showPassword:false,
+        showConfirmPassword:false,
         checkbox:false,
         tags:'',
         rules: {
@@ -131,28 +141,6 @@
       }
     },
     methods: {
-      avatarChange(){
-        var reader = new FileReader();
-        let that = this;
-       reader.onload = function (e) {
-         that.$refs.croppieAvatarRef.bind({
-             url: e.target.result,
-         });
-        }
-        reader.readAsDataURL($("#avatarUpload")[0].files[0]);
-
-      },
-      backgroundChange(){
-        var reader = new FileReader();
-        let that = this;
-       reader.onload = function (e) {
-         that.$refs.croppieBackgroundRef.bind({
-             url: e.target.result,
-         });
-        }
-        reader.readAsDataURL($("#backgroundUpload")[0].files[0]);
-
-      },
       submitAction() {
         let that = this;
         console.log("the form")
@@ -165,7 +153,10 @@
             contentType: false,
             processData: false,
             complete : function(res) {
-              if(res.status==200){
+              if(res.status==201){
+                store.commit("addUser",res.responseJSON.data)
+                store.commit("setLoginId",res.responseJSON.data.id)
+                that.$router.push("/");
               }
               //eventBus.$emit('login',res.responseJSON.data);
             }
@@ -173,39 +164,6 @@
         });
         return false;
       },
-      // CALBACK USAGE
-      resultAvatar(output) {
-        this.avatarCropped = output;
-      },
-      resultBackground(output) {
-        this.backgroundCropped = output;
-      },
-      updateAvatar(val) {
-        let options = {
-          format: 'png'
-        }
-        this.$refs.croppieAvatarRef.result(options, (output) => {
-          this.avatarCropped = output;
-        });
-      },
-      updateBackground(val) {
-        let options = {
-          format: 'png'
-        }
-        this.$refs.croppieBackgroundRef.result(options, (output) => {
-          this.backgroundCropped = output;
-        });
-      },
-      rotateAvatar(rotationAngle,event) {
-        // Rotates the image
-        if (event) event.preventDefault()
-        this.$refs.croppieAvatarRef.rotate(rotationAngle);
-      },
-      rotateBackground(rotationAngle,event) {
-        // Rotates the image
-        if (event) event.preventDefault()
-        this.$refs.croppieBackgroundRef.rotate(rotationAngle);
-      }
     },
   }
 </script>

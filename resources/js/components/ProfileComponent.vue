@@ -7,6 +7,7 @@
     <div id="profileheader" class="text-center" :style="'background-image:url('+currentuser.background+'); background-position: center; background-size: cover;'">
       <img class='pl-2 pt-1 pb-1' :src='currentuser.avatar' />
       <div class="text-center"><v-chip disabled color="blue" text-color="white"><v-subheader dark>{{ currentuser.name }}</v-subheader></v-chip>  </div>
+      <div class="text-center"><v-chip disabled color="lightblue" small text-color="black"><v-subheader>({{ currentuser.username }})</v-subheader></v-chip>  </div>
       <div v-if="ownuser.id==currentuser.id"><v-chip small disabled color="red" text-color="white">(You)</v-chip></div>
     </div>
     <div>
