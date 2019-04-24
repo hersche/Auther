@@ -83,7 +83,7 @@ class SocialiteController extends Controller
         ]);
         if (!$user->exists) {
             $user->name = $providerUser->getName();
-            $user->username = $user->getNickname().str_random(10);
+            $user->username = $providerUser->getNickname().str_random(10);
             $user->allow_username_change=true;
             $user->avatar = $providerUser->getAvatar();
             $user->password = bcrypt(str_random(30));
