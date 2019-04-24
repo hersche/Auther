@@ -57,9 +57,12 @@ class SocialiteController extends Controller
         DB::commit();
         if($user->allow_username_change){
           return redirect('/#/settings/editusername');
-        }
-        return $this->authenticated($user)
-            ?: redirect()->intended($this->redirectPath());
+        } else {
+          return redirect('/');
+          // The below was failing and this->authenticated is empty?
+          //return $this->authenticated($user)
+          //  ?: redirect()->intended($this->redirectPath());
+          }
     }
     
     /**
@@ -100,7 +103,7 @@ class SocialiteController extends Controller
         } else {
           $tmpD = new DateTime("now");
           $tmpD->modify('-7 days');
-          if($u->created_at<$tmpD){
+          if($user->created_at<$tmpD){
             $user->allow_username_change=false;
             $user->save();
           }
