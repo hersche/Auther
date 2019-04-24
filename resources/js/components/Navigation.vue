@@ -207,7 +207,7 @@
         <v-icon>account_circle</v-icon>
       </v-list-tile-action>
       <v-list-tile-content>
-        <v-list-tile-title>{{ $t('Edit username') }}</v-list-tile-title>
+        <v-list-tile-title>{{ $t('Edit login') }}</v-list-tile-title>
       </v-list-tile-content>
     </v-list-tile>
   

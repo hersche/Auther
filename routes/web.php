@@ -88,5 +88,5 @@ Route::get('/internal-api/refresh-csrf', function(){
   return response()->json(["csrf"=>csrf_token()],200);
 });
 
-Route::post('/internal-api/setusername','UserController@setUsername');   
+Route::post('/internal-api/setlogin','UserController@setLogin');   
 Route::post('/internal-api/checkusername','UserController@checkUsernameExists');  

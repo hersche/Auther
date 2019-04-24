@@ -1,8 +1,11 @@
 <template>
   <div v-if="currentuser.allow_username_change">
     <div class="text-center">
-      <h1>{{ $t("Change") }} {{ $t("username") }}</h1>
-      <p>Because your username was generated randomly / you logged in with a external provider like google, you can change your username once here. After you did this, you can not change the username as it's basicly static.</p>
+      <h1>{{ $t("Change") }} {{ $t("login") }}</h1>
+      <p>Because your username and password was generated randomly / you logged in with a external provider like google, you can change your username once here.</p>
+      <p>When you set this info, you can login with these information.</p>
+      <p>HOWEVER: You can still login with the provider and you can set this login-information later.</p>
+      <p>You can find this in the menu under Settings. <b>After you performed this action or after 7 days, this option will disappear.</b></p>
       <v-text-field
         label="New username"
         v-model="username"
@@ -22,6 +25,28 @@
         >
           Username {{ username }} is NOT avaible
         </v-alert>
+        <v-text-field
+          v-model="password"
+          :append-icon="showPassword ? 'visibility_off' : 'visibility'"
+          :rules="[rules.required, rules.min]"
+          :type="showPassword ? 'text' : 'password'"
+          name="password"
+          :label="$t('Password')"
+          hint="At least 8 characters"
+          counter
+          @click:append="showPassword = !showPassword"
+        ></v-text-field>
+        <v-text-field
+          v-model="confirmPassword"
+          :append-icon="showConfirmPassword ? 'visibility_off' : 'visibility'"
+          :rules="[rules.required, rules.min]"
+          :type="showConfirmPassword ? 'text' : 'password'"
+          :label="$t('Confirm Password')"
+          hint="At least 8 characters"
+          counter
+          name="password_confirmation"
+          @click:append="showConfirmPassword = !showConfirmPassword"
+        ></v-text-field>
         <v-btn v-if="usernameAvaible" @click="submitAction()">Change username</v-btn>
       </div>
     </div>
@@ -80,7 +105,7 @@
       submitAction() {
         let that = this;
         if(this.usernameAvaible){
-        axios.post("/internal-api/setusername",{"username":this.username,"_token":this.csrf})  
+        axios.post("/internal-api/setlogin",{"username":this.username,"password":this.password,"confirm_password":this.confirmPassword,"_token":this.csrf})  
             .then(function (response) {
               store.commit("setUsers",JSON.parse(response.request.response).data)
               that.$router.push("/profile/"+that.currentuser.id);
@@ -95,20 +120,16 @@
     },
     data(){
       return {
-        mediaType: '',
         username:'',
-        checkTwofactorCode: '',
-        public: false,
-        editpicloaded:false,
-        showdismissiblealert: false,
-        avatarCropped: null,
-        tmpBio:'',
-        showUserpassword:false,
-        userpassword:'',
-        showOldPass:false,
-        showNewPass:false,
-        showNewPass2:false,
-        backgroundCropped: null,
+        password:'',
+        confirmPassword:'',
+        showPassword:false,
+        showConfirmPassword:false,
+        rules: {
+          required: value => !!value || 'Required.',
+          min: v => v.length >= 8 || 'Min 8 characters',
+          emailMatch: () => ('The email and password you entered don\'t match')
+        }
       }
     }
   }

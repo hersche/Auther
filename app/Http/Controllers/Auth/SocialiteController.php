@@ -34,7 +34,7 @@ class SocialiteController extends Controller
     {
       if(config("app.".$provider."authenabled")=="0"){
         return redirect()->route('login')
-            ->with('error', __('Provider not enabled, ask your admin.'));
+            ->with('error', __('Provider '.$provider.' not enabled, ask your admin.'));
       }
         try {
             $providerUser = Socialite::driver($provider)->user();
@@ -83,8 +83,9 @@ class SocialiteController extends Controller
         ]);
         if (!$user->exists) {
             $user->name = $providerUser->getName();
-            $user->username = str_random(10);
+            $user->username = $user->getNickname().str_random(10);
             $user->allow_username_change=true;
+            $user->avatar = $providerUser->getAvatar();
             $user->password = bcrypt(str_random(30));
             $user->save();
             if(config("app.userneedverify")=="0"){
@@ -96,6 +97,13 @@ class SocialiteController extends Controller
             }
             
             event(new RegisteredEvent($user));
+        } else {
+          $tmpD = new DateTime("now");
+          $tmpD->modify('-7 days');
+          if($u->created_at<$tmpD){
+            $user->allow_username_change=false;
+            $user->save();
+          }
         }
         $social->user()->associate($user);
         $social->save();

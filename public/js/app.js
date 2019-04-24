@@ -4974,6 +4974,31 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -5028,8 +5053,10 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       var that = this;
 
       if (this.usernameAvaible) {
-        axios.post("/internal-api/setusername", {
+        axios.post("/internal-api/setlogin", {
           "username": this.username,
+          "password": this.password,
+          "confirm_password": this.confirmPassword,
           "_token": this.csrf
         }).then(function (response) {
           _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].commit("setUsers", JSON.parse(response.request.response).data);
@@ -5044,20 +5071,22 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
   },
   data: function data() {
     return {
-      mediaType: '',
       username: '',
-      checkTwofactorCode: '',
-      public: false,
-      editpicloaded: false,
-      showdismissiblealert: false,
-      avatarCropped: null,
-      tmpBio: '',
-      showUserpassword: false,
-      userpassword: '',
-      showOldPass: false,
-      showNewPass: false,
-      showNewPass2: false,
-      backgroundCropped: null
+      password: '',
+      confirmPassword: '',
+      showPassword: false,
+      showConfirmPassword: false,
+      rules: {
+        required: function required(value) {
+          return !!value || 'Required.';
+        },
+        min: function min(v) {
+          return v.length >= 8 || 'Min 8 characters';
+        },
+        emailMatch: function emailMatch() {
+          return 'The email and password you entered don\'t match';
+        }
+      }
     };
   }
 });
@@ -45991,7 +46020,7 @@ var render = function() {
                                 "v-list-tile-content",
                                 [
                                   _c("v-list-tile-title", [
-                                    _vm._v(_vm._s(_vm.$t("Edit username")))
+                                    _vm._v(_vm._s(_vm.$t("Edit login")))
                                   ])
                                 ],
                                 1
@@ -49945,16 +49974,28 @@ var render = function() {
           { staticClass: "text-center" },
           [
             _c("h1", [
+              _vm._v(_vm._s(_vm.$t("Change")) + " " + _vm._s(_vm.$t("login")))
+            ]),
+            _vm._v(" "),
+            _c("p", [
               _vm._v(
-                _vm._s(_vm.$t("Change")) + " " + _vm._s(_vm.$t("username"))
+                "Because your username and password was generated randomly / you logged in with a external provider like google, you can change your username once here."
               )
             ]),
             _vm._v(" "),
             _c("p", [
               _vm._v(
-                "Because your username was generated randomly / you logged in with a external provider like google, you can change your username once here. After you did this, you can not change the username as it's basicly static."
+                "When you set this info, you can login with these information."
               )
             ]),
+            _vm._v(" "),
+            _c("p", [
+              _vm._v(
+                "HOWEVER: You can still login with the provider and you can set this login-information later."
+              )
+            ]),
+            _vm._v(" "),
+            _vm._m(0),
             _vm._v(" "),
             _c("v-text-field", {
               attrs: { label: "New username", type: "text" },
@@ -49997,6 +50038,58 @@ var render = function() {
               ]
             ),
             _vm._v(" "),
+            _c("v-text-field", {
+              attrs: {
+                "append-icon": _vm.showPassword
+                  ? "visibility_off"
+                  : "visibility",
+                rules: [_vm.rules.required, _vm.rules.min],
+                type: _vm.showPassword ? "text" : "password",
+                name: "password",
+                label: _vm.$t("Password"),
+                hint: "At least 8 characters",
+                counter: ""
+              },
+              on: {
+                "click:append": function($event) {
+                  _vm.showPassword = !_vm.showPassword
+                }
+              },
+              model: {
+                value: _vm.password,
+                callback: function($$v) {
+                  _vm.password = $$v
+                },
+                expression: "password"
+              }
+            }),
+            _vm._v(" "),
+            _c("v-text-field", {
+              attrs: {
+                "append-icon": _vm.showConfirmPassword
+                  ? "visibility_off"
+                  : "visibility",
+                rules: [_vm.rules.required, _vm.rules.min],
+                type: _vm.showConfirmPassword ? "text" : "password",
+                label: _vm.$t("Confirm Password"),
+                hint: "At least 8 characters",
+                counter: "",
+                name: "password_confirmation"
+              },
+              on: {
+                "click:append": function($event) {
+                  _vm.showConfirmPassword = !_vm.showConfirmPassword
+                }
+              },
+              model: {
+                value: _vm.confirmPassword,
+                callback: function($$v) {
+                  _vm.confirmPassword = $$v
+                },
+                expression: "confirmPassword"
+              }
+            }),
+            _vm._v(" "),
             _vm.usernameAvaible
               ? _c(
                   "v-btn",
@@ -50016,7 +50109,21 @@ var render = function() {
       ])
     : _vm._e()
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", [
+      _vm._v("You can find this in the menu under Settings. "),
+      _c("b", [
+        _vm._v(
+          "After you performed this action or after 7 days, this option will disappear."
+        )
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 

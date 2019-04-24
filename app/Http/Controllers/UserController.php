@@ -40,16 +40,24 @@ class UserController extends Controller
       } 
     }
     
-    public function setUsername(Request $request){
+    public function setLogin(Request $request){
       if(Auth::id()!=0){
         $u = User::find(Auth::id());
-        if($u->allow_username_change==false){
+        $tmpD = new DateTime("now");
+        $tmpD->modify('-7 days');
+        if($u->allow_username_change==false&&$u->created_at>$tmpD){
           return response()->json(["msg"=>"Not allowed to set"],401);
         }
-        $u->allow_username_change=false;
-        $u->username = $request->input("username");
-        $u->save();
-        return $this->get($request);
+        if($request->input("password")==$request->input("confirm_password")){
+          $u->allow_username_change=false;
+          $u->username = $request->input("username");
+          $u->password = Hash::make($request->input("password"));
+          $u->save();
+          return $this->get($request);
+        } else {
+          return response()->json(["msg"=>"Password missmatch"],401);
+        }
+        
       } else {
         return response()->json(["msg"=>"Not allowed to set (no login)"],401);
       }
