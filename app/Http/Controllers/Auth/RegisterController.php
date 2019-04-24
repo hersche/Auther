@@ -68,7 +68,7 @@ class RegisterController extends Controller
     {
         $this->validator($request->all())->validate();
 
-        $user = User::create($request->all());
+        $user = User::create($request->except(['avatar','background','_token']));
         if(config("app.userneedverify")=="0"){
           $role = config('roles.models.role')::where('slug', '=', 'user')->first();
           $user->attachRole($role);

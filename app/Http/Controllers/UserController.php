@@ -43,7 +43,7 @@ class UserController extends Controller
     public function setLogin(Request $request){
       if(Auth::id()!=0){
         $u = User::find(Auth::id());
-        $tmpD = new DateTime("now");
+        $tmpD = new \DateTime("now");
         $tmpD->modify('-7 days');
         if($u->allow_username_change==false&&$u->created_at>$tmpD){
           return response()->json(["msg"=>"Not allowed to set"],401);
@@ -100,7 +100,7 @@ class UserController extends Controller
               //  'password' => 'same:confirm-password',
                 //'roles' => 'required'
             ]);
-            $input = $request->all();
+            $input = $request->except(['avatar','background','_token']);
             if(!empty($input['password'])){
                 $input['password'] = Hash::make($input['password']);
             }else{
