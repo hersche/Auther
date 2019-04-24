@@ -125,6 +125,6 @@ class SocialiteController extends Controller
      */
     protected function redirectTo()
     {
-        return route('home');
+        return redirect('/');
     }
 }
