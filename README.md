@@ -1,19 +1,29 @@
-# AGAIN WIP (work in progress)
-
 Auther is a project for provide kind of "user-directory".
+
+### Remember: This is still WIP and therefore unreleased
 
 The problem i often hear about, is that people dislike to remember various Accounts.
 
-The solution i try to do is similiar to a lot of apps out there - one auth-server, all the apps using this one. To stay flexible, the project has only generic useable features.
+The solution i try to do is similiar to a lot of systems out there (one i've seen is rockstar's system for example) - one auth-server, all the apps using this one. 
 
-A
+Some pro's about a such structure are:
 
-   npm install
+- Apps are distribute-able over various servers -> scaling
+- Apps can be focused more on handle theyr task
+- Various technologies (eg Django and PHP) can be "mixed" properly over the OAuth-Interface (and as separate apps)
 
-is needed for this project. After all options in .env starting with MIX, you need to recompile the JavaScript with
+To stay flexible, the project has only generic useable features, such as:
 
-   npm run dev
-   
-or
+- Provide basic profile
+- Provide notification-exchange (unfinished)
+- 2-factor-auth (TOTP)
+- Provide Login via Google, Github, Gitlab, Bitbucket, Twitter and Linkedin (if enabled by admin)
+- Provide "Projects" for presenting the apps 
+- Role and level-based access-system which can be used by apps
+- Friend-system which can also be used by apps
 
-   npm run prod
+
+
+### Setup and updates
+
+As Auther is kind of similiar to LaraTube, it's also on setup. Checkout installation-instructions here: https://gitlab.com/hersche/LaraTube/wikis/SysAdminManual
