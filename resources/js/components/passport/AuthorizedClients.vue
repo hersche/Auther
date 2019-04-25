@@ -7,59 +7,46 @@
 <template>
     <div>
         <div v-if="tokens.length > 0">
-            <div class="card card-default">
-                <div class="card-header">Authorized Applications</div>
 
-                <div class="card-body">
-                    <!-- Authorized Tokens -->
-                    <table class="table table-borderless mb-0">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Scopes</th>
-                                <th></th>
-                            </tr>
-                        </thead>
+                  <h3 class="text-center">{{ $t('Manage') }} {{ $t('apps')}}</h3>
 
-                        <tbody>
-                            <tr v-for="token in tokens">
-                                <!-- Client Name -->
-                                <td style="vertical-align: middle;">
-                                    <a :href="projectByClientId(token.client.id).id" >{{ token.client.name }}</a>
-                                </td>
-
-                                <!-- Scopes -->
-                                <td style="vertical-align: middle;">
-                                    <span v-if="token.scopes.length > 0">
-                                        {{ token.scopes.join(', ') }}
-                                    </span>
-                                </td>
-
-                                <!-- Revoke Button -->
-                                <td style="vertical-align: middle;">
-                                    <a class="action-link text-danger" @click="revoke(token)">
-                                        Revoke
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                <v-data-table
+                  :headers="headers"
+                  :items="tokens"
+                  class="elevation-1"
+                  >
+                  <template v-slot:items="props">
+                    <td class="" v-if="theInfos[props.item.client.id]!=undefined"><ProjectChip v-bind:item="theInfos[props.item.client.id]"></ProjectChip></td>
+                    <td class="" v-if="theInfos[props.item.client.id]==undefined"> {{ props.item.client.name }}</td>
+                    <td class="">{{ props.item.scopes.join(', ') }}</td>
+                    <td class="">
+                      <v-btn icon @click="revoke(props.item)">
+                        <v-icon>delete</v-icon>
+                      </v-btn>
+                    </td>
+                  </template>
+                </v-data-table>
         </div>
     </div>
 </template>
 
 <script>
   import { store } from '../../store.js';
-const axios = require('axios')
+  const axios = require('axios')
+    import ProjectChip from '../ProjectChip'
     export default {
         /*
          * The component's data.
          */
         data() {
             return {
-                tokens: []
+                tokens: [],
+                theInfos:[],
+                headers: [
+                  { text: 'Name', value: 'client.name' },
+                  { text: 'Scopes', value: 'scopes' },
+                  { text: '', value: '' },
+                ],
             };
         },
 
@@ -69,14 +56,38 @@ const axios = require('axios')
         ready() {
             this.prepareComponent();
         },
-
+        watch: {
+          projects: function (val) {
+            this.theInfos = []
+            console.log("projects changed",val)
+            let that = this
+            this.tokens.forEach(function(item){
+              console.log("go through tokens.. ",that.projectByClientId(item.client.id))
+              that.theInfos[item.client.id] = that.projectByClientId(item.client.id)
+            })
+          },
+          tokens: function (val) {
+            this.theInfos = []
+            let that = this
+            this.tokens.forEach(function(item){
+              that.theInfos[item.client.id] = that.projectByClientId(item.client.id)
+            })
+          }
+        },
+        computed: {
+          projects(){
+            return store.state.projects
+          },
+        },
         /**
          * Prepare the component (Vue 2.x).
          */
         mounted() {
             this.prepareComponent();
         },
-
+        components: {
+          ProjectChip
+        },
         methods: {
             /**
              * Prepare the component (Vue 2.x).

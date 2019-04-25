@@ -4013,26 +4013,7 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../store.js */ "./resources/js/store.js");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+/* harmony import */ var _ProjectChip__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../ProjectChip */ "./resources/js/components/ProjectChip.vue");
 //
 //
 //
@@ -4069,13 +4050,25 @@ __webpack_require__.r(__webpack_exports__);
 
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   /*
    * The component's data.
    */
   data: function data() {
     return {
-      tokens: []
+      tokens: [],
+      theInfos: [],
+      headers: [{
+        text: 'Name',
+        value: 'client.name'
+      }, {
+        text: 'Scopes',
+        value: 'scopes'
+      }, {
+        text: '',
+        value: ''
+      }]
     };
   },
 
@@ -4085,12 +4078,38 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
   ready: function ready() {
     this.prepareComponent();
   },
+  watch: {
+    projects: function projects(val) {
+      this.theInfos = [];
+      console.log("projects changed", val);
+      var that = this;
+      this.tokens.forEach(function (item) {
+        console.log("go through tokens.. ", that.projectByClientId(item.client.id));
+        that.theInfos[item.client.id] = that.projectByClientId(item.client.id);
+      });
+    },
+    tokens: function tokens(val) {
+      this.theInfos = [];
+      var that = this;
+      this.tokens.forEach(function (item) {
+        that.theInfos[item.client.id] = that.projectByClientId(item.client.id);
+      });
+    }
+  },
+  computed: {
+    projects: function projects() {
+      return _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.projects;
+    }
+  },
 
   /**
    * Prepare the component (Vue 2.x).
    */
   mounted: function mounted() {
     this.prepareComponent();
+  },
+  components: {
+    ProjectChip: _ProjectChip__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   methods: {
     /**
@@ -48743,101 +48762,83 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", [
     _vm.tokens.length > 0
-      ? _c("div", [
-          _c("div", { staticClass: "card card-default" }, [
-            _c("div", { staticClass: "card-header" }, [
-              _vm._v("Authorized Applications")
+      ? _c(
+          "div",
+          [
+            _c("h3", { staticClass: "text-center" }, [
+              _vm._v(_vm._s(_vm.$t("Manage")) + " " + _vm._s(_vm.$t("apps")))
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _c("table", { staticClass: "table table-borderless mb-0" }, [
-                _vm._m(0),
-                _vm._v(" "),
-                _c(
-                  "tbody",
-                  _vm._l(_vm.tokens, function(token) {
-                    return _c("tr", [
-                      _c(
-                        "td",
-                        { staticStyle: { "vertical-align": "middle" } },
-                        [
-                          _c(
-                            "a",
-                            {
-                              attrs: {
-                                href: _vm.projectByClientId(token.client.id).id
-                              }
-                            },
-                            [_vm._v(_vm._s(token.client.name))]
-                          )
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "td",
-                        { staticStyle: { "vertical-align": "middle" } },
-                        [
-                          token.scopes.length > 0
-                            ? _c("span", [
-                                _vm._v(
-                                  "\n                                    " +
-                                    _vm._s(token.scopes.join(", ")) +
-                                    "\n                                "
-                                )
-                              ])
-                            : _vm._e()
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "td",
-                        { staticStyle: { "vertical-align": "middle" } },
-                        [
-                          _c(
-                            "a",
-                            {
-                              staticClass: "action-link text-danger",
-                              on: {
-                                click: function($event) {
-                                  return _vm.revoke(token)
+            _c("v-data-table", {
+              staticClass: "elevation-1",
+              attrs: { headers: _vm.headers, items: _vm.tokens },
+              scopedSlots: _vm._u(
+                [
+                  {
+                    key: "items",
+                    fn: function(props) {
+                      return [
+                        _vm.theInfos[props.item.client.id] != undefined
+                          ? _c(
+                              "td",
+                              {},
+                              [
+                                _c("ProjectChip", {
+                                  attrs: {
+                                    item: _vm.theInfos[props.item.client.id]
+                                  }
+                                })
+                              ],
+                              1
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.theInfos[props.item.client.id] == undefined
+                          ? _c("td", {}, [
+                              _vm._v(" " + _vm._s(props.item.client.name))
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c("td", {}, [
+                          _vm._v(_vm._s(props.item.scopes.join(", ")))
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "td",
+                          {},
+                          [
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: { icon: "" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.revoke(props.item)
+                                  }
                                 }
-                              }
-                            },
-                            [
-                              _vm._v(
-                                "\n                                    Revoke\n                                "
-                              )
-                            ]
-                          )
-                        ]
-                      )
-                    ])
-                  }),
-                  0
-                )
-              ])
-            ])
-          ])
-        ])
+                              },
+                              [_c("v-icon", [_vm._v("delete")])],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ]
+                    }
+                  }
+                ],
+                null,
+                false,
+                414007048
+              )
+            })
+          ],
+          1
+        )
       : _vm._e()
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("Name")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Scopes")]),
-        _vm._v(" "),
-        _c("th")
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
