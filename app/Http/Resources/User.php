@@ -7,13 +7,13 @@ use Auth;
 
 class User extends JsonResource
 {
-    private function getUserIds($users,$rid=true){
+    private function getUserUsernames($users,$rid=true){
       $ids = array();
       foreach($users as $u){
         if($u->recipient_id!=Auth::id()){
-          array_push($ids,$u->recipient_id);
+          array_push($ids,User::find($u->recipient_id)->username);
         } else {
-          array_push($ids,$u->sender_id);
+          array_push($ids,User::find($u->sender_id)->username);
         }
       }
       return $ids;
@@ -80,11 +80,11 @@ class User extends JsonResource
           'allow_username_change' => $this->allow_username_change,
           'email' => $email,
           'friends' => [
-            'pending' => $this->getUserIds($this->getPendingFriendships()),
-            'accepted' => $this->getUserIds($this->getAcceptedFriendships()),
-            'denied' => $this->getUserIds($this->getDeniedFriendships()),
-            'blocked' => $this->getUserIds($this->getBlockedFriendships()),
-            'pendingRequests' => $this->getUserIds($this->getFriendRequests(),false),
+            'pending' => $this->getUserUsernames($this->getPendingFriendships()),
+            'accepted' => $this->getUserUsernames($this->getAcceptedFriendships()),
+            'denied' => $this->getUserUsernames($this->getDeniedFriendships()),
+            'blocked' => $this->getUserUsernames($this->getBlockedFriendships()),
+            'pendingRequests' => $this->getUserUsernames($this->getFriendRequests(),false),
           ],
           'created_at' => $this->created_at,
           'updated_at' => $this->updated_at,

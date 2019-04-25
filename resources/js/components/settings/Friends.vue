@@ -12,47 +12,49 @@
       </router-link>
     <v-btn @click="changeFriend('/internal-api/friends/acceptRequest', toUser(item).id)" >Accept request</v-btn>
       <v-btn @click="changeFriend('/internal-api/friends/denyRequest', toUser(item).id)" >Deny request</v-btn>
-      <v-btn @click="changeFriend('/internal-api/friends/block', currentuser.id)" >Block</v-btn>
+      <v-btn @click="changeFriend('/internal-api/friends/block', toUser(item).id)" >Block</v-btn>
     </div>
     <h1>Open requests by myself</h1>
     <div v-for="item in currentuser.friends.pending">
       <router-link :to="'/profile/'+toUser(item).id">
         <v-chip>
           <v-avatar>
-            <img :src="toUser(item).avatar" alt="trevor">
+            <img :src="toUser(item).avatar" :alt="toUser(item).name">
           </v-avatar>
           {{ toUser(item).username }}
         </v-chip>
       </router-link>
+      <v-btn @click="changeFriend('/internal-api/friends/block', toUser(item).id)" >Block</v-btn>
+      <v-btn @click="changeFriend('/internal-api/friends/unfriend', toUser(item).id)" >Unfriend</v-btn>
     </div>
     <h1>Blocked by myself</h1>
     <div v-for="item in currentuser.friends.blocked">
       <router-link :to="'/profile/'+toUser(item).id">
         <v-chip>
           <v-avatar>
-            <img :src="toUser(item).avatar" alt="trevor">
+            <img :src="toUser(item).avatar" :alt="toUser(item).name">
           </v-avatar>
           {{ toUser(item).username }}
         </v-chip>
       </router-link>
-      <v-btn @click="changeFriend('/internal-api/friends/unblock', currentuser.id)" >Unblock</v-btn>
+      <v-btn @click="changeFriend('/internal-api/friends/unblock', toUser(item).id)" >Unblock</v-btn>
     </div>
     <h1>Accepted by myself</h1>
     <div v-for="item in currentuser.friends.accepted">
       <router-link :to="'/profile/'+toUser(item).id">
         <v-chip>
           <v-avatar>
-            <img :src="toUser(item).avatar" alt="trevor">
+            <img :src="toUser(item).avatar" :alt="toUser(item).name">
           </v-avatar>
           {{ toUser(item).username }}
         </v-chip>
       </router-link>
-      <v-btn @click="changeFriend('/internal-api/friends/unfriend', currentuser.id)" >Unfriend</v-btn>
+      <v-btn @click="changeFriend('/internal-api/friends/unfriend', toUser(item).id)" >Unfriend</v-btn>
     </div>
     <h1>Denied by myself</h1>
     <div v-for="item in currentuser.friends.denied">
       <router-link :to="'/profile/'+toUser(item).id" >{{ toUser(item).username }}</router-link>
-      <v-btn @click="changeFriend('/internal-api/friends/unblock', currentuser.id)" >Unblock</v-btn>
+      <v-btn @click="changeFriend('/internal-api/friends/unblock', toUser(item).id)" >Unblock</v-btn>
     </div>
 </div>
 </template>
@@ -115,7 +117,7 @@
 
     methods: {
       toUser(str) {
-        return store.getters.getUserById(str);
+        return store.getters.getUserByUsername(str);
       },
       changeFriend(url, uid){
         axios.post(url,{fid:uid,csrf:this.csrf})  

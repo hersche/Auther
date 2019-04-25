@@ -2400,6 +2400,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
 
@@ -2409,38 +2410,40 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
   components: {
     VueMarkdown: vue_markdown__WEBPACK_IMPORTED_MODULE_1___default.a
   },
-  mounted: function mounted() {//eventBus.$emit("loadUserVideos",this.currentuser.id)
+  mounted: function mounted() {//eventBus.$emit("loadUserVideos",this.profileUser.id)
   },
   computed: {
     csrf: function csrf() {
       return _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getCSRF();
     },
-    currentuser: function currentuser() {
+    profileUser: function profileUser() {
       var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(Number(this.$route.params.profileId));
 
       if (u != undefined) {}
 
       return u;
     },
-    ownuser: function ownuser() {
+    currentuser: function currentuser() {
       var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(Number(_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId));
       return u;
     },
     friendstatus: function friendstatus() {
       var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(Number(_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId));
+      var pu = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(Number(this.$route.params.profileId));
 
       if (u.friends != undefined) {
         console.log("pending", u.friends.pending);
 
-        if (u.friends.accepted.indexOf(Number(this.$route.params.profileId)) > -1) {
+        if (u.friends.accepted.indexOf(pu.username) > -1) {
           return 1;
-        } else if (u.friends.pending.indexOf(Number(this.$route.params.profileId)) > -1) {
+        } else if (u.friends.pending.indexOf(pu.username) > -1) {
+          console.log("return 2");
           return 2;
-        } else if (u.friends.denied.indexOf(Number(this.$route.params.profileId)) > -1) {
+        } else if (u.friends.denied.indexOf(pu.username) > -1) {
           return 3;
-        } else if (u.friends.blocked.indexOf(Number(this.$route.params.profileId)) > -1) {
+        } else if (u.friends.blocked.indexOf(pu.username) > -1) {
           return 4;
-        } else if (u.friends.pendingRequests.indexOf(Number(this.$route.params.profileId)) > -1) {
+        } else if (u.friends.pendingRequests.indexOf(pu.username) > -1) {
           return 5;
         }
       }
@@ -5160,6 +5163,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 
@@ -5218,7 +5223,7 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
   },
   methods: {
     toUser: function toUser(str) {
-      return _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(str);
+      return _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserByUsername(str);
     },
     changeFriend: function changeFriend(url, uid) {
       axios.post(url, {
@@ -46240,7 +46245,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm.currentuser != undefined
+  return _vm.profileUser != undefined
     ? _c("div", [
         _c(
           "div",
@@ -46264,14 +46269,14 @@ var render = function() {
                 staticClass: "text-center",
                 style:
                   "background-image:url(" +
-                  _vm.currentuser.background +
+                  _vm.profileUser.background +
                   "); background-position: center; background-size: cover;",
                 attrs: { id: "profileheader" }
               },
               [
                 _c("img", {
                   staticClass: "pl-2 pt-1 pb-1",
-                  attrs: { src: _vm.currentuser.avatar }
+                  attrs: { src: _vm.profileUser.avatar }
                 }),
                 _vm._v(" "),
                 _c(
@@ -46289,7 +46294,7 @@ var render = function() {
                       },
                       [
                         _c("v-subheader", { attrs: { dark: "" } }, [
-                          _vm._v(_vm._s(_vm.currentuser.name))
+                          _vm._v(_vm._s(_vm.profileUser.name))
                         ])
                       ],
                       1
@@ -46314,7 +46319,7 @@ var render = function() {
                       },
                       [
                         _c("v-subheader", [
-                          _vm._v("(" + _vm._s(_vm.currentuser.username) + ")")
+                          _vm._v("(" + _vm._s(_vm.profileUser.username) + ")")
                         ])
                       ],
                       1
@@ -46323,7 +46328,7 @@ var render = function() {
                   1
                 ),
                 _vm._v(" "),
-                _vm.ownuser.id == _vm.currentuser.id
+                _vm.currentuser.id == _vm.profileUser.id
                   ? _c(
                       "div",
                       [
@@ -46348,9 +46353,9 @@ var render = function() {
             _vm._v(" "),
             _c("div"),
             _vm._v(" "),
-            _c("VueMarkdown", { attrs: { source: _vm.currentuser.bio } }),
+            _c("VueMarkdown", { attrs: { source: _vm.profileUser.bio } }),
             _vm._v(" "),
-            _vm.ownuser.id != _vm.currentuser.id
+            _vm.currentuser.id != _vm.profileUser.id
               ? _c("div", [
                   _vm.friendstatus == 0
                     ? _c(
@@ -46364,7 +46369,7 @@ var render = function() {
                                 click: function($event) {
                                   return _vm.changeFriend(
                                     "/internal-api/friends/friendRequest",
-                                    _vm.currentuser.id
+                                    _vm.profileUser.id
                                   )
                                 }
                               }
@@ -46379,7 +46384,7 @@ var render = function() {
                                 click: function($event) {
                                   return _vm.changeFriend(
                                     "/internal-api/friends/block",
-                                    _vm.currentuser.id
+                                    _vm.profileUser.id
                                   )
                                 }
                               }
@@ -46403,7 +46408,7 @@ var render = function() {
                                 click: function($event) {
                                   return _vm.changeFriend(
                                     "/internal-api/friends/block",
-                                    _vm.currentuser.id
+                                    _vm.profileUser.id
                                   )
                                 }
                               }
@@ -46427,12 +46432,27 @@ var render = function() {
                                 click: function($event) {
                                   return _vm.changeFriend(
                                     "/internal-api/friends/block",
-                                    _vm.currentuser.id
+                                    _vm.profileUser.id
                                   )
                                 }
                               }
                             },
                             [_vm._v("Block")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-btn",
+                            {
+                              on: {
+                                click: function($event) {
+                                  return _vm.changeFriend(
+                                    "/internal-api/friends/unfriend",
+                                    _vm.profileUser.id
+                                  )
+                                }
+                              }
+                            },
+                            [_vm._v("Unfriend")]
                           )
                         ],
                         1
@@ -46451,7 +46471,7 @@ var render = function() {
                                 click: function($event) {
                                   return _vm.changeFriend(
                                     "/internal-api/friends/acceptRequest",
-                                    _vm.currentuser.id
+                                    _vm.profileUser.id
                                   )
                                 }
                               }
@@ -46475,7 +46495,7 @@ var render = function() {
                                 click: function($event) {
                                   return _vm.changeFriend(
                                     "/internal-api/friends/unblock",
-                                    _vm.currentuser.id
+                                    _vm.profileUser.id
                                   )
                                 }
                               }
@@ -46499,7 +46519,7 @@ var render = function() {
                                 click: function($event) {
                                   return _vm.changeFriend(
                                     "/internal-api/friends/acceptRequest",
-                                    _vm.currentuser.id
+                                    _vm.profileUser.id
                                   )
                                 }
                               }
@@ -50208,9 +50228,9 @@ var render = function() {
                   {
                     on: {
                       click: function($event) {
-                        return _vm.changeFriend(
+                        _vm.changeFriend(
                           "/internal-api/friends/block",
-                          _vm.currentuser.id
+                          _vm.toUser(item).id
                         )
                       }
                     }
@@ -50239,7 +50259,7 @@ var render = function() {
                           _c("img", {
                             attrs: {
                               src: _vm.toUser(item).avatar,
-                              alt: "trevor"
+                              alt: _vm.toUser(item).name
                             }
                           })
                         ]),
@@ -50253,6 +50273,36 @@ var render = function() {
                     )
                   ],
                   1
+                ),
+                _vm._v(" "),
+                _c(
+                  "v-btn",
+                  {
+                    on: {
+                      click: function($event) {
+                        _vm.changeFriend(
+                          "/internal-api/friends/block",
+                          _vm.toUser(item).id
+                        )
+                      }
+                    }
+                  },
+                  [_vm._v("Block")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "v-btn",
+                  {
+                    on: {
+                      click: function($event) {
+                        _vm.changeFriend(
+                          "/internal-api/friends/unfriend",
+                          _vm.toUser(item).id
+                        )
+                      }
+                    }
+                  },
+                  [_vm._v("Unfriend")]
                 )
               ],
               1
@@ -50276,7 +50326,7 @@ var render = function() {
                           _c("img", {
                             attrs: {
                               src: _vm.toUser(item).avatar,
-                              alt: "trevor"
+                              alt: _vm.toUser(item).name
                             }
                           })
                         ]),
@@ -50297,9 +50347,9 @@ var render = function() {
                   {
                     on: {
                       click: function($event) {
-                        return _vm.changeFriend(
+                        _vm.changeFriend(
                           "/internal-api/friends/unblock",
-                          _vm.currentuser.id
+                          _vm.toUser(item).id
                         )
                       }
                     }
@@ -50328,7 +50378,7 @@ var render = function() {
                           _c("img", {
                             attrs: {
                               src: _vm.toUser(item).avatar,
-                              alt: "trevor"
+                              alt: _vm.toUser(item).name
                             }
                           })
                         ]),
@@ -50349,9 +50399,9 @@ var render = function() {
                   {
                     on: {
                       click: function($event) {
-                        return _vm.changeFriend(
+                        _vm.changeFriend(
                           "/internal-api/friends/unfriend",
-                          _vm.currentuser.id
+                          _vm.toUser(item).id
                         )
                       }
                     }
@@ -50380,9 +50430,9 @@ var render = function() {
                   {
                     on: {
                       click: function($event) {
-                        return _vm.changeFriend(
+                        _vm.changeFriend(
                           "/internal-api/friends/unblock",
-                          _vm.currentuser.id
+                          _vm.toUser(item).id
                         )
                       }
                     }
