@@ -2457,7 +2457,7 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       console.log("change friend fired??");
       axios.post(url, {
         fid: uid,
-        csrf: this.csrf
+        _token: this.csrf
       }).then(function (response) {
         _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].commit("setUsers", JSON.parse(response.request.response).data); //   console.log(JSON.parse(response.request.response).data);
         //   return response.data
@@ -5178,33 +5178,9 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
   components: {
     MarkdownCreator: _MarkdownCreator__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
-  mounted: function mounted() {//  this.$refs.croppieBackgroundRef.bind({
-    //  url: '/img/404/background.png',
-    //})
-  },
+  mounted: function mounted() {},
   updated: function updated() {},
   computed: {
-    enableRefreshLabel: function enableRefreshLabel() {
-      if (this.twofactor.enabled == '1' || this.twofactor.url != '') {
-        return "Refresh";
-      } else {
-        return "Enable";
-      }
-    },
-    twofactorstatenr: function twofactorstatenr() {
-      console.log("on nr ", this.twofactor);
-
-      if (this.twofactor.enabled == '1' && this.twofactor.url != '' && this.twofactor.url != undefined) {
-        return 2;
-      } else if (this.twofactor.enabled == '0' && this.twofactor.url != '' && this.twofactor.url != undefined) {
-        return 1;
-      } else {
-        return 0;
-      }
-    },
-    twofactor: function twofactor() {
-      return _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.twofactor;
-    },
     loggeduserid: function loggeduserid() {
       return _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId;
     },
@@ -5213,11 +5189,6 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
     },
     currentuser: function currentuser() {
       var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId);
-
-      if (u != undefined) {
-        this.tmpBio = u.bio;
-      }
-
       return u;
     }
   },
@@ -5228,98 +5199,16 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
     changeFriend: function changeFriend(url, uid) {
       axios.post(url, {
         fid: uid,
-        csrf: this.csrf
+        _token: this.csrf
       }).then(function (response) {
         _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].commit("setUsers", JSON.parse(response.request.response).data);
       }).catch(function (error) {
         console.log(error);
       });
-    },
-    changePassword: function changePassword() {
-      axios.post("/internal-api/settings/password", {
-        "oldpass": this.oldPass,
-        "newpass": this.newPass,
-        "newpass2": this.newPass2
-      }).then(function (response) {
-        //store.commit("setTwofactor",JSON.parse(response.request.response).data)
-        console.log("get twofactor", JSON.parse(response.request.response).data);
-      }).catch(function (error) {
-        console.log(error);
-      });
-    },
-    testTwofactor: function testTwofactor() {
-      var that = this;
-      axios.post("/internal-api/settings/2faTest", {
-        "one_time_test_password": this.checkTwofactorCode,
-        "userpass": this.userpassword
-      }).then(function (response) {
-        if (response.request.response != '{"twofactor":testinvalid}') {
-          that.userpassword = '';
-          _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].commit("setTwofactor", JSON.parse(response.request.response).data);
-          console.log("refresh twofactor", JSON.parse(response.request.response).data);
-          _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$emit('alert', "2-factor auth passed");
-        }
-      }).catch(function (error) {
-        _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$emit('alert', "2-factor test failed");
-        console.log(error);
-      });
-    },
-    refreshTwofactor: function refreshTwofactor() {
-      axios.post("/internal-api/settings/refresh/twofactor", {
-        "userpass": this.userpassword
-      }).then(function (response) {
-        _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].commit("setTwofactor", JSON.parse(response.request.response).data);
-        console.log("refresh twofactor", JSON.parse(response.request.response).data);
-        _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$emit('alert', "2-factor refresh passed");
-      }).catch(function (error) {
-        console.log(error);
-      });
-    },
-    disableTwofactor: function disableTwofactor() {
-      var that = this;
-      axios.post("/internal-api/settings/disable/twofactor", {
-        "userpass": this.userpassword
-      }).then(function (response) {
-        that.userpassword = '';
-        _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].commit("setTwofactor", JSON.parse(response.request.response).data);
-        console.log("disable twofactor", JSON.parse(response.request.response).data);
-      }).catch(function (error) {
-        console.log(error);
-      });
-    },
-    submitAction: function submitAction() {
-      var that = this;
-      $.ajax({
-        url: '/internal-api/profiles/edit/' + this.currentuser.id,
-        type: 'POST',
-        data: new FormData($("#theForm")[0]),
-        cache: false,
-        contentType: false,
-        processData: false,
-        complete: function complete(res) {
-          if (res.status == 200) {} //eventBus.$emit('userEdited',that.currentuser.id)
-
-        }
-      });
-      return false;
     }
   },
   data: function data() {
-    return {
-      mediaType: '',
-      checkTwofactorCode: '',
-      public: false,
-      editpicloaded: false,
-      showdismissiblealert: false,
-      avatarCropped: null,
-      tmpBio: '',
-      showUserpassword: false,
-      userpassword: '',
-      showOldPass: false,
-      showNewPass: false,
-      showNewPass2: false,
-      backgroundCropped: null
-    };
+    return {};
   }
 });
 

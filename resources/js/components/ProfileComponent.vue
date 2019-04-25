@@ -94,7 +94,7 @@ const axios = require('axios');
   methods:{
     changeFriend(url, uid){
       console.log("change friend fired??")
-      axios.post(url,{fid:uid,csrf:this.csrf})  
+      axios.post(url,{fid:uid,_token:this.csrf})  
       .then(function (response) {
         store.commit("setUsers",JSON.parse(response.request.response).data)
     //   console.log(JSON.parse(response.request.response).data);
