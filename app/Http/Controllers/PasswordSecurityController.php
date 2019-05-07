@@ -158,7 +158,21 @@ public function my2faverify(Request $request){
   $user = User::find($request->session()->get('user-id'));
   $google2fa = app('pragmarx.google2fa');
   $valid = $google2fa->verifyKey($user->passwordSecurity->secret, $request->input("one_time_password"));
-if ($valid) {
+  if ($valid) {
+    if(!empty($request->session()->get('auth.social_provider'))){
+      //auth.social_local_user_id
+      $social = SocialAccount::find([
+        'user_id' => $request->session()->get('auth.social_local_user_id'),
+        'provider' => $request->session()->get('auth.social_provider')
+      ]);
+      if(!empty($social)){
+        $social->verified=true;
+        $social->enabled=true;
+        $social->save();
+        $request->session()->put('auth.social_local_user_id',0);
+        $request->session()->put('auth.social_provider',0);
+      }
+  }
   Auth::loginUsingId($request->session()->get('user-id'));
   $request->session()->put('user-id',0);
   if(!empty($request->input("ajaxLogin"))){

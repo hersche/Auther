@@ -69,8 +69,8 @@
                         <div class="form-group row mb-0">
     <div class="col-md-8 offset-md-4">
       @if (config("app.googleauthenabled")=="1")
-        <a href="{{route('oauth.login','google')}}" class="btn btn-outline-danger">
-            Log in with Google
+        <a href="{{route('oauth.login','google')}}">
+            <img src="/public/loginwith/google/btn_google_signin_dark_normal_web.png" />
         </a>
       @endif
       @if (config("app.githubauthenabled")=="1")

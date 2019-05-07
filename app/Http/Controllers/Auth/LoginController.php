@@ -120,7 +120,24 @@ class LoginController extends Controller
           if(!empty($request->input("ajaxLogin"))){
             $user = Auth::user();
           if (is_null($user->passwordSecurity)||$user->passwordSecurity->enabled==false) {
-          
+            
+            // after we checked 2factor is disabled here
+            // we check if it's a recheck for socialite-logins on existing user.
+            if(!empty($request->session()->get('auth.social_provider'))){
+              //auth.social_local_user_id
+              $social = SocialAccount::find([
+                  'user_id' => $request->session()->get('auth.social_local_user_id'),
+                  'provider' => $request->session()->get('auth.social_provider')
+              ]);
+              if(!empty($social)){
+                $social->verified=true;
+                $social->enabled=true;
+                $social->save();
+                $request->session()->put('auth.social_local_user_id',0);
+                $request->session()->put('auth.social_provider',0);
+              }
+            }
+            
             return new UserRessource(Auth::user());
           } else {
             Auth::logout();

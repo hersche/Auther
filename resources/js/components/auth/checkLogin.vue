@@ -1,6 +1,7 @@
 <template>
   <div class="">
     <h1 class="text-center">{{ $t('Login') }}</h1>
+    <p>This profile already exists. Please enter your login-details once to enable the provider</p>
       <v-form ref="form" id="loginForm" v-model="valid" lazy-validation>
         <input type="hidden" name="_token" :value="csrf">
         <input type="hidden" name="ajaxLogin" value="1">
@@ -19,39 +20,9 @@
           counter
           @click:append="showPassword = !showPassword"
           ></v-text-field>
-        <v-checkbox
-          v-model="rememberMe"
-          label="Remember me"
-          name="remember"
-          required
-          ></v-checkbox>
       </v-form>
       <v-btn @click="submitLogin()">
         {{ $t('Login') }}
-      </v-btn>
-      <a class="btn btn-link" href="">
-        Forgot Your Password?
-      </a>                    
-      <a href="/oauth/google" v-if="mixconfig.MIX_GOOGLE_AUTH_ENABLED=='1'">
-        <img src="/public/loginwith/google/btn_google_signin_dark_normal_web.png" />
-      </a>
-      <v-btn href="/oauth/github" v-if="mixconfig.MIX_GITHUB_AUTH_ENABLED=='1'">
-        {{ $t('Login') }} {{ $t('with') }} Github
-      </v-btn>
-      <v-btn href="/oauth/gitlab" v-if="mixconfig.MIX_GITLAB_AUTH_ENABLED=='1'">
-        {{ $t('Login') }} {{ $t('with') }} Google
-      </v-btn>
-      <v-btn href="/oauth/facebook" v-if="mixconfig.MIX_FACEBOOK_AUTH_ENABLED=='1'">
-        {{ $t('Login') }} {{ $t('with') }} Facebook
-      </v-btn>
-      <v-btn href="/oauth/twitter" v-if="mixconfig.MIX_TWITTER_AUTH_ENABLED=='1'">
-        {{ $t('Login') }} {{ $t('with') }} Twitter
-      </v-btn>
-      <v-btn href="/oauth/bitbucket" v-if="mixconfig.MIX_BITBUCKET_AUTH_ENABLED=='1'">
-        {{ $t('Login') }} {{ $t('with') }} Bitbucket
-      </v-btn>
-      <v-btn href="/oauth/linkedin" v-if="mixconfig.MIX_BITBUCKET_AUTH_ENABLED=='1'">
-        {{ $t('Login') }} {{ $t('with') }} Bitbucket
       </v-btn>
     </div>
 </template>

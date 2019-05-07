@@ -48,7 +48,11 @@ class SocialiteController extends Controller
                 ->with('error', __('Unable to authenticate. Please try again.'));
         }
         DB::beginTransaction();
-        $user = $this->findOrCreateUser($provider, $providerUser);
+        $userAndSocial = $this->findOrCreateUser($provider, $providerUser);
+        $user = $userAndSocial[0];
+        $social = $userAndSocial[1];
+        if($social->enabled){
+          if($social->verified){
         Auth::login($user, true);
         // This session variable can help to determine if user is logged-in via socialite
         session()->put([
@@ -63,6 +67,21 @@ class SocialiteController extends Controller
           //return $this->authenticated($user)
           //  ?: redirect()->intended($this->redirectPath());
           }
+        } else {
+          // social is not verfied yet, maybe it's a email-based attack?
+          // check by a login, to enable it!
+          session()->put([
+              'auth.social_provider' => $social->provider,
+              'auth.social_local_user_id' => $user->id,
+          ]);
+          return redirect('/#/settings/checkLogin');
+        }
+          
+          
+        } else {
+          // this login-method is disabled by the user.
+          return redirect('/notallowedloginmethod');
+        }
     }
     
     /**
@@ -78,7 +97,7 @@ class SocialiteController extends Controller
             'provider_user_id' => $providerUser->getId(),
             'provider' => $providerName
         ]);
-        if ($social->exists) {
+        if ($social->exists&&$social->verified&&$social->enabled) {
             return $social->user;
         }
         $user = User::firstOrNew([
@@ -91,6 +110,12 @@ class SocialiteController extends Controller
             $user->avatar = $providerUser->getAvatar();
             $user->password = bcrypt(str_random(30));
             $user->save();
+            
+            // if user doesn't exist yet, social need to be fine.
+            // this protection is meant mainly for existing users
+            $social->enabled=true;
+            $social->verified=true;
+            //$social->save();
             if(config("app.userneedverify")=="0"){
               $role = config('roles.models.role')::where('slug', '=', 'user')->first();
               $user->attachRole($role);
@@ -110,7 +135,7 @@ class SocialiteController extends Controller
         }
         $social->user()->associate($user);
         $social->save();
-        return $user;
+        return [$user,$social];
     }
     /**
      * The user has been authenticated.

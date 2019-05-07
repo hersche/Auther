@@ -18,6 +18,8 @@ class CreateSocialAccountsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('provider_user_id');
             $table->string('provider');
+            $table->boolean('enabled')->default(true);
+            $table->boolean('verified')->default(false);
             $table->unique([ 'provider_user_id','provider' ]);
             $table->timestamps();
         });

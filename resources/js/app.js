@@ -54,6 +54,9 @@
     var friendsComp = Vue.component('friends', require("./components/settings/Friends.vue").default);
     var passwordComp = Vue.component('friends', require("./components/settings/password.vue").default);
     var loginComp = Vue.component('login', require("./components/auth/Login.vue").default);
+    
+        var checkLoginComp = Vue.component('checklogin', require("./components/auth/checkLogin.vue").default);
+    
     var faLoginComp = Vue.component('twofaLogin', require("./components/auth/twofaLogin.vue").default);
     var twofaSettings = Vue.component('twofasettings', require("./components/settings/twofa.vue").default);
     var registerComp = Vue.component('register', require("./components/auth/Register.vue").default);
@@ -90,6 +93,7 @@
    { path: '/profile/:profileId', component: profileComp },
    { path: '/search/:term', component: searchComp },
    { path: '/login', component: loginComp },
+   { path: '/checkLogin', component: checkLoginComp },
    { path: '/admin/users', component: useradminComp },
    { path: '/admin/projects', component: projects },
    { path: '/admin/roles', component: roles },
