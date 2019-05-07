@@ -29,7 +29,7 @@
       <v-btn @click="submitLogin()">
         {{ $t('Login') }}
       </v-btn>
-      <a class="btn btn-link" href="">
+      <a class="btn btn-link" href="/password/reset">
         Forgot Your Password?
       </a>                    
       <a href="/oauth/google" v-if="mixconfig.MIX_GOOGLE_AUTH_ENABLED=='1'">

@@ -10,14 +10,14 @@
     <title>{{ config('app.name', 'Auther') }}</title>
 
     <!-- Scripts -->
-  <!--  <script src="{{ asset('js/app.js') }}" defer></script> -->
+    <script src="/js/bootstrap.js" defer></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
 
     <!-- Styles -->
-    <link href="css/app.css" rel="stylesheet"> 
+    <link href="/css/app.css" rel="stylesheet"> 
 </head>
 <body>
     <div id="app">

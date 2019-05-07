@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use jeremykenedy\LaravelRoles\Traits\HasRoleAndPermission;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\FriendableTempFix;
+use App\Notifications\ResetPasswordNotification;
 //use Hootlex\Friendships\Traits\Friendable;
 class User extends Authenticatable
 {
@@ -31,6 +32,11 @@ class User extends Authenticatable
     public function socialAccounts()
     {
         return $this->hasMany(SocialAccount::class);
+    }
+    
+    public function sendPasswordResetNotification($token)
+    {
+      $this->notify(new ResetPasswordNotification($token));
     }
     /**
      * The attributes that should be hidden for arrays.

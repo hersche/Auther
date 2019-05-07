@@ -53,34 +53,32 @@ class SocialiteController extends Controller
         $social = $userAndSocial[1];
         if($social->enabled){
           if($social->verified){
-        Auth::login($user, true);
-        // This session variable can help to determine if user is logged-in via socialite
-        session()->put([
-            'auth.social_id' => $providerUser->getId()
-        ]);
-        DB::commit();
-        if($user->allow_username_change){
-          return redirect('/#/settings/editusername');
-        } else {
-          return redirect('/');
-          // The below was failing and this->authenticated is empty?
-          //return $this->authenticated($user)
-          //  ?: redirect()->intended($this->redirectPath());
-          }
-        } else {
-          // social is not verfied yet, maybe it's a email-based attack?
-          // check by a login, to enable it!
-          session()->put([
+            Auth::login($user, true);
+            // This session variable can help to determine if user is logged-in via socialite
+            session()->put([
+              'auth.social_id' => $providerUser->getId()
+            ]);
+            DB::commit();
+            if($user->allow_username_change){
+              return redirect('/#/settings/editusername');
+            } else {
+              return redirect('/');
+              // The below was failing and this->authenticated is empty?
+              //return $this->authenticated($user)
+              //  ?: redirect()->intended($this->redirectPath());
+            }
+          } else {
+            // social is not verfied yet, maybe it's a email-based attack?
+            // check by a login, to enable it!
+            session()->put([
               'auth.social_provider' => $social->provider,
               'auth.social_local_user_id' => $user->id,
-          ]);
-          return redirect('/#/settings/checkLogin');
-        }
-          
-          
+            ]);
+            return redirect('/#/settings/checkLogin');
+          }
         } else {
           // this login-method is disabled by the user.
-          return redirect('/notallowedloginmethod');
+          return redirect("/#/notallowedloginmethod/".$social->provider);
         }
     }
     
@@ -112,10 +110,9 @@ class SocialiteController extends Controller
             $user->save();
             
             // if user doesn't exist yet, social need to be fine.
-            // this protection is meant mainly for existing users
+            // this protection is meaned for existing users
             $social->enabled=true;
             $social->verified=true;
-            //$social->save();
             if(config("app.userneedverify")=="0"){
               $role = config('roles.models.role')::where('slug', '=', 'user')->first();
               $user->attachRole($role);
