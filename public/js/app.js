@@ -3792,6 +3792,12 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
             _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].commit("addUser", res.responseJSON.data);
             _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].commit("setLoginId", res.responseJSON.data.id);
             that.$router.push("/");
+          }
+
+          if (res.status == 200) {
+            if (res.responseJSON.data.msg == "needemailverify") {
+              window.location.href = "/email/resend";
+            }
           } //eventBus.$emit('login',res.responseJSON.data);
 
         }
@@ -4059,7 +4065,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -4094,6 +4099,8 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
         console.log("avatar-change!!!!", that.$refs.croppieRef);
         that.$refs.croppieRef.bind({
           url: e.target.result
+        }).then(function () {
+          that.$refs.croppieRef.setZoom(0);
         });
       };
 
@@ -4101,7 +4108,7 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
     },
     // CALBACK USAGE
     result: function result(output) {
-      console.log("result");
+      console.log("result", this.name);
       this.croppedBase64 = output;
     },
     update: function update(val) {
@@ -9139,6 +9146,36 @@ if ( true && module.exports) {
 
 /***/ }),
 
+/***/ "./node_modules/croppie/croppie.css":
+/*!******************************************!*\
+  !*** ./node_modules/croppie/croppie.css ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../css-loader/dist/cjs.js??ref--6-1!../postcss-loader/src??ref--6-2!./croppie.css */ "./node_modules/css-loader/dist/cjs.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/croppie/croppie.css");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/croppie/croppie.js":
 /*!*****************************************!*\
   !*** ./node_modules/croppie/croppie.js ***!
@@ -10799,6 +10836,21 @@ exports.push([module.i, ".vue-treeselect__multi-value {\n  display: inline-flex;
 exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
 exports.push([module.i, ".con-expand-users .con-btns-user {\n  display: flex;\n  padding: 10px;\n  padding-bottom: 0px;\n  align-items: center;\n  justify-content: space-between;\n}\n.con-expand-users .con-btns-user .con-userx {\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n}\n.con-expand-users .list-icon i {\n  font-size: 0.9rem !important;\n}\n", ""]);
+
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/croppie/croppie.css":
+/*!**************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??ref--6-1!./node_modules/postcss-loader/src??ref--6-2!./node_modules/croppie/croppie.css ***!
+  \**************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
+// Module
+exports.push([module.i, ".croppie-container {\n    width: 100%;\n    height: 100%;\n}\n\n.croppie-container .cr-image {\n    z-index: -1;\n    position: absolute;\n    top: 0;\n    left: 0;\n    -webkit-transform-origin: 0 0;\n            transform-origin: 0 0;\n    max-height: none;\n    max-width: none;\n}\n\n.croppie-container .cr-boundary {\n    position: relative;\n    overflow: hidden;\n    margin: 0 auto;\n    z-index: 1;\n    width: 100%;\n    height: 100%;\n}\n\n.croppie-container .cr-viewport,\n.croppie-container .cr-resizer {\n    position: absolute;\n    border: 2px solid #fff;\n    margin: auto;\n    top: 0;\n    bottom: 0;\n    right: 0;\n    left: 0;\n    box-shadow: 0 0 2000px 2000px rgba(0, 0, 0, 0.5);\n    z-index: 0;\n}\n\n.croppie-container .cr-resizer {\n  z-index: 2;\n  box-shadow: none;\n  pointer-events: none;\n}\n\n.croppie-container .cr-resizer-vertical,\n.croppie-container .cr-resizer-horisontal {\n  position: absolute;\n  pointer-events: all;\n}\n\n.croppie-container .cr-resizer-vertical::after,\n.croppie-container .cr-resizer-horisontal::after {\n    display: block;\n    position: absolute;\n    box-sizing: border-box;\n    border: 1px solid black;\n    background: #fff;\n    width: 10px;\n    height: 10px;\n    content: '';\n}\n\n.croppie-container .cr-resizer-vertical {\n  bottom: -5px;\n  cursor: row-resize;\n  width: 100%;\n  height: 10px;\n}\n\n.croppie-container .cr-resizer-vertical::after {\n    left: 50%;\n    margin-left: -5px;\n}\n\n.croppie-container .cr-resizer-horisontal {\n  right: -5px;\n  cursor: col-resize;\n  width: 10px;\n  height: 100%;\n}\n\n.croppie-container .cr-resizer-horisontal::after {\n    top: 50%;\n    margin-top: -5px;\n}\n\n.croppie-container .cr-original-image {\n    display: none;\n}\n\n.croppie-container .cr-vp-circle {\n    border-radius: 50%;\n}\n\n.croppie-container .cr-overlay {\n    z-index: 1;\n    position: absolute;\n    cursor: move;\n    touch-action: none;\n}\n\n.croppie-container .cr-slider-wrap {\n    width: 75%;\n    margin: 15px auto;\n    text-align: center;\n}\n\n.croppie-result {\n    position: relative;\n    overflow: hidden;\n}\n\n.croppie-result img {\n    position: absolute;\n}\n\n.croppie-container .cr-image,\n.croppie-container .cr-overlay,\n.croppie-container .cr-viewport {\n    -webkit-transform: translateZ(0);\n    transform: translateZ(0);\n}\n\n/*************************************/\n/***** STYLING RANGE INPUT ***********/\n/*************************************/\n/*http://brennaobrien.com/blog/2014/05/style-input-type-range-in-every-browser.html */\n/*************************************/\n\n.cr-slider {\n    -webkit-appearance: none;\n/*removes default webkit styles*/\n\t/*border: 1px solid white; *//*fix for FF unable to apply focus style bug */\n    width: 300px;\n/*required for proper track sizing in FF*/\n    max-width: 100%;\n    padding-top: 8px;\n    padding-bottom: 8px;\n    background-color: transparent;\n}\n\n.cr-slider::-webkit-slider-runnable-track {\n    width: 100%;\n    height: 3px;\n    background: rgba(0, 0, 0, 0.5);\n    border: 0;\n    border-radius: 3px;\n}\n\n.cr-slider::-webkit-slider-thumb {\n    -webkit-appearance: none;\n    border: none;\n    height: 16px;\n    width: 16px;\n    border-radius: 50%;\n    background: #ddd;\n    margin-top: -6px;\n}\n\n.cr-slider:focus {\n    outline: none;\n}\n/*\n.cr-slider:focus::-webkit-slider-runnable-track {\nbackground: #ccc;\n}\n*/\n\n.cr-slider::-moz-range-track {\n    width: 100%;\n    height: 3px;\n    background: rgba(0, 0, 0, 0.5);\n    border: 0;\n    border-radius: 3px;\n}\n\n.cr-slider::-moz-range-thumb {\n    border: none;\n    height: 16px;\n    width: 16px;\n    border-radius: 50%;\n    background: #ddd;\n    margin-top: -6px;\n}\n\n/*hide the outline behind the border*/\n.cr-slider:-moz-focusring {\n    outline: 1px solid white;\n    outline-offset: -1px;\n}\n\n.cr-slider::-ms-track {\n    width: 100%;\n    height: 5px;\n    background: transparent;\n/*remove bg colour from the track, we'll use ms-fill-lower and ms-fill-upper instead */\n\tborder-color: transparent;/*leave room for the larger thumb to overflow with a transparent border */\n\tborder-width: 6px 0;\n\tcolor: transparent;/*remove default tick marks*/\n}\n.cr-slider::-ms-fill-lower {\n\tbackground: rgba(0, 0, 0, 0.5);\n\tborder-radius: 10px;\n}\n.cr-slider::-ms-fill-upper {\n\tbackground: rgba(0, 0, 0, 0.5);\n\tborder-radius: 10px;\n}\n.cr-slider::-ms-thumb {\n\tborder: none;\n\theight: 16px;\n\twidth: 16px;\n\tborder-radius: 50%;\n\tbackground: #ddd;\n\tmargin-top:1px;\n}\n.cr-slider:focus::-ms-fill-lower {\n\tbackground: rgba(0, 0, 0, 0.5);\n}\n.cr-slider:focus::-ms-fill-upper {\n\tbackground: rgba(0, 0, 0, 0.5);\n}\n/*******************************************/\n\n/***********************************/\n/* Rotation Tools */\n/***********************************/\n.cr-rotate-controls {\n\tposition: absolute;\n\tbottom: 5px;\n\tleft: 5px;\n\tz-index: 1;\n}\n.cr-rotate-controls button {\n\tborder: 0;\n\tbackground: none;\n}\n.cr-rotate-controls i:before {\n\tdisplay: inline-block;\n\tfont-style: normal;\n\tfont-weight: 900;\n\tfont-size: 22px;\n}\n.cr-rotate-l i:before {\n\tcontent: '↺';\n}\n.cr-rotate-r i:before {\n\tcontent: '↻';\n}\n", ""]);
 
 
 
@@ -47644,12 +47696,12 @@ var render = function() {
           _vm._v(" "),
           _c(
             "div",
-            { staticClass: "form-group row" },
+            { staticClass: "form-group col-12" },
             [
               _c(
                 "label",
                 { staticClass: "col-md-4 col-form-label text-md-right" },
-                [_vm._v("Avatar")]
+                [_vm._v(_vm._s(_vm.$t("Avatar")))]
               ),
               _vm._v(" "),
               _c("Cropper", {
@@ -47666,12 +47718,12 @@ var render = function() {
           _vm._v(" "),
           _c(
             "div",
-            { staticClass: "form-group row" },
+            { staticClass: "form-group col-12" },
             [
               _c(
                 "label",
                 { staticClass: "col-md-4 col-form-label text-md-right" },
-                [_vm._v("Background")]
+                [_vm._v(_vm._s(_vm.$t("Background")))]
               ),
               _vm._v(" "),
               _c("Cropper", {
@@ -47679,7 +47731,8 @@ var render = function() {
                   width: 800,
                   height: 394,
                   type: "square",
-                  name: "background"
+                  name: "background",
+                  theurl: "/img/404/background.png"
                 }
               })
             ],
@@ -48137,7 +48190,6 @@ var render = function() {
           enableOrientation: true,
           enableExif: true,
           enableResize: false,
-          size: "original",
           viewport: {
             width: Number(_vm.width),
             height: Number(_vm.height),
@@ -92589,9 +92641,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_croppie__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! vue-croppie */ "./node_modules/vue-croppie/dist/vue-croppie.es.js");
 /* harmony import */ var vuetify_dist_vuetify_min_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! vuetify/dist/vuetify.min.css */ "./node_modules/vuetify/dist/vuetify.min.css");
 /* harmony import */ var vuetify_dist_vuetify_min_css__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(vuetify_dist_vuetify_min_css__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var material_icons_iconfont_material_icons_css__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! material-icons/iconfont/material-icons.css */ "./node_modules/material-icons/iconfont/material-icons.css");
-/* harmony import */ var material_icons_iconfont_material_icons_css__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(material_icons_iconfont_material_icons_css__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var vue_i18n__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! vue-i18n */ "./node_modules/vue-i18n/dist/vue-i18n.esm.js");
+/* harmony import */ var croppie_croppie_css__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! croppie/croppie.css */ "./node_modules/croppie/croppie.css");
+/* harmony import */ var croppie_croppie_css__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(croppie_croppie_css__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var material_icons_iconfont_material_icons_css__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! material-icons/iconfont/material-icons.css */ "./node_modules/material-icons/iconfont/material-icons.css");
+/* harmony import */ var material_icons_iconfont_material_icons_css__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(material_icons_iconfont_material_icons_css__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var vue_i18n__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! vue-i18n */ "./node_modules/vue-i18n/dist/vue-i18n.esm.js");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -92613,6 +92667,7 @@ var loadedLangs = ['en'];
 
 
 
+
 vue__WEBPACK_IMPORTED_MODULE_3___default.a.use(vuetify__WEBPACK_IMPORTED_MODULE_4___default.a, {
   theme: {
     primary: 'blue',
@@ -92622,7 +92677,7 @@ vue__WEBPACK_IMPORTED_MODULE_3___default.a.use(vuetify__WEBPACK_IMPORTED_MODULE_
 });
 vue__WEBPACK_IMPORTED_MODULE_3___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_6__["default"]);
 vue__WEBPACK_IMPORTED_MODULE_3___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_5__["default"]);
-vue__WEBPACK_IMPORTED_MODULE_3___default.a.use(vue_i18n__WEBPACK_IMPORTED_MODULE_10__["default"]); //Vue.use(BootstrapVue);
+vue__WEBPACK_IMPORTED_MODULE_3___default.a.use(vue_i18n__WEBPACK_IMPORTED_MODULE_11__["default"]); //Vue.use(BootstrapVue);
 
 vue__WEBPACK_IMPORTED_MODULE_3___default.a.use(vue_croppie__WEBPACK_IMPORTED_MODULE_7__["default"]);
 var appName = "Auther";
@@ -92656,7 +92711,7 @@ var clientsComp = vue__WEBPACK_IMPORTED_MODULE_3___default.a.component('Clients'
 var authorizedClientsComp = vue__WEBPACK_IMPORTED_MODULE_3___default.a.component('AuthorizedClients', __webpack_require__(/*! ./components/passport/AuthorizedClients.vue */ "./resources/js/components/passport/AuthorizedClients.vue")["default"]);
 var projects = vue__WEBPACK_IMPORTED_MODULE_3___default.a.component('projects', __webpack_require__(/*! ./components/admin/Projects.vue */ "./resources/js/components/admin/Projects.vue")["default"]);
 var roles = vue__WEBPACK_IMPORTED_MODULE_3___default.a.component('roles', __webpack_require__(/*! ./components/admin/Roles.vue */ "./resources/js/components/admin/Roles.vue")["default"]);
-var i18n = new vue_i18n__WEBPACK_IMPORTED_MODULE_10__["default"]({
+var i18n = new vue_i18n__WEBPACK_IMPORTED_MODULE_11__["default"]({
   locale: 'en',
   fallbackLocale: 'en'
 });

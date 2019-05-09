@@ -110,6 +110,9 @@ class RegisterController extends Controller
                            ?: redirect($this->redirectPath());    
           }
         } else {
+          if($request->ajax()){
+            return response()->json(["data"=>["msg"=>"needemailverify"]],200);
+          }
           return redirect("/email/resend");
         }
 

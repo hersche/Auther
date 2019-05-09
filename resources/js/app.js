@@ -16,7 +16,8 @@
  import Router from 'vue-router'
  import Vuex from 'vuex'
  import VueCroppie from 'vue-croppie';
- import 'vuetify/dist/vuetify.min.css' 
+ import 'vuetify/dist/vuetify.min.css'
+ import 'croppie/croppie.css'
  import 'material-icons/iconfont/material-icons.css';
  import VueI18n from 'vue-i18n'
  Vue.use(Vuetify, {

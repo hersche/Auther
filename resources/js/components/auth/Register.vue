@@ -4,13 +4,13 @@
       <v-form ref="form" id="theForm" v-model="valid" lazy-validation>
         <input type="hidden" name="ajaxLogin" value="1">
         <input type="hidden" name="_token" :value="csrf">
-        <div class="form-group row">
-          <label class="col-md-4 col-form-label text-md-right">Avatar</label>
+        <div class="form-group col-12">
+          <label class="col-md-4 col-form-label text-md-right">{{ $t('Avatar') }}</label>
           <Cropper v-bind:width="180" v-bind:height="180" type="circle" name="avatar" ></Cropper>
         </div>
-        <div class="form-group row">
-          <label class="col-md-4 col-form-label text-md-right">Background</label>
-          <Cropper v-bind:width="800" v-bind:height="394" type="square" name="background" ></Cropper>
+        <div class="form-group col-12">
+          <label class="col-md-4 col-form-label text-md-right">{{ $t('Background') }}</label>
+          <Cropper v-bind:width="800" v-bind:height="394" type="square" name="background" theurl="/img/404/background.png" ></Cropper>
         </div>
         <v-text-field
           v-model="name"
@@ -154,9 +154,14 @@
             processData: false,
             complete : function(res) {
               if(res.status==201){
-                store.commit("addUser",res.responseJSON.data)
-                store.commit("setLoginId",res.responseJSON.data.id)
-                that.$router.push("/");
+                  store.commit("addUser",res.responseJSON.data)
+                  store.commit("setLoginId",res.responseJSON.data.id)
+                  that.$router.push("/");
+              }
+              if(res.status==200){
+                if(res.responseJSON.data.msg=="needemailverify"){
+                  window.location.href = "/email/resend";
+                }
               }
               //eventBus.$emit('login',res.responseJSON.data);
             }

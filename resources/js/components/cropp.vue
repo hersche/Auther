@@ -6,7 +6,6 @@
       :enableExif="true"
       :enableResize="false"
       @result="result"
-      size="original"
       :viewport="{ width: Number(width), height: Number(height), type: type }"
       :boundary="{ width: (Number(width)+20), height: (Number(height)+20) }"
       @update="update">
@@ -53,13 +52,15 @@ export default {
        console.log("avatar-change!!!!", that.$refs.croppieRef)
        that.$refs.croppieRef.bind({
          url: e.target.result,
+        }).then(function(){
+          that.$refs.croppieRef.setZoom(0)
         });
       }
       reader.readAsDataURL($("#"+this.name+"Upload")[0].files[0]);
     },
     // CALBACK USAGE
     result(output) {
-      console.log("result")
+      console.log("result", this.name)
       this.croppedBase64 = output;
     },
     update(val) {
