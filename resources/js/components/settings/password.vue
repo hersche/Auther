@@ -3,7 +3,7 @@
     <div class="text-center">
     <h1>{{ $t("Change") }} {{ $t("password") }}</h1>
     <v-text-field
-      label="Old password"
+      label="Old password (always needed for do something here)"
       :append-icon="showOldPass ? 'visibility_off' : 'visibility'"
       @click:append="showOldPass=!showOldPass"
       :type="showOldPass ? 'text' : 'password'"
@@ -20,7 +20,13 @@
           @click:append="showNewPass2=!showNewPass2"
           :type="showNewPass2 ? 'text' : 'password'"
           ></v-text-field>
-    <v-btn @click="getTwofactor()">Change password</v-btn>
+    <v-btn @click="changePassword()">Change password</v-btn>
+    <v-text-field
+      label="Change email"
+      v-model="email"
+      type="text"
+      ></v-text-field>
+<v-btn @click="changeEmail()">Change email</v-btn>
 </div>
 </div>
 </template>
@@ -45,27 +51,6 @@
 
     },
     computed: {
-      enableRefreshLabel(){
-        if(this.twofactor.enabled=='1'||this.twofactor.url!=''){
-          return "Refresh"
-        } else {
-          return "Enable"
-        }
-      },
-      twofactorstatenr(){
-        console.log("on nr ",this.twofactor)
-        if((this.twofactor.enabled=='1')&&((this.twofactor.url!='')&&(this.twofactor.url!=undefined))){
-          return 2
-        }
-        else if((this.twofactor.enabled=='0')&&((this.twofactor.url!='')&&(this.twofactor.url!=undefined))){
-          return 1
-        } else {
-          return 0
-        }
-      },
-      twofactor(){
-        return store.state.twofactor
-      },
       loggeduserid(){
         return store.state.loginId
       },
@@ -82,12 +67,8 @@
     },
 
     methods: {
-      rmBr(str) {
-        return str.replace(/<br\s*\/?>/mg,"");
-      },
-      
       changePassword(){
-        axios.post("/internal-api/settings/password",{"oldpass":this.oldPass,"newpass":this.newPass,"newpass2":this.newPass2})  
+        axios.post("/internal-api/settings/password",{"oldpass":this.oldPass,"newpass":this.newPass,"newpass2":this.newPass2,"_token":this.csrf})  
         .then(function (response) {
           //store.commit("setTwofactor",JSON.parse(response.request.response).data)
           console.log("get twofactor",JSON.parse(response.request.response).data);
@@ -96,82 +77,18 @@
          console.log(error);
        })
       },
-      testTwofactor(){
-        let that = this;
-        axios.post("/internal-api/settings/2faTest",{"one_time_test_password":this.checkTwofactorCode,"userpass":this.userpassword})  
+      changeEmail(){
+        axios.post("/internal-api/settings/email",{"oldpass":this.oldPass,"email":this.email,"_token":this.csrf})  
         .then(function (response) {
-          if(response.request.response!='{"twofactor":testinvalid}'){
-            that.userpassword=''
-            store.commit("setTwofactor",JSON.parse(response.request.response).data)
-            console.log("refresh twofactor",JSON.parse(response.request.response).data);
-            eventBus.$emit('alert',"2-factor auth passed");
-          } 
-       })
-       .catch(function (error) {
-         eventBus.$emit('alert',"2-factor test failed");
-         console.log(error);
-       })
-      },
-      refreshTwofactor(){
-        axios.post("/internal-api/settings/refresh/twofactor",{"userpass":this.userpassword})  
-        .then(function (response) {
-          store.commit("setTwofactor",JSON.parse(response.request.response).data)
-          console.log("refresh twofactor",JSON.parse(response.request.response).data);
-          eventBus.$emit('alert',"2-factor refresh passed");
+          //store.commit("setTwofactor",JSON.parse(response.request.response).data)
+          console.log("get twofactor",JSON.parse(response.request.response).data);
+          window.location.href = "/email/verify"
        })
        .catch(function (error) {
          console.log(error);
        })
       },
-      disableTwofactor(){
-        let that = this;
-        axios.post("/internal-api/settings/disable/twofactor",{"userpass":this.userpassword})  
-        .then(function (response) {
-          that.userpassword=''
-          store.commit("setTwofactor",JSON.parse(response.request.response).data)
-          console.log("disable twofactor",JSON.parse(response.request.response).data);
-       })
-       .catch(function (error) {
-         console.log(error);
-       })
       },
-      submitAction() {
-        let that = this;
-        $.ajax({
-            url: '/internal-api/profiles/edit/'+this.currentuser.id,
-            type: 'POST',
-            data: new FormData($("#theForm")[0]),
-            cache: false,
-            contentType: false,
-            processData: false,
-            complete : function(res) {
-              if(res.status==200){
-              }
-              //eventBus.$emit('userEdited',that.currentuser.id)
-            }
-
-        });
-        return false;
-      },
-// CALBACK USAGE
-resultAvatar(output) {
-  
-},
-resultBackground(output) {
-
-},
-updateAvatar(val) {
-
-},
-updateBackground(val) {
-
-},
-rotateAvatar(rotationAngle,event) {
-    // Rotates the image
-},
-rotateBackground(rotationAngle,event) {
-}
-    },
     data(){
       return {
         mediaType: '',
@@ -186,7 +103,7 @@ rotateBackground(rotationAngle,event) {
         showOldPass:false,
         showNewPass:false,
         showNewPass2:false,
-        backgroundCropped: null,
+        email: "",
       }
     }
   }

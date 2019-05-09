@@ -33,7 +33,7 @@
         Forgot Your Password?
       </a>                    
       <a href="/oauth/google" v-if="mixconfig.MIX_GOOGLE_AUTH_ENABLED=='1'">
-        <img src="/public/loginwith/google/btn_google_signin_dark_normal_web.png" />
+        <img src="/img/loginwith/google/btn_google_signin_dark_normal_web.png" />
       </a>
       <v-btn href="/oauth/github" v-if="mixconfig.MIX_GITHUB_AUTH_ENABLED=='1'">
         {{ $t('Login') }} {{ $t('with') }} Github

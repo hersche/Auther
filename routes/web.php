@@ -40,9 +40,13 @@ Route::post('/internal-api/settings/2faTest', 'PasswordSecurityController@my2faT
 Route::post('/internal-api/settings/refresh/twofactor', 'PasswordSecurityController@my2faRefresh');
 Route::post('/internal-api/settings/get/twofactor', 'PasswordSecurityController@my2faGet');
 Route::post('/internal-api/settings/disable/twofactor', 'PasswordSecurityController@my2fadisable');
+Route::post('/internal-api/twofactor/cancel', 'PasswordSecurityController@cancelProcess');
 
 Route::get('/internal-api/users', 'UserController@get');
 /* auth routes start */
+
+Auth::routes(['verify' => true]);
+
  // Authentication Routes...
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->middleware('2fa');
@@ -85,6 +89,7 @@ Route::get('/home', 'HomeController@index')->name('home')->middleware(['auth', '
 Route::post('/internal-api/profiles/edit/{id}','UserController@update')->name('useres.edit')->middleware(['auth', '2fa']);
 Route::post('/internal-api/register', 'Auth\RegisterController@register');
 Route::post('/internal-api/settings/password','UserController@changePassword');
+Route::post('/internal-api/settings/email','UserController@setEmail');
 Route::get('/internal-api/refresh-csrf', function(){
   return response()->json(["csrf"=>csrf_token()],200);
 });

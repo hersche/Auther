@@ -33,6 +33,7 @@ class CreateUsersTable extends Migration
             $table->string('avatar')->default('');
             $table->string('background')->default('');
             $table->rememberToken();
+            $table->dateTime('email_verified_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

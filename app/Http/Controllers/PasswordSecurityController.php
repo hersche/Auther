@@ -155,7 +155,7 @@ public function my2faGet(Request $request){
 
 public function my2faverify(Request $request){
   // Login succeded as we pass the middleware
-  $user = User::find($request->session()->get('user-id'));
+  $user = User::find($request->session()->get('twofactor-user-id'));
   $google2fa = app('pragmarx.google2fa');
   $valid = $google2fa->verifyKey($user->passwordSecurity->secret, $request->input("one_time_password"));
   if ($valid) {
@@ -173,8 +173,8 @@ public function my2faverify(Request $request){
         $request->session()->put('auth.social_provider',0);
       }
   }
-  Auth::loginUsingId($request->session()->get('user-id'));
-  $request->session()->put('user-id',0);
+  Auth::loginUsingId($request->session()->get('twofactor-user-id'));
+  $request->session()->put('twofactor-user-id',0);
   if(!empty($request->input("ajaxLogin"))){
     return new UserResource(Auth::user());
   } else {
@@ -189,6 +189,11 @@ public function my2faverify(Request $request){
 }
 }
 }
+
+public function cancelProcess(Request $request){
+  $request->session()->put('twofactor-user-id',0);
+}
+
 public function disable2fa(Request $request){
     if (!(Hash::check($request->get('current-password'), Auth::user()->password))) {
         // The passwords matches

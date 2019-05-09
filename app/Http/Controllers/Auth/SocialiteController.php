@@ -122,14 +122,14 @@ class SocialiteController extends Controller
             }
             
             event(new RegisteredEvent($user));
-        } else {
+        }/* else {
           $tmpD = new DateTime("now");
           $tmpD->modify('-7 days');
           if($user->created_at<$tmpD){
             $user->allow_username_change=false;
             $user->save();
           }
-        }
+        }*/
         $social->user()->associate($user);
         $social->save();
         return [$user,$social];

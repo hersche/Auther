@@ -21,16 +21,16 @@
                       <v-btn @click="submitLogin()">
                           {{ $t('Login') }}
                       </v-btn>
-
-                        <a class="btn btn-link" href="">
-                            Forgot Your Password?
-                        </a>
+                      <v-btn @click="cancelProcess()">
+                          {{ $t('Cancel') }} {{ $t('login') }}
+                      </v-btn>
 </div>
 </template>
 
 
 <script>
  const $ = require("jquery");
+ const axios = require("axios");
   import { store } from '../../store.js';
   import { eventBus } from '../../eventBus.js';
   export default {
@@ -55,6 +55,15 @@
       },
     },
     methods:{
+      cancelProcess(){
+        axios.post("/internal-api/twofactor/cancel",{"_token":this.csrf})  
+        .then(function (response) {
+          this.$router.push("/")
+       })
+       .catch(function (error) {
+         console.log(error);
+       })
+      },
       submitLogin() {
         let that = this;
         $.ajax({

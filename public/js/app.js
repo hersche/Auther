@@ -2234,6 +2234,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -3957,8 +3958,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+
+var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
 
 
@@ -3990,6 +3992,15 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
     }
   },
   methods: {
+    cancelProcess: function cancelProcess() {
+      axios.post("/internal-api/twofactor/cancel", {
+        "_token": this.csrf
+      }).then(function (response) {
+        this.$router.push("/");
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
     submitLogin: function submitLogin() {
       var that = this;
       $.ajax({
@@ -5342,6 +5353,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -5361,27 +5378,6 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
   },
   updated: function updated() {},
   computed: {
-    enableRefreshLabel: function enableRefreshLabel() {
-      if (this.twofactor.enabled == '1' || this.twofactor.url != '') {
-        return "Refresh";
-      } else {
-        return "Enable";
-      }
-    },
-    twofactorstatenr: function twofactorstatenr() {
-      console.log("on nr ", this.twofactor);
-
-      if (this.twofactor.enabled == '1' && this.twofactor.url != '' && this.twofactor.url != undefined) {
-        return 2;
-      } else if (this.twofactor.enabled == '0' && this.twofactor.url != '' && this.twofactor.url != undefined) {
-        return 1;
-      } else {
-        return 0;
-      }
-    },
-    twofactor: function twofactor() {
-      return _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.twofactor;
-    },
     loggeduserid: function loggeduserid() {
       return _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId;
     },
@@ -5399,14 +5395,12 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
     }
   },
   methods: {
-    rmBr: function rmBr(str) {
-      return str.replace(/<br\s*\/?>/mg, "");
-    },
     changePassword: function changePassword() {
       axios.post("/internal-api/settings/password", {
         "oldpass": this.oldPass,
         "newpass": this.newPass,
-        "newpass2": this.newPass2
+        "newpass2": this.newPass2,
+        "_token": this.csrf
       }).then(function (response) {
         //store.commit("setTwofactor",JSON.parse(response.request.response).data)
         console.log("get twofactor", JSON.parse(response.request.response).data);
@@ -5414,70 +5408,19 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
         console.log(error);
       });
     },
-    testTwofactor: function testTwofactor() {
-      var that = this;
-      axios.post("/internal-api/settings/2faTest", {
-        "one_time_test_password": this.checkTwofactorCode,
-        "userpass": this.userpassword
+    changeEmail: function changeEmail() {
+      axios.post("/internal-api/settings/email", {
+        "oldpass": this.oldPass,
+        "email": this.email,
+        "_token": this.csrf
       }).then(function (response) {
-        if (response.request.response != '{"twofactor":testinvalid}') {
-          that.userpassword = '';
-          _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].commit("setTwofactor", JSON.parse(response.request.response).data);
-          console.log("refresh twofactor", JSON.parse(response.request.response).data);
-          _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$emit('alert', "2-factor auth passed");
-        }
-      })["catch"](function (error) {
-        _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$emit('alert', "2-factor test failed");
-        console.log(error);
-      });
-    },
-    refreshTwofactor: function refreshTwofactor() {
-      axios.post("/internal-api/settings/refresh/twofactor", {
-        "userpass": this.userpassword
-      }).then(function (response) {
-        _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].commit("setTwofactor", JSON.parse(response.request.response).data);
-        console.log("refresh twofactor", JSON.parse(response.request.response).data);
-        _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$emit('alert', "2-factor refresh passed");
+        //store.commit("setTwofactor",JSON.parse(response.request.response).data)
+        console.log("get twofactor", JSON.parse(response.request.response).data);
+        window.location.href = "/email/verify";
       })["catch"](function (error) {
         console.log(error);
       });
-    },
-    disableTwofactor: function disableTwofactor() {
-      var that = this;
-      axios.post("/internal-api/settings/disable/twofactor", {
-        "userpass": this.userpassword
-      }).then(function (response) {
-        that.userpassword = '';
-        _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].commit("setTwofactor", JSON.parse(response.request.response).data);
-        console.log("disable twofactor", JSON.parse(response.request.response).data);
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    submitAction: function submitAction() {
-      var that = this;
-      $.ajax({
-        url: '/internal-api/profiles/edit/' + this.currentuser.id,
-        type: 'POST',
-        data: new FormData($("#theForm")[0]),
-        cache: false,
-        contentType: false,
-        processData: false,
-        complete: function complete(res) {
-          if (res.status == 200) {} //eventBus.$emit('userEdited',that.currentuser.id)
-
-        }
-      });
-      return false;
-    },
-    // CALBACK USAGE
-    resultAvatar: function resultAvatar(output) {},
-    resultBackground: function resultBackground(output) {},
-    updateAvatar: function updateAvatar(val) {},
-    updateBackground: function updateBackground(val) {},
-    rotateAvatar: function rotateAvatar(rotationAngle, event) {// Rotates the image
-    },
-    rotateBackground: function rotateBackground(rotationAngle, event) {}
+    }
   },
   data: function data() {
     return {
@@ -5493,7 +5436,7 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       showOldPass: false,
       showNewPass: false,
       showNewPass2: false,
-      backgroundCropped: null
+      email: ""
     };
   }
 });
@@ -45544,6 +45487,10 @@ var render = function() {
       _vm._v(" "),
       _c("form", { staticClass: "d-none", attrs: { id: "logoutForm" } }, [
         _c("input", {
+          attrs: { type: "hidden", name: "ajaxLogin", value: "1" }
+        }),
+        _vm._v(" "),
+        _c("input", {
           attrs: { type: "hidden", name: "_token" },
           domProps: { value: _vm.csrf }
         })
@@ -47550,16 +47497,18 @@ var render = function() {
         [_vm._v("\n      " + _vm._s(_vm.$t("Login")) + "\n    ")]
       ),
       _vm._v(" "),
-      _c("a", { staticClass: "btn btn-link", attrs: { href: "" } }, [
-        _vm._v("\n      Forgot Your Password?\n    ")
-      ]),
+      _c(
+        "a",
+        { staticClass: "btn btn-link", attrs: { href: "/password/reset" } },
+        [_vm._v("\n      Forgot Your Password?\n    ")]
+      ),
       _vm._v(" "),
       _vm.mixconfig.MIX_GOOGLE_AUTH_ENABLED == "1"
         ? _c("a", { attrs: { href: "/oauth/google" } }, [
             _c("img", {
               attrs: {
                 src:
-                  "/public/loginwith/google/btn_google_signin_dark_normal_web.png"
+                  "/img/loginwith/google/btn_google_signin_dark_normal_web.png"
               }
             })
           ])
@@ -48134,11 +48083,25 @@ var render = function() {
         ]
       ),
       _vm._v(" "),
-      _c("a", { staticClass: "btn btn-link", attrs: { href: "" } }, [
-        _vm._v(
-          "\n                            Forgot Your Password?\n                        "
-        )
-      ])
+      _c(
+        "v-btn",
+        {
+          on: {
+            click: function($event) {
+              return _vm.cancelProcess()
+            }
+          }
+        },
+        [
+          _vm._v(
+            "\n                          " +
+              _vm._s(_vm.$t("Cancel")) +
+              " " +
+              _vm._s(_vm.$t("login")) +
+              "\n                      "
+          )
+        ]
+      )
     ],
     1
   )
@@ -49976,7 +49939,7 @@ var render = function() {
         _vm._v(" "),
         _c("v-text-field", {
           attrs: {
-            label: "Old password",
+            label: "Old password (always needed for do something here)",
             "append-icon": _vm.showOldPass ? "visibility_off" : "visibility",
             type: _vm.showOldPass ? "text" : "password"
           },
@@ -50018,11 +49981,34 @@ var render = function() {
           {
             on: {
               click: function($event) {
-                return _vm.getTwofactor()
+                return _vm.changePassword()
               }
             }
           },
           [_vm._v("Change password")]
+        ),
+        _vm._v(" "),
+        _c("v-text-field", {
+          attrs: { label: "Change email", type: "text" },
+          model: {
+            value: _vm.email,
+            callback: function($$v) {
+              _vm.email = $$v
+            },
+            expression: "email"
+          }
+        }),
+        _vm._v(" "),
+        _c(
+          "v-btn",
+          {
+            on: {
+              click: function($event) {
+                return _vm.changeEmail()
+              }
+            }
+          },
+          [_vm._v("Change email")]
         )
       ],
       1
@@ -92771,7 +92757,7 @@ $(document).ready(function () {
     i18n: i18n,
     data: {
       appname: "Auther",
-      mixconfig: Object({"MIX_APP_NAME":"Auther","MIX_APP_URL":"https://auth.host","MIX_MIN_PASSWORDLENGTH":"2","MIX_APP_ADMINLEVEL":"99","MIX_GOOGLE_AUTH_ENABLED":"1","MIX_GITHUB_AUTH_ENABLED":"1","MIX_FACEBOOK_AUTH_ENABLED":"0","MIX_TWITTER_AUTH_ENABLED":"0","MIX_GITLAB_AUTH_ENABLED":"0","MIX_BITBUCKET_AUTH_ENABLED":"0","MIX_LINKEDIN_AUTH_ENABLED":"0","MIX_PUSHER_APP_KEY":"","MIX_PUSHER_APP_CLUSTER":"mt1","NODE_ENV":"development"}),
+      mixconfig: Object({"MIX_APP_NAME":"Auther","MIX_APP_URL":"https://auth.host","MIX_MIN_PASSWORDLENGTH":"2","MIX_NEED_EMAIL_VERIFY":"1","MIX_LOCAL_AUTH_ENABLED":"1","MIX_REGISTER_ENABLED":"1","MIX_NEED_MANUAL_VERIFY":"0","MIX_APP_ADMINLEVEL":"99","MIX_GOOGLE_AUTH_ENABLED":"1","MIX_GITHUB_AUTH_ENABLED":"1","MIX_FACEBOOK_AUTH_ENABLED":"0","MIX_TWITTER_AUTH_ENABLED":"0","MIX_GITLAB_AUTH_ENABLED":"0","MIX_BITBUCKET_AUTH_ENABLED":"0","MIX_LINKEDIN_AUTH_ENABLED":"0","MIX_PUSHER_APP_KEY":"","MIX_PUSHER_APP_CLUSTER":"mt1","NODE_ENV":"development"}),
       search: undefined,
       treecatptions: undefined,
       canloadmore: true,

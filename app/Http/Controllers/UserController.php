@@ -40,6 +40,17 @@ class UserController extends Controller
       } 
     }
     
+    public function setEmail(Request $request){
+      if(Auth::check()){
+        $user = User::find(Auth::id());
+        $user->email = $request->input("email");
+        $user->email_verified_at = null;
+        $user->save();
+        return response()->json(["email_set"=>true],200);
+      }
+      return response()->json(["email_set"=>false],200);
+    }
+    
     public function setLogin(Request $request){
       if(Auth::id()!=0){
         $u = User::find(Auth::id());

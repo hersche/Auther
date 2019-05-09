@@ -323,6 +323,7 @@
 
 </v-toolbar>
 <form class="d-none" id="logoutForm">
+  <input type="hidden" name="ajaxLogin" value="1" />
   <input type="hidden" name="_token" :value="csrf">
 </form>
 <v-snackbar

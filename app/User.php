@@ -11,8 +11,9 @@ use jeremykenedy\LaravelRoles\Traits\HasRoleAndPermission;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\FriendableTempFix;
 use App\Notifications\ResetPasswordNotification;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 //use Hootlex\Friendships\Traits\Friendable;
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
   use HasApiTokens, Notifiable, HasRoleAndPermission,FriendableTempFix;
   // use \Conner\Tagging\Taggable;

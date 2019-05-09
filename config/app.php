@@ -14,17 +14,20 @@ return [
     */
 
     'name' => env('MIX_APP_NAME', 'Auther'),
-    'googleauthenabled' => env('MIX_GOOGLE_AUTH_ENABLED', '5'),
+    'adminlevel' => env('MIX_APP_ADMINLEVEL', '5'),
+    'googleauthenabled' => env('MIX_GOOGLE_AUTH_ENABLED', '0'),
     'githubauthenabled' => env('MIX_GITHUB_AUTH_ENABLED', '0'),
     'gitlabauthenabled' => env('MIX_GITLAB_AUTH_ENABLED', '0'),
     'facebookauthenabled' => env('MIX_FACEBOOK_AUTH_ENABLED', '0'),
     'linkedinauthenabled' => env('MIX_LINKEDIN_AUTH_ENABLED', '0'),
     'twitterauthenabled' => env('MIX_TWITTER_AUTH_ENABLED', '0'),
-    'userneedverify' => env('MIX_USER_NEED_VERIFY', '0'),
+    'userneedverify' => env('MIX_NEED_MANUAL_VERIFY', '0'),
     'disableregister' => env('MIX_DISABLE_REGISTER', '0'),
     'minpasswordlength' => env('MIX_MIN_PASSWORDLENGTH', '8'),
+    'needemailverify' => env('MIX_NEED_EMAIL_VERIFY', '0'),
+    'localauthenabled' => env('MIX_LOCAL_AUTH_ENABLED', '1'),
+    'registerenabled' => env('MIX_REGISTER_ENABLED', '1'),
     /*
-    MIX_MIN_PASSWORDLENGTH
     |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------

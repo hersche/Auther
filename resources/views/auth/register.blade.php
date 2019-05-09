@@ -8,6 +8,7 @@
                 <div class="card-header">{{ __('Register') }}</div>
 
                 <div class="card-body">
+                  @if (config("app.localauthenabled")=="1"||config("app.registerenabled"))
                     <form method="POST" action="/register">
                         @csrf
 
@@ -24,7 +25,13 @@
                                 @endif
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="username" class="col-md-4 col-form-label text-md-right">{{ __('Username') }}</label>
 
+                            <div class="col-md-6">
+                                <input id="username" type="text" class="" name="username" value="" required>
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
 
@@ -69,6 +76,9 @@
                             </div>
                         </div>
                     </form>
+                    @else 
+                    <p>Registration is disabled</p>
+                    @endif
                 </div>
             </div>
         </div>

@@ -53,7 +53,7 @@ class LoginController extends Controller
       return redirect()->intended($this->redirectTo);
     }
     Auth::logout();
-    $request->session()->put('user-id', $user->id);
+    $request->session()->put('twofactor-user-id', $user->id);
     if(!empty($request->input("ajaxLogin"))){
       return response('{"twofactor":true}', 200);
     }
@@ -92,10 +92,7 @@ class LoginController extends Controller
             ));
         }
         else {
-          return Response::json(array(
-              'success' => false,
-              'data'   => 'Logout failed'
-          ));
+          return redirect(url("/"));
         }
     }
     public function login(Request $request)
@@ -141,7 +138,7 @@ class LoginController extends Controller
             return new UserRessource(Auth::user());
           } else {
             Auth::logout();
-            $request->session()->put('user-id', $user->id);
+            $request->session()->put('twofactor-user-id', $user->id);
               return response('{"twofactor":true}', 200);
           }
         } else {
