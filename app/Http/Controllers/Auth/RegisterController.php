@@ -102,7 +102,7 @@ class RegisterController extends Controller
         $user->password = Hash::make($request->input('password'));
         $user->save();
         $this->guard()->login($user);
-        if(config('needemailverify')=="0"||!empty($user->email_verified_at)){
+        if(config('app.needemailverify')=="0"||!empty($user->email_verified_at)){
           if($request->input('ajaxLogin')=="1"){
             return new UserRessource(Auth::user());
           } else {

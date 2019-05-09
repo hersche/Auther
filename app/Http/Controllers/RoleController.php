@@ -10,7 +10,7 @@ class RoleController extends Controller
     function create(Request $request){
   //    echo "fooo";
     //  die();
-      if(Auth::user()->level()>(int)config('adminlevel')){
+      if(Auth::user()->level()>(int)config('app.adminlevel')){
         //Project::create($request->except(['_token']));
         config('roles.models.role')::create($request->except(['_token']));
         return $this->get($request);
@@ -22,7 +22,7 @@ class RoleController extends Controller
 
     function get(Request $request){
       if(!empty(Auth::id())){
-        if(Auth::user()->level()>(int)config('adminlevel')){
+        if(Auth::user()->level()>(int)config('app.adminlevel')){
           return response()->json(config('roles.models.role')::all(),200);
         } else {
           return response()->json([],401);
@@ -31,7 +31,7 @@ class RoleController extends Controller
     }
     
     function update(Request $request){
-      if(Auth::user()->level()>(int)config('adminlevel')){
+      if(Auth::user()->level()>(int)config('app.adminlevel')){
         $p = config('roles.models.role')::find($request->input('rid'));
         $p->update($request->except(['_token','rid']));
         return $this->get($request);
@@ -39,7 +39,7 @@ class RoleController extends Controller
     }
     
     function destroy(Request $request){
-      if(Auth::user()->level()>(int)config('adminlevel')){
+      if(Auth::user()->level()>(int)config('app.adminlevel')){
         config('roles.models.role')::find($request->input("rid"))->delete();
         return $this->get($request);
       }

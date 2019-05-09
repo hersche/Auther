@@ -77,7 +77,7 @@ class UserController extends Controller
       return UserResource::collection(User::all());
     }
     public function changeRoles(Request $request){
-      if(Auth::user()->level()>(int)config('adminlevel')){
+      if(Auth::user()->level()>(int)config('app.adminlevel')){
         //$user = User::find($request->input("uid"));
         $slugArray = explode(",",$request->input("roles"));
         $i = 0;

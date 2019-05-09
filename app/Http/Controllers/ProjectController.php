@@ -14,7 +14,7 @@ class ProjectController extends Controller
     function create(Request $request){
   //    echo "fooo";
     //  die();
-      if(Auth::user()->level()>(int)config('adminlevel')){
+      if(Auth::user()->level()>(int)config('app.adminlevel')){
         $project = Project::create($request->except(['_token','avatar','background']));
         $avatar = 'public/projects/avatars/'.$project->title.'.png';
         $data = $request->input('avatar');
@@ -52,7 +52,7 @@ class ProjectController extends Controller
     }
     
     function update(Request $request){
-      if(Auth::user()->level()>(int)config('adminlevel')){
+      if(Auth::user()->level()>(int)config('app.adminlevel')){
         $project = Project::find($request->input('pid'));
         $project->update($request->except(['_token','avatar','background','pid']));
         $avatar = 'public/projects/avatars/'.$project->title.'.png';
@@ -84,7 +84,7 @@ class ProjectController extends Controller
     }
     
     function destroy(Request $request){
-      if(Auth::user()->level()>(int)config('adminlevel')){
+      if(Auth::user()->level()>(int)config('app.adminlevel')){
         Project::find($request->input("pid"))->delete();
         return $this->get($request);
       }

@@ -30,7 +30,7 @@ class User extends JsonResource
       $google2fa_url = "";
       $admin = false;
       if(!empty(Auth::id())){
-        if(Auth::user()->level()>(int)config('adminlevel')){
+        if(Auth::user()->level()>(int)config('app.adminlevel')){
           $email = $this->email;
           $admin = true;
         }
