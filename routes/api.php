@@ -19,6 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return new UserResource($request->user());
 })->middleware('scope:profile');
 
+Route::middleware('auth:api')->get('/users', 'UserController@get')->middleware('scope:profile');
+
 Route::middleware('auth:api')->post('/createNotification', function (Request $request) {
     $request->user()->notify(new GenericNotification($request->except("_token")));
     return $request->user()->notifications->toJson();
@@ -29,8 +31,8 @@ Route::middleware('auth:api')->post('/getNotifications', function (Request $requ
   return $request->user()->notifications->toJson();
 });
 
-Route::middleware('auth:api')->post('/notificationsReaded', function (Request $request) {
-  if(!empty(Auth::id())){
+Route::middleware('auth:api')->post('/markNotificationsAsRead', function (Request $request) {
+  if(Auth::check()){
     Auth::user()->unreadNotifications->markAsRead();
     return Auth::user()->notifications->toJson();
   }

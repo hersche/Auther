@@ -60,22 +60,6 @@ class LoginController extends Controller
     $authenticator = app(Google2FAAuthenticator::class)->boot($request);
     return $authenticator->makeRequestOneTimePasswordResponse();
 }
-    
-  /*  public function authenticated(Request $request, $user)
-    {
-    //  var_dump($request->all());
-    //  exit();
-        if (!empty(Auth::id())) {
-          //echo "logged in";
-          UserSettings::firstOrCreate(['user_id' => Auth::id()]);
-          //return response('{"success"}', 200);
-          return new UserSettingsRessource(UserSettings::where('user_id', '=' ,Auth::id())->firstOrFail());
-          //  return redirect('/home');
-        } else {
-        //  echo "not logged in";
-          return response()->json(["data"=>["error_msg"=>"Login failed"]],403);
-        }
-    }*/
     /**
      * Custom logout function with no redirect if ajax.
      *

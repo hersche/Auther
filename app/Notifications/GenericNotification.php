@@ -57,7 +57,8 @@ class GenericNotification extends Notification
         return [
             "id" => $this->id,
             "msg" => $this->theData->msg,
-            "appname" => $this->theData->appname
+            "appname" => $this->theData->appname,
+            "link" => $this->theData->link
         ];
     }
 }

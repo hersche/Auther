@@ -19,7 +19,7 @@ class CheckVerifications
     {
         if(Auth::check()){
           $u = User::find(Auth::id());
-          if(config("app.needemailverify")=="1"&&is_null($u->email_verified_at)&&url()->full()!=url("/email/verify")&&url()->full()!=url("/logout")){
+          if(config("app.needemailverify")=="1"&&is_null($u->email_verified_at)&&url()->full()!=url("/email/verify")&&url()->full()!=url("/email/resend")&&url()->full()!=url("/logout")){
             return redirect(url("/email/verify"));
           }
           if(Auth::user()->allow_username_change){
