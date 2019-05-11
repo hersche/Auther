@@ -1,5 +1,6 @@
 <?php
 use App\User;
+use App\SocialAccount;
 use App\Http\Resources\User as UserResource;
 
 # use App\Support\Google2FAAuthenticator;
@@ -19,6 +20,21 @@ use Illuminate\Http\Request;
 Route::get('/internal-api/notifications', function (Request $request) {
   if(Auth::check()){
     return Auth::user()->notifications->toJson();
+  }
+  return response()->json(["data"=>["msg"=>"No permission"]],401);
+});
+
+Route::post('/internal-api/notifications/create', function (Request $request) {
+  if(Auth::check()){
+    Auth::user()->notify(new GenericNotification($request->except("_token")));
+    return Auth::user()->notifications->toJson();
+  }
+  return response()->json(["data"=>["msg"=>"No permission"]],401);
+});
+
+Route::get('/internal-api/socialAccounts', function (Request $request) {
+  if(Auth::check()){
+    return SocialAccount::where("user_id","=",Auth::id())->get()->toJson();
   }
   return response()->json(["data"=>["msg"=>"No permission"]],401);
 });

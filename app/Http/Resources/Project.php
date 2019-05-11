@@ -30,6 +30,7 @@ class Project extends JsonResource
           'avatar' => $avatar,
           'background' => $background,
           'status' => $this->status,
+          'statusHistory' => $this->statusHistory,
           'url' => $this->url,
           'client_id' => $this->client_id,
           'version' => $this->version,

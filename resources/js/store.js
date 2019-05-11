@@ -18,17 +18,22 @@
         getUsersBySearch: (state) => (term) => {
           var sr = []
           $.each(state.users, function(i, el){
+            // Only public users or exactly known usernames should be found for privacy
+            // Additional, private users are almost empty, but this is for friend-requests
+            if(el.username==term){
+                sr.push(el)
+            }
             if(el.public){
               if(el.username.indexOf(term)>-1){
-                if((el.public==1)&&(sr.indexOf(el)==-1)){
+                if(sr.indexOf(el)==-1){
                   sr.push(el)
                 }
               } else if(el.name.indexOf(term)>-1){
-                if((el.public==1)&&(sr.indexOf(el)==-1)){
+                if(sr.indexOf(el)==-1){
                   sr.push(el)
                 }
               } else if(el.bio.indexOf(term)>-1){
-                if((el.public==1)&&(sr.indexOf(el)==-1)){
+                if(sr.indexOf(el)==-1){
                   sr.push(el)
                 }
               }

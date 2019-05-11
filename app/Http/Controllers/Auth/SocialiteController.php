@@ -19,9 +19,19 @@ class SocialiteController extends Controller
      */
     public function redirectToProvider($provider)
     {
-
         return Socialite::driver($provider)->redirect();
     }
+    
+    public function enable(Request $request,$provider){
+        $sa = SocialAccount::firstOrNew(['user_id'=>Auth::id(),'provider'=>$provider]);
+        $sa->enabled = (boolean)$request->input("enabled");
+        $sa->save();
+        return $this->get($request);
+    }
+    public function get(Request $request){
+        return SocialAccount::where("user_id","=",Auth::id())->get()->toJson();
+    }    
+    
     /**
      * Obtain the user information from Provider.
      *

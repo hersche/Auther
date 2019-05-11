@@ -17,6 +17,9 @@ class CheckVerifications
      */
     public function handle($request, Closure $next)
     {
+        if((url("/oauth/personal-access-tokens")===url()->full()||url("/oauth/clients")===url()->full())&&Auth::user()->level()<(int)config("app.adminlevel")){
+          return response()->json(["PersonalAccessTokensDenied"=>false],401);
+        }
         if(Auth::check()){
           $u = User::find(Auth::id());
           if(config("app.needemailverify")=="1"&&is_null($u->email_verified_at)&&(strpos(url()->full(), url("/email/verify")) === false)&&url()->full()!==url("/email/resend")&&url()->full()!==url("/logout")){

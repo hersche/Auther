@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
           $newRoleItem->save();
       }
       
-      $user = User::create(['name' => 'Admin','username' => 'admin','email' => 'admin@admin.admin', 'password' => Hash::make('admin')]);
+      $user = User::create(['name' => 'Admin','username' => 'admin','email' => 'admin@admin.admin', 'password' => Hash::make('admin'),'public' => true]);
       $role = config('roles.models.role')::where('name', '=', 'Admin')->first();
       $user->attachRole($role);
       

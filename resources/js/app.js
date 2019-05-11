@@ -51,7 +51,8 @@
     var searchComp = Vue.component('search', require("./components/Search.vue").default);
     var editProfileComp = Vue.component('editprofile', require("./components/settings/EditProfile.vue").default);
     var editUsernameComp = Vue.component('editusername', require("./components/settings/EditUsername.vue").default);
-    
+
+    var providersComp = Vue.component('providers', require("./components/settings/Providers.vue").default);    
     var friendsComp = Vue.component('friends', require("./components/settings/Friends.vue").default);
     var passwordComp = Vue.component('friends', require("./components/settings/password.vue").default);
     var loginComp = Vue.component('login', require("./components/auth/Login.vue").default);
@@ -103,6 +104,7 @@
    { path: '/settings/editusername', component: editUsernameComp },
    { path: '/settings/2fa', component: twofaSettings },
    { path: '/settings/friends', component: friendsComp },
+   { path: '/settings/providers', component: providersComp },
    { path: '/settings/password', component: passwordComp },
    { path: '/passport/clients', component: clientsComp },
    { path: '/settings/apps', component: authorizedClientsComp },

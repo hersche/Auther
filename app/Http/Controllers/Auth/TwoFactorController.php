@@ -67,13 +67,22 @@ public function enable2fa(Request $request){
     }
 }
 
+public function my2faForceDisable(Request $request){
+  if(Auth::user()->level()>(int)config('app.adminlevel')){
+    $u = User::find($request->input("uid"));
+    $u->passwordSecurity->enabled = 0;
+    $u->passwordSecurity->secret = "";
+    $u->passwordSecurity->save();
+    return response('{"data":{"enabled":"0","url":"","key":""}}', 200);  
+  }
+}
+
 public function my2fadisable(Request $request){
   if(Hash::check($request->input("userpass"), Auth::user()->password)){
-  $google2fa_url="";
-  Auth::user()->passwordSecurity->enabled = 0;
-  Auth::user()->passwordSecurity->secret = "";
-  Auth::user()->passwordSecurity->save();
-  return response('{"data":{"enabled":"0","url":"","key":""}}', 200);
+    Auth::user()->passwordSecurity->enabled = 0;
+    Auth::user()->passwordSecurity->secret = "";
+    Auth::user()->passwordSecurity->save();
+    return response('{"data":{"enabled":"0","url":"","key":""}}', 200);
   }
 }
 

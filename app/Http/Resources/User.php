@@ -37,17 +37,6 @@ class User extends JsonResource
         if($this->id==Auth::id()){
           $email = $this->email;
         }
-
-  /*    if(Auth::user()->passwordSecurity()->exists()&&$this->id==Auth::id()){
-          //$google2fa = app('pragmarx.google2fa');
-          $google2fa = (new \PragmaRX\Google2FAQRCode\Google2FA());
-          $google2fa_url = $google2fa->getQRCodeInline(
-              '5Balloons 2A DEMO',
-              Auth::user()->email,
-              Auth::user()->passwordSecurity->secret
-          );
-      }*/
-      
     }
     $avatar = $this->avatar();
     if((substr( $avatar, 0, 4 ) === "http")==false){
@@ -59,6 +48,11 @@ class User extends JsonResource
     }
     $bio = $this->bio;
     if(is_null($bio)){
+      $bio="";
+    }
+    if(!$this->public){
+      //$avatar="";
+      //$background="";
       $bio="";
     }
     $simpleRoleArray = [];
