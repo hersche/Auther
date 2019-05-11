@@ -72,6 +72,7 @@ public function my2faForceDisable(Request $request){
     $u = User::find($request->input("uid"));
     $u->passwordSecurity->enabled = 0;
     $u->passwordSecurity->secret = "";
+    $u->passwordSecurity->recovery_secret = "";
     $u->passwordSecurity->save();
     return response('{"data":{"enabled":"0","url":"","key":""}}', 200);  
   }
@@ -81,6 +82,7 @@ public function my2fadisable(Request $request){
   if(Hash::check($request->input("userpass"), Auth::user()->password)){
     Auth::user()->passwordSecurity->enabled = 0;
     Auth::user()->passwordSecurity->secret = "";
+    Auth::user()->passwordSecurity->recovery_secret = "";
     Auth::user()->passwordSecurity->save();
     return response('{"data":{"enabled":"0","url":"","key":""}}', 200);
   }
@@ -102,13 +104,23 @@ public function my2faTest(Request $request){
         Auth::user()->passwordSecurity->secret
     );
 
-    return response('{"data":{"enabled":"'.Auth::user()->passwordSecurity->enabled.'","url":"'.$google2fa_url.'","key":"'.Auth::user()->passwordSecurity->secret.'"}}', 200);
+    return response('{"data":{"enabled":"'.Auth::user()->passwordSecurity->enabled.'","url":"'.$google2fa_url.'","key":"'.Auth::user()->passwordSecurity->secret.'","recovery_secret":"'.Auth::user()->passwordSecurity->recovery_secret.'"}}', 200);
   } else {
     return response('{"twofactor":testinvalid}', 401);
   }
 }  else {
-   return response('{"data":{"auth":"failed"}}', 200);
+   return response('{"data":{"auth":"passwordinvalid"}}', 401);
  }
+}
+
+private function doRandStr($length){
+  $seed = str_split('abcdefghijklmnopqrstuvwxyz'
+                   .'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+                   .'0123456789'); // and any other characters
+  shuffle($seed); // probably optional since array_is randomized; this may be redundant
+  $rand = '';
+  foreach (array_rand($seed, $length) as $k) $rand .= $seed[$k];
+  return $rand;
 }
 
 public function my2faRefresh(Request $request){
@@ -120,6 +132,11 @@ public function my2faRefresh(Request $request){
     if(Auth::user()->passwordSecurity()->exists()){
       $user->passwordSecurity->enabled = 0;
       $user->passwordSecurity->secret = $google2fa->generateSecretKey();
+      
+
+
+
+      $user->passwordSecurity->recovery_secret = $this->doRandStr(5)."-".$this->doRandStr(5)."-".$this->doRandStr(5)."-".$this->doRandStr(5);
       $user->passwordSecurity->save();
       $google2fa = (new \PragmaRX\Google2FAQRCode\Google2FA());
       $google2fa_url = $google2fa->getQRCodeInline(
@@ -127,12 +144,12 @@ public function my2faRefresh(Request $request){
         Auth::user()->email,
         Auth::user()->passwordSecurity->secret
       );
-      return response('{"data":{"enabled":"'.Auth::user()->passwordSecurity->enabled.'","url":"'.$google2fa_url.'","key":"'.Auth::user()->passwordSecurity->secret.'"}}', 200);
+      return response('{"data":{"enabled":"'.Auth::user()->passwordSecurity->enabled.'","url":"'.$google2fa_url.'","key":"'.Auth::user()->passwordSecurity->secret.'","recovery_secret":"'.Auth::user()->passwordSecurity->recovery_secret.'"}}', 200);
     } else {
       Auth::user()->passwordSecurity()->create(["enabled" => 0,"secret"=>$google2fa->generateSecretKey()]);
-      return response('{"data":{"enabled":"'.Auth::user()->passwordSecurity->enabled.'","url":"'.$google2fa_url.'","key":"'.Auth::user()->passwordSecurity->secret.'"}}', 200);
+      return response('{"data":{"enabled":"'.Auth::user()->passwordSecurity->enabled.'","url":"'.$google2fa_url.'","key":"'.Auth::user()->passwordSecurity->secret.'","recovery_secret":"'.Auth::user()->passwordSecurity->recovery_secret.'"}}', 200);
     }
-    return response('{"data":{"enabled":"0","url":"","key":""}}', 200);
+    return response('{"data":{"enabled":"0","url":"","key":"","recovery_secret":"","recovery_secret":"'.Auth::user()->passwordSecurity->recovery_secret.'"}}', 200);
   } else {
     return response('{"data":{"auth":"failed"}}', 200);
   }
@@ -152,11 +169,11 @@ public function my2faGet(Request $request){
           Auth::user()->passwordSecurity->secret
       );
     }
-    return response('{"data":{"enabled":"'.Auth::user()->passwordSecurity->enabled.'","url":"'.$google2fa_url.'","key":"'.Auth::user()->passwordSecurity->secret.'"}}', 200);
+    return response('{"data":{"enabled":"'.Auth::user()->passwordSecurity->enabled.'","url":"'.$google2fa_url.'","key":"'.Auth::user()->passwordSecurity->secret.'","recovery_secret":"'.Auth::user()->passwordSecurity->recovery_secret.'"}}', 200);
   } else {
     Auth::user()->passwordSecurity()->create(["enabled" => 0,"secret"=>""]);
   }
-  return response('{"data":{"enabled":"0","url":"","key":""}}', 200);
+  return response('{"data":{"enabled":"0","url":"","key":"","recovery_secret":""}}', 200);
 } else {
   return response('{"data":{"auth":"failed"}}', 200);
 }

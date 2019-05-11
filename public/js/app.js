@@ -5782,6 +5782,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -5915,13 +5924,10 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
   },
   data: function data() {
     return {
-      mediaType: '',
       checkTwofactorCode: '',
+      show2farecovery: false,
       "public": false,
-      editpicloaded: false,
       showdismissiblealert: false,
-      avatarCropped: null,
-      tmpBio: '',
       showUserpassword: false,
       userpassword: '',
       show2fakey: false,
@@ -50606,6 +50612,26 @@ var render = function() {
                                     on: {
                                       "click:append": function($event) {
                                         _vm.show2fakey = !_vm.show2fakey
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("v-text-field", {
+                                    attrs: {
+                                      label:
+                                        "Recovery code (write this down somewhere!)",
+                                      value: _vm.twofactor.recovery_secret,
+                                      "append-icon": _vm.show2farecovery
+                                        ? "visibility_off"
+                                        : "visibility",
+                                      readonly: "",
+                                      type: _vm.show2farecovery
+                                        ? "text"
+                                        : "password"
+                                    },
+                                    on: {
+                                      "click:append": function($event) {
+                                        _vm.show2farecovery = !_vm.show2farecovery
                                       }
                                     }
                                   })

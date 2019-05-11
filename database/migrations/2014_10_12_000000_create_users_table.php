@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
         $table->integer('user_id');
         $table->boolean('enabled')->default(false);
         $table->string('secret')->nullable();
+        $table->string('recovery_secret')->nullable();
         $table->timestamps();
       });
         Schema::create('users', function (Blueprint $table) {

@@ -18,6 +18,15 @@
         @click:append="show2fakey=!show2fakey"
         :type="show2fakey ? 'text' : 'password'"
         ></v-text-field>
+        
+        <v-text-field
+          label="Recovery code (write this down somewhere!)"
+          :value="twofactor.recovery_secret"
+          :append-icon="show2farecovery ? 'visibility_off' : 'visibility'"
+          readonly
+          @click:append="show2farecovery=!show2farecovery"
+          :type="show2farecovery ? 'text' : 'password'"
+          ></v-text-field>
         </v-card-text>
     </v-card>
   </v-expansion-panel-content>
@@ -184,13 +193,10 @@
     },
     data(){
       return {
-        mediaType: '',
         checkTwofactorCode: '',
+        show2farecovery:false,
         public: false,
-        editpicloaded:false,
         showdismissiblealert: false,
-        avatarCropped: null,
-        tmpBio:'',
         showUserpassword:false,
         userpassword:'',
         show2fakey:false,
