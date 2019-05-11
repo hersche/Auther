@@ -1,11 +1,19 @@
 <template>
   <div>
-    
+    <v-text-field
+  v-model="search"
+  append-icon="search"
+  label="Search"
+  single-line
+  hide-details
+></v-text-field>
+<div :id="'roleSelectElement'"></div>
     <v-data-table
     :items="users"
+    :search="search"
     :headers="[
-      { text: 'Id', value: 'id' },
       { text: 'Name', value: 'name' },
+      { text: 'Username', value: 'username' },
       { text: 'Email', value: 'email' },
       { text: 'Roles', value: 'roles' },
       ]"
@@ -13,31 +21,16 @@
       >
         <template slot="items" slot-scope="props">
           <tr @click="props.expanded = !props.expanded">
-            <td class="text-xs-right">{{ props.item.id }}</td>
             <td class="text-xs-right">{{ props.item.name }}</td>
+            <td class="text-xs-right">{{ props.item.username }}</td>
             <td class="text-xs-right">{{ props.item.email }}</td>
             <td class="text-xs-right">{{ props.item.roles }}</td>
           </tr>
         </template>
         <template slot="expand" slot-scope="props">
           <v-card flat>
-            <form :id="'urolesform'+props.item.id">
-              <v-select
-              :items="selectRoles"
-              v-model="selectedRoles[props.item.id]"
-              style="z-index:99999 !important"
-              deletable-chips
-              attach
-              :label="$t('Roles (empty on start)')"
-              multiple
-              ></v-select>
-              <input type="hidden" :value="csrf" name="_token">
-              <input type="hidden" :value="props.item.id" name="uid">
-            </form>
-            <v-btn @click="changeRoles(props.item.id)" small color="green">
-              <v-icon>edit</v-icon>Apply roles
-            </v-btn>
-            <v-img :src="props.item.background">
+
+          <!--  <v-img :src="props.item.background">
               <v-container fill-height fluid>
                 <v-layout fill-height>
                   <v-flex xs12 align-end flexbox> 
@@ -47,16 +40,34 @@
                   </v-flex>
                 </v-layout>
               </v-container>
-            </v-img>
+            </v-img> -->
+            
             <v-card-title primary-title>
               {{ props.item.name }}
             </v-card-title>
             <v-card-text>
-              <VueMarkdown :source="props.item.bio"></VueMarkdown>
+              <form :id="'urolesform'+props.item.id">
+                <v-select
+                :items="selectRoles"
+                v-model="selectedRoles[props.item.id]"
+                style="z-index:99999 !important"
+                deletable-chips
+                :attach="'#roleSelectElement'"
+                :label="$t('Roles')"
+                multiple
+                ></v-select>
+                <input type="hidden" :value="csrf" name="_token">
+                <input type="hidden" :value="props.item.id" name="uid">
+              </form>
+              <v-btn @click="changeRoles(props.item.id)" small color="green">
+                <v-icon>edit</v-icon>Apply roles
+              </v-btn>
+              <v-btn small :to="'/profile/'+props.item.id" color="green"><v-icon>send</v-icon> Go to profile</v-btn>
+              <v-btn  @click="openConfirm(props.item.id)" small color="red"><v-icon>delete_sweep</v-icon> Delete</v-btn>
             </v-card-text>
             <v-card-actions>
-              <v-btn small :to="'/profile/'+props.item.id" color="green" icon><v-icon>send</v-icon></v-btn>
-              <v-btn  @click="openConfirm(props.item.id)" small color="red" icon><v-icon>delete_sweep</v-icon></v-btn>
+
+
             </v-card-actions>
           </v-card>
         </template>
@@ -64,11 +75,38 @@
         <form id="hiddenCSRFForm" class="d-none">
           <input type="hidden" name="_token" :value="csrf">
         </form>
+        <v-dialog
+  v-model="deleteDialog"
+  width="500"
+>
+  <v-card>
+    <v-card-title class="headline grey lighten-2" primary-title>
+      {{ $t('Delete') }} {{ $t('user') }} {{ this.tmpid.name }}?
+    </v-card-title>
+    <v-card-text>
+      This action can not be reverted!
+    </v-card-text>
+    <v-divider></v-divider>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn
+        color="red"
+        flat
+        @click="deleteDialog = false"
+      >{{ $t('No') }}</v-btn>
+      <v-btn
+        color="green"
+        flat
+        @click="deleteAction()"
+      >{{ $t('Yes') }}</v-btn>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
       </div>
     </template>
 <script>
-import { eventBus } from '../../eventBus.js';
-import { store } from '../../store.js';
+   import { eventBus } from '../../eventBus.js';
+  import { store } from '../../store.js';
   import VueMarkdown from 'vue-markdown'
   const $ = require('jquery');
   export default {
@@ -76,7 +114,9 @@ import { store } from '../../store.js';
     data(){
       return {
         tmpid: 0,
-        selectedRoles:[]
+        deleteDialog:false,
+        selectedRoles:[],
+        search:''
       }
     },
     mounted: function () {
@@ -98,10 +138,10 @@ import { store } from '../../store.js';
       selectRoles:function(){
         var sr = [];
         let that = this
-      /*  $.each( store.state.users, function( key, value ) {
+        $.each( store.state.users, function( key, value ) {
           //sr.push({value:value.slug,text:value.name})
           that.selectedRoles[value.id] = that.convertRoles(value.roles)
-        });*/
+        });
         $.each( store.state.roles, function( key, value ) {
           sr.push({value:value.slug,text:value.name})
 
@@ -112,21 +152,14 @@ import { store } from '../../store.js';
     methods: {
       convertRoles(r){
         var sr = [];
-        $.each( r.roles, function( key, value ) {
-          sr.push(value)
+        $.each( r, function( key, value ) {
+          sr.push(value.split(":")[0])
         });
-        this.selectedRoles[r.id] = r.roles;
         return sr
       },
       openConfirm(id){
-        this.tmpid = id
-        this.$vs.dialog({
-          type:'confirm',
-          color: 'danger',
-          title: `Delete user?`,
-          text: 'Delete a user can not be reverted. Are you shure?',
-          accept:this.deleteAction
-        })
+        this.tmpid = store.getters.getUserById(id)
+        this.deleteDialog=true
       },
       changeRoles(id) {
         var sr = this.selectedRoles[id];
@@ -148,15 +181,17 @@ import { store } from '../../store.js';
         return false;
       },
       deleteAction() {
+        let that = this
         $.ajax({
-            url: '/internal-api/user/'+this.tmpid,
-            type: 'DELETE',
+            url: '/internal-api/user/delete/'+this.tmpid.id,
+            type: 'POST',
             data:new FormData($("#hiddenCSRFForm")[0]),
             cache: false,
             contentType: false,
             processData: false,
             complete : function(res) {
               if(res.status==200){
+                that.deleteDialog=false
                 store.commit("setUsers",res.responseJSON.data)
               }
             }

@@ -1,7 +1,7 @@
 <?php
 
-namespace App\Http\Controllers;
-
+namespace App\Http\Controllers\Auth;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Auth;
 use Hash;
@@ -12,7 +12,7 @@ use App\Http\Resources\User as UserResource;
 
 //$google2fa = (new \PragmaRX\Google2FAQRCode\Google2FA());
 
-class PasswordSecurityController extends Controller
+class TwoFactorController extends Controller
 {
   
       use AuthenticatesUsers;
@@ -44,7 +44,7 @@ public function generate2faSecret(Request $request){
     $google2fa = app('pragmarx.google2fa');
 
     // Add the secret key to the registration data
-    \App\PasswordSecurity::create([
+    \App\TwoFactor::create([
         'user_id' => $user->id,
         'enabled' => 0,
         'secret' => $google2fa->generateSecretKey(),

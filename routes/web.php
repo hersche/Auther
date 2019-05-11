@@ -15,6 +15,39 @@ use Illuminate\Http\Request;
 |
 */
 
+
+Route::get('/internal-api/notifications', function (Request $request) {
+  if(Auth::check()){
+    return Auth::user()->notifications->toJson();
+  }
+  return response()->json(["data"=>["msg"=>"No permission"]],401);
+});
+Route::get('/internal-api/notifications/markasread', function (Request $request) {
+  if(Auth::check()){
+    Auth::user()->unreadNotifications->markAsRead();
+    return Auth::user()->notifications->toJson();
+  }
+  return response()->json(["data"=>["msg"=>"No permission"]],401);
+});
+Route::get('/internal-api/notifications/markasread/{id}', function (Request $request,$id) {
+  if(!empty(Auth::id())){
+    foreach (Auth::user()->unreadNotifications as $notification) {
+      if($notification->id==$id){
+        $notification->markAsRead();
+      }
+    }
+    return Auth::user()->notifications->toJson();
+  }
+  return response()->json(["data"=>["msg"=>"No permission"]],401);
+});
+Route::get('/internal-api/notifications/delete', function (Request $request) {
+  Auth::user()->notifications()->delete();
+  //foreach (Auth::user()->notifications as $notification) {
+    //$notification->delete();
+  //}
+  return Auth::user()->notifications->toJson();
+});
+
 Route::get('/', function () {
     return view('base');
 });
@@ -23,24 +56,19 @@ Route::group(
     Route::get('/{provider}', 'Auth\SocialiteController@redirectToProvider')->name('login')->where('provider', 'google|github|bitbucket|facebook|gitlab|twitter|linkedin');
     Route::get('/{provider}/callback', 'Auth\SocialiteController@handleProviderCallback')->where('provider', 'google|github|bitbucket|facebook|gitlab|twitter|linkedin');
 });
-Route::get('/2fa','PasswordSecurityController@show2faForm');
-Route::post('/generate2faSecret','PasswordSecurityController@generate2faSecret')->name('generate2faSecret');
-Route::post('/2fa','PasswordSecurityController@enable2fa')->name('enable2fa');
-Route::post('/disable2fa','PasswordSecurityController@disable2fa')->name('disable2fa');
-
-
-Route::post('/verify2FA','HomeController@verify2FA');
-
-// TODO move logic to controllers
+Route::get('/2fa','Auth\TwoFactorController@show2faForm');
+Route::post('/generate2faSecret','Auth\TwoFactorController@generate2faSecret')->name('generate2faSecret');
+Route::post('/2fa','Auth\TwoFactorController@enable2fa')->name('enable2fa');
+Route::post('/disable2fa','Auth\TwoFactorController@disable2fa')->name('disable2fa');
 
 // Finish 2fa-login
-Route::post('/2faVerify', 'PasswordSecurityController@my2faverify')->name('2faVerify')->middleware('2fa');
+Route::post('/2faVerify', 'Auth\TwoFactorController@my2faverify')->name('2faVerify')->middleware('2fa');
 // Finaly enable 2fa with the test
-Route::post('/internal-api/settings/2faTest', 'PasswordSecurityController@my2faTest')->middleware('2fa');
-Route::post('/internal-api/settings/refresh/twofactor', 'PasswordSecurityController@my2faRefresh');
-Route::post('/internal-api/settings/get/twofactor', 'PasswordSecurityController@my2faGet');
-Route::post('/internal-api/settings/disable/twofactor', 'PasswordSecurityController@my2fadisable');
-Route::post('/internal-api/twofactor/cancel', 'PasswordSecurityController@cancelProcess');
+Route::post('/internal-api/settings/2faTest', 'Auth\TwoFactorController@my2faTest')->middleware('2fa');
+Route::post('/internal-api/settings/refresh/twofactor', 'Auth\TwoFactorController@my2faRefresh');
+Route::post('/internal-api/settings/get/twofactor', 'Auth\TwoFactorController@my2faGet');
+Route::post('/internal-api/settings/disable/twofactor', 'Auth\TwoFactorController@my2fadisable');
+Route::post('/internal-api/twofactor/cancel', 'Auth\TwoFactorController@cancelProcess');
 
 Route::get('/internal-api/users', 'UserController@get');
 /* auth routes start */
@@ -56,6 +84,8 @@ Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 // Registration Routes...
 Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
 Route::post('register', 'Auth\RegisterController@register');
+
+Route::post('/internal-api/user/delete/{id}','UserController@destroy');
 
 // Password Reset Routes...
 Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name("password.reset");

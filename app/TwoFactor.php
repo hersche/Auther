@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PasswordSecurity extends Model
+class TwoFactor extends Model
 {
 
     protected $guarded = [];

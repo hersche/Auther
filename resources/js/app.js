@@ -67,6 +67,7 @@
     var authorizedClientsComp = Vue.component('AuthorizedClients', require("./components/passport/AuthorizedClients.vue").default);
     var projects = Vue.component('projects', require("./components/admin/Projects.vue").default);
     var roles = Vue.component('roles', require("./components/admin/Roles.vue").default);
+    var notiComp = Vue.component('Notifications', require("./components/Notifications.vue").default);
     var i18n = new VueI18n({
       locale: 'en',
       fallbackLocale: 'en'
@@ -108,6 +109,7 @@
    { path: '/passport/personalaccess', component: personalAccessTokensComp },
    { path: '/settings/profile', component: editProfileComp },
    { path: '/register', component: registerComp },
+   { path: '/notifications', component: notiComp },
  ]
  
 
@@ -116,6 +118,7 @@
    store.getters.receiveUsers()
    if(store.state.loginId!=0){
      store.getters.receiveRoles()
+     store.getters.receiveNotifications()
    }
    store.getters.receiveProjects()
    lang = 'en';

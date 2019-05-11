@@ -14,7 +14,7 @@ class CreateUsersTable extends Migration
     public function up()
     {
       
-      Schema::create('password_securities', function (Blueprint $table) {
+      Schema::create('two_factors', function (Blueprint $table) {
         $table->increments('id');
         $table->integer('user_id');
         $table->boolean('enabled')->default(false);
@@ -35,7 +35,7 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->dateTime('email_verified_at')->nullable();
             $table->timestamps();
-            $table->softDeletes();
+            //$table->softDeletes();
         });
     }
 
@@ -46,7 +46,7 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('password_securities');
+        Schema::dropIfExists('two_factors');
         Schema::dropIfExists('users');
     }
 }

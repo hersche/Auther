@@ -20,7 +20,7 @@ class User extends Authenticatable implements MustVerifyEmail
   //use HasRoles;
   //use Friendable;
   use Notifiable;
-  use SoftDeletes;
+  // use SoftDeletes;
   //protected $table = 'users';
     /**
      * The attributes that are mass assignable.
@@ -50,7 +50,7 @@ class User extends Authenticatable implements MustVerifyEmail
     
     public function passwordSecurity()
     {
-      $ps = $this->hasOne('App\PasswordSecurity');
+      $ps = $this->hasOne('App\TwoFactor');
       if(empty($ps)){
         $ps = [];
       }

@@ -48,15 +48,25 @@ class UserController extends Controller
         $user->save();
         return response()->json(["email_set"=>true],200);
       }
-      return response()->json(["email_set"=>false],200);
+      return response()->json(["email_set"=>false],401);
+    }
+    
+    public function destroy(Request $request,$id){
+      //echo "fooo";die();
+      if(Auth::check()){
+        if(Auth::id()===$id||Auth::user()->level()>(int)config('app.adminlevel')){
+          $u = User::find($id);
+          $u->notifications()->delete();
+          $u->delete();
+          return $this->get($request);
+        }
+      }
     }
     
     public function setLogin(Request $request){
       if(Auth::id()!=0){
         $u = User::find(Auth::id());
-        $tmpD = new \DateTime("now");
-        $tmpD->modify('-7 days');
-        if($u->allow_username_change==false&&$u->created_at>$tmpD){
+        if($u->allow_username_change==false){
           return response()->json(["msg"=>"Not allowed to set"],401);
         }
         if($request->input("password")==$request->input("confirm_password")){

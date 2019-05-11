@@ -18,22 +18,24 @@
         getUsersBySearch: (state) => (term) => {
           var sr = []
           $.each(state.users, function(i, el){
-            if(el.username.indexOf(term)>-1){
-              if((el.public==1)&&(sr.indexOf(el)==-1)){
-                sr.push(el)
-              }
-            } else if(el.name.indexOf(term)>-1){
-              if((el.public==1)&&(sr.indexOf(el)==-1)){
-                sr.push(el)
-              }
-            } else if(el.bio.indexOf(term)>-1){
-              if((el.public==1)&&(sr.indexOf(el)==-1)){
-                sr.push(el)
+            if(el.public){
+              if(el.username.indexOf(term)>-1){
+                if((el.public==1)&&(sr.indexOf(el)==-1)){
+                  sr.push(el)
+                }
+              } else if(el.name.indexOf(term)>-1){
+                if((el.public==1)&&(sr.indexOf(el)==-1)){
+                  sr.push(el)
+                }
+              } else if(el.bio.indexOf(term)>-1){
+                if((el.public==1)&&(sr.indexOf(el)==-1)){
+                  sr.push(el)
+                }
               }
             }
-          });
-          return sr
-        },
+            });
+            return sr
+          },
         getProjectsBySearch: (state) => (term) => {
           var sr = []
           $.each(state.projects, function(i, el){
@@ -130,6 +132,17 @@
           console.log(error);
         })
       },
+      receiveNotifications: (state) => () => {
+        axios.get("/internal-api/notifications",{})  
+        .then(function (response) {
+         store.state.notifications = JSON.parse(response.request.response)
+         console.log(JSON.parse(response.request.response));
+         return response.data
+       })
+       .catch(function (error) {
+         console.log(error);
+       })
+     },
       receiveProjects: (state) => () => {
         axios.get("/internal-api/project",{})  
         .then(function (response) {
