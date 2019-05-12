@@ -2285,7 +2285,7 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
       });
     }
   },
-  props: ['alertshown', 'alerttext', 'alertcolor'],
+  props: ['alertshown', 'alerttext', 'alertcolor', 'mixconfig'],
   computed: {
     csrf: function csrf() {
       return _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getCSRF();
@@ -45224,7 +45224,7 @@ var render = function() {
               _c(
                 "v-toolbar-title",
                 { staticClass: "white--text", attrs: { to: "/" } },
-                [_vm._v("LaraTube")]
+                [_vm._v(_vm._s(_vm.mixconfig.MIX_APP_NAME))]
               )
             ],
             1
