@@ -101,16 +101,16 @@ class SocialiteController extends Controller
      */
     protected function findOrCreateUser($providerName, $providerUser)
     {
-        $social = SocialAccount::firstOrNew([
+        $social = SocialAccount::firstOrCreate([
             'provider_user_id' => $providerUser->getId(),
             'provider' => $providerName
         ]);
-        if ($social->exists&&$social->verified&&$social->enabled) {
-            return $social->user;
-        }
-        $user = User::firstOrNew([
+        $user = User::firstOrCreate([
             'email' => $providerUser->getEmail()
         ]);
+        if ($social->exists&&$social->verified&&$social->enabled) {
+            return [$user,$social];
+        }
         if (!$user->exists) {
             $user->name = $providerUser->getName();
             $user->username = $providerUser->getNickname().str_random(10);
@@ -123,6 +123,7 @@ class SocialiteController extends Controller
             // this protection is meaned for existing users
             $social->enabled=true;
             $social->verified=true;
+	    //$social->save();
             if(config("app.userneedverify")=="0"){
               $role = config('roles.models.role')::where('slug', '=', 'user')->first();
               $user->attachRole($role);
@@ -131,7 +132,7 @@ class SocialiteController extends Controller
               $user->attachRole($role);
             }
             
-            event(new RegisteredEvent($user));
+//            event(new RegisteredEvent($user));
         }/* else {
           $tmpD = new DateTime("now");
           $tmpD->modify('-7 days');

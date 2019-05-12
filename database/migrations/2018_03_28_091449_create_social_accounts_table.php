@@ -20,7 +20,7 @@ class CreateSocialAccountsTable extends Migration
             $table->string('provider');
             $table->boolean('enabled')->default(true);
             $table->boolean('verified')->default(false);
-            $table->unique([ 'provider_user_id','provider' ]);
+            //$table->unique([ 'provider_user_id','provider' ]);
             $table->timestamps();
         });
     }

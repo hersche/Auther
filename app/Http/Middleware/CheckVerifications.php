@@ -25,9 +25,9 @@ class CheckVerifications
           if(config("app.needemailverify")=="1"&&is_null($u->email_verified_at)&&(strpos(url()->full(), url("/email/verify")) === false)&&url()->full()!==url("/email/resend")&&url()->full()!==url("/logout")){
             return redirect(url("/email/verify"));
           }
-          if(Auth::user()->allow_username_change){
+/*          if(Auth::user()->allow_username_change){
             return redirect(url("/#/settings/editusername"));
-          }
+          }*/
           if((url("/")!==url()->full())&&(config("app.googleauthenabled")==="1"||config("app.githubauthenabled")==="1"||config("app.gitlabauthenabled")==="1"||config("app.facebookauthenabled")==="1"||config("app.linkedinauthenabled")==="1"||config("app.twitterauthenabled")==="1")){
             $socialAccounts = SocialAccount::where(["user_id"=>Auth::id()])->get();
             foreach($socialAccounts as $ac){
