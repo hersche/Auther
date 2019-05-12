@@ -85,6 +85,7 @@ Route::post('/internal-api/settings/refresh/twofactor', 'Auth\TwoFactorControlle
 Route::post('/internal-api/settings/get/twofactor', 'Auth\TwoFactorController@my2faGet');
 Route::post('/internal-api/settings/disable/twofactor', 'Auth\TwoFactorController@my2fadisable');
 Route::post('/internal-api/twofactor/cancel', 'Auth\TwoFactorController@cancelProcess');
+Route::post('/internal-api/twofactor/recovery', 'Auth\TwoFactorController@my2faverifyrecovery');
 
 Route::get('/internal-api/users', 'UserController@get');
 /* auth routes start */

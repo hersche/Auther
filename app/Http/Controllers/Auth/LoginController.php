@@ -46,6 +46,7 @@ class LoginController extends Controller
     
     protected function authenticated(Request $request, $user)
 {
+  if(config('app.localauthenabled')==="1"){
     if (is_null($user->passwordSecurity)||$user->passwordSecurity->enabled==false) {
       if(!empty($request->input("ajaxLogin"))){
         return new UserRessource(Auth::user());
@@ -59,6 +60,9 @@ class LoginController extends Controller
     }
     $authenticator = app(Google2FAAuthenticator::class)->boot($request);
     return $authenticator->makeRequestOneTimePasswordResponse();
+  } else {
+    return response('{"login":"loginmethodnotenabled"}', 401);
+  }
 }
     /**
      * Custom logout function with no redirect if ajax.
@@ -81,54 +85,53 @@ class LoginController extends Controller
     }
     public function login(Request $request)
     {
-      $loginSuccess = false;
-      if (Auth::attempt(['email' => $request->input("email"), 'password' => $request->input("password")])) {
-        $loginSuccess = true;
-      } else {
-        if(Auth::attempt(['username' => $request->input("email"), 'password' => $request->input("password")])){
-          $loginSuccess = true;
-        }
-      }
-      if ($this->hasTooManyLoginAttempts($request)) {
-            $this->fireLockoutEvent($request);
-            return $this->sendLockoutResponse($request);
-        }
+        if(config('app.localauthenabled')==="1"){
+          $loginSuccess = false;
+          if (Auth::attempt(['email' => $request->input("email"), 'password' => $request->input("password")])) {
+            $loginSuccess = true;
+          } else {
+            if(Auth::attempt(['username' => $request->input("email"), 'password' => $request->input("password")])){
+              $loginSuccess = true;
+            }
+          }
+          if ($this->hasTooManyLoginAttempts($request)) {
+              $this->fireLockoutEvent($request);
+              return $this->sendLockoutResponse($request);
+            }
 
-        if ($loginSuccess) {
-          //return response('{"success"}', 200);
-        //  echo "aja$loginSuccessxLogin?";
-        //  echo $request->input("ajaxLogin");
-          if(!empty($request->input("ajaxLogin"))){
-            $user = Auth::user();
-          if (is_null($user->passwordSecurity)||$user->passwordSecurity->enabled==false) {
-            
-            // after we checked 2factor is disabled here
-            // we check if it's a recheck for socialite-logins on existing user.
-            if(!empty($request->session()->get('auth.social_provider'))){
-              //auth.social_local_user_id
-              $social = SocialAccount::find([
-                  'user_id' => $request->session()->get('auth.social_local_user_id'),
-                  'provider' => $request->session()->get('auth.social_provider')
-              ]);
-              if(!empty($social)){
-                $social->verified=true;
-                $social->enabled=true;
-                $social->save();
-                $request->session()->put('auth.social_local_user_id',0);
-                $request->session()->put('auth.social_provider',0);
+            if ($loginSuccess) {
+              //return response('{"success"}', 200);
+              //  echo "aja$loginSuccessxLogin?";
+              //  echo $request->input("ajaxLogin");
+              if(!empty($request->input("ajaxLogin"))){
+                $user = Auth::user();
+                if (is_null($user->passwordSecurity)||$user->passwordSecurity->enabled==false) {      
+                  // after we checked 2factor is disabled here
+                  // we check if it's a recheck for socialite-logins on existing user.
+                  if(!empty($request->session()->get('auth.social_provider'))){
+                    //auth.social_local_user_id
+                    $social = SocialAccount::find([
+                      'user_id' => $request->session()->get('auth.social_local_user_id'),
+                      'provider' => $request->session()->get('auth.social_provider')
+                    ]);
+                    if(!empty($social)){
+                      $social->verified=true;
+                      $social->enabled=true;
+                      $social->save();
+                      $request->session()->put('auth.social_local_user_id',0);
+                      $request->session()->put('auth.social_provider',0);
+                    }
+                  }  
+                  return new UserRessource(Auth::user());
+                } else {
+                  Auth::logout();
+                  $request->session()->put('twofactor-user-id', $user->id);
+                  return response('{"twofactor":true}', 200);
+                }
+              } else {
+                return $this->sendLoginResponse($request);
               }
             }
-            
-            return new UserRessource(Auth::user());
-          } else {
-            Auth::logout();
-            $request->session()->put('twofactor-user-id', $user->id);
-              return response('{"twofactor":true}', 200);
-          }
-        } else {
-          return $this->sendLoginResponse($request);
-        }
-        }
 
         // If the login attempt was unsuccessful we will increment the number of attempts
         // to login and redirect the user back to the login form. Of course, when this
@@ -140,5 +143,8 @@ class LoginController extends Controller
           return $this->sendFailedLoginResponse($request);
         }
         
+    } else {
+      return response('{"login":"loginmethodnotenabled"}', 401);
     }
+  }
 }

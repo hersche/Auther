@@ -12,10 +12,11 @@
     :items="users"
     :search="search"
     :headers="[
-      { text: 'Name', value: 'name' },
-      { text: 'Username', value: 'username' },
-      { text: 'Email', value: 'email' },
-      { text: 'Roles', value: 'roles' },
+      { text: $t('Name'), value: 'name' },
+      { text: $t('Username'), value: 'username' },
+      { text: $t('Email'), value: 'email' },
+      { text: $t('Roles'), value: 'roles' },
+      { text: 'Created at', value: 'created_at' },
       ]"
       :expand="true"
       >
@@ -25,23 +26,11 @@
             <td class="text-xs-right">{{ props.item.username }}</td>
             <td class="text-xs-right">{{ props.item.email }}</td>
             <td class="text-xs-right">{{ props.item.roles }}</td>
+            <td class="text-xs-right">{{ props.item.created_at }}</td>
           </tr>
         </template>
         <template slot="expand" slot-scope="props">
           <v-card flat>
-
-          <!--  <v-img :src="props.item.background">
-              <v-container fill-height fluid>
-                <v-layout fill-height>
-                  <v-flex xs12 align-end flexbox> 
-                    <v-avatar large>
-                      <img :src="props.item.avatar" :alt="props.item.name">
-                    </v-avatar>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-img> -->
-            
             <v-card-title primary-title>
               {{ props.item.name }}
             </v-card-title>
@@ -50,7 +39,6 @@
                 <v-select
                 :items="selectRoles"
                 v-model="selectedRoles[props.item.id]"
-                style="z-index:99999 !important"
                 deletable-chips
                 :attach="'#roleSelectElement'"
                 :label="$t('Roles')"

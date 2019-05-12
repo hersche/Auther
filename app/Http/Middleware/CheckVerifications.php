@@ -28,10 +28,10 @@ class CheckVerifications
           if(Auth::user()->allow_username_change){
             return redirect(url("/#/settings/editusername"));
           }
-          if(config("app.googleauthenabled")==="1"||config("app.githubauthenabled")==="1"||config("app.gitlabauthenabled")==="1"||config("app.facebookauthenabled")==="1"||config("app.linkedinauthenabled")==="1"||config("app.twitterauthenabled")==="1"){
+          if((url("/")!==url()->full())&&(config("app.googleauthenabled")==="1"||config("app.githubauthenabled")==="1"||config("app.gitlabauthenabled")==="1"||config("app.facebookauthenabled")==="1"||config("app.linkedinauthenabled")==="1"||config("app.twitterauthenabled")==="1")){
             $socialAccounts = SocialAccount::where(["user_id"=>Auth::id()])->get();
             foreach($socialAccounts as $ac){
-              if(!$ac->verified){
+              if(!$ac->verified&&$ac->enabled){
                 session()->put([
                   'auth.social_provider' => $ac->provider,
                   'auth.social_local_user_id' => Auth::id(),
@@ -41,9 +41,12 @@ class CheckVerifications
             }
           }
         }
-        if(!empty($request->session()->get('twofactor-user-id'))){
+      //  echo url("/")." vs ".url()->full();
+        //die();
+        // should check for /#/twofaLogin, but ->full() does /
+      /*  if((url("/twofactor/recovery")!==url()->full())&&(url("/")!==url()->full())&&!empty($request->session()->get('twofactor-user-id'))){
           return redirect('/#/twofaLogin');
-        }
+        }*/
         return $next($request);
     }
 }

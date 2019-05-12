@@ -132,10 +132,6 @@ public function my2faRefresh(Request $request){
     if(Auth::user()->passwordSecurity()->exists()){
       $user->passwordSecurity->enabled = 0;
       $user->passwordSecurity->secret = $google2fa->generateSecretKey();
-      
-
-
-
       $user->passwordSecurity->recovery_secret = $this->doRandStr(5)."-".$this->doRandStr(5)."-".$this->doRandStr(5)."-".$this->doRandStr(5);
       $user->passwordSecurity->save();
       $google2fa = (new \PragmaRX\Google2FAQRCode\Google2FA());
@@ -158,7 +154,6 @@ public function my2faRefresh(Request $request){
 public function my2faGet(Request $request){
   if(Hash::check($request->input("userpass"), Auth::user()->password)){
   $google2fa_url="";
-  
   if(Auth::user()->passwordSecurity()->exists()){
     if(Auth::user()->passwordSecurity->secret != ""){
       //$google2fa = app('pragmarx.google2fa');
@@ -179,11 +174,19 @@ public function my2faGet(Request $request){
 }
 }
 
-public function my2faverify(Request $request){
+
+public function my2faverifyrecovery(Request $request){
   // Login succeded as we pass the middleware
   $user = User::find($request->session()->get('twofactor-user-id'));
-  $google2fa = app('pragmarx.google2fa');
-  $valid = $google2fa->verifyKey($user->passwordSecurity->secret, $request->input("one_time_password"));
+  $valid=false;
+  if($user->passwordSecurity->recovery_secret===$request->input("recovery-secret")){
+    $valid=true;
+  }
+
+  return $this->loginAction($request,$valid);
+}
+
+private function loginAction($request,$valid){
   if ($valid) {
     if(!empty($request->session()->get('auth.social_provider'))){
       //auth.social_local_user_id
@@ -198,22 +201,29 @@ public function my2faverify(Request $request){
         $request->session()->put('auth.social_local_user_id',0);
         $request->session()->put('auth.social_provider',0);
       }
+    }
+    Auth::loginUsingId($request->session()->get('twofactor-user-id'));
+    $request->session()->put('twofactor-user-id',0);
+    if(!empty($request->input("ajaxLogin"))){
+      return new UserResource(Auth::user());
+    } else {
+      return $this->sendLoginResponse($request);
+    }
+  } else {
+    if(!empty($request->input("ajaxLogin"))){
+      return response('{"twofactor":invalid}', 401);
+    } else {
+      return redirect("/login");
+    }
   }
-  Auth::loginUsingId($request->session()->get('twofactor-user-id'));
-  $request->session()->put('twofactor-user-id',0);
-  if(!empty($request->input("ajaxLogin"))){
-    return new UserResource(Auth::user());
-  } else {
-    return $this->sendLoginResponse($request);
-    //return redirect("/");
 }
-} else {
-  if(!empty($request->input("ajaxLogin"))){
-    return response('{"twofactor":invalid}', 401);
-  } else {
-    return redirect("/login");
-}
-}
+
+public function my2faverify(Request $request){
+  // Login succeded as we pass the middleware
+  $user = User::find($request->session()->get('twofactor-user-id'));
+  $google2fa = app('pragmarx.google2fa');
+  $valid = $google2fa->verifyKey($user->passwordSecurity->secret, $request->input("one_time_password"));
+  return $this->loginAction($request,$valid);
 }
 
 public function cancelProcess(Request $request){

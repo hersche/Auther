@@ -2,58 +2,32 @@
   <div v-if="currentuser.friends!=undefined">
     <h1>Open requests from others</h1>
     <div v-for="item in currentuser.friends.pendingRequests">
-      <router-link :to="'/profile/'+toUser(item).id">
-        <v-chip>
-          <v-avatar>
-            <img :src="toUser(item).avatar" alt="trevor">
-          </v-avatar>
-          {{ toUser(item).username }}
-        </v-chip>
-      </router-link>
-    <v-btn @click="changeFriend('/internal-api/friends/acceptRequest', toUser(item).id)" >Accept request</v-btn>
+      <UserChip :item="toUser(item)"></UserChip>
+      <v-btn @click="changeFriend('/internal-api/friends/acceptRequest', toUser(item).id)" >Accept request</v-btn>
       <v-btn @click="changeFriend('/internal-api/friends/denyRequest', toUser(item).id)" >Deny request</v-btn>
       <v-btn @click="changeFriend('/internal-api/friends/block', toUser(item).id)" >Block</v-btn>
     </div>
+    <div v-if="currentuser.friends.pending.length>0">
     <h1>Open requests by myself</h1>
     <div v-for="item in currentuser.friends.pending">
-      <router-link :to="'/profile/'+toUser(item).id">
-        <v-chip>
-          <v-avatar>
-            <img :src="toUser(item).avatar" :alt="toUser(item).name">
-          </v-avatar>
-          {{ toUser(item).username }}
-        </v-chip>
-      </router-link>
+      <UserChip :item="toUser(item)"></UserChip>
       <v-btn @click="changeFriend('/internal-api/friends/block', toUser(item).id)" >Block</v-btn>
       <v-btn @click="changeFriend('/internal-api/friends/unfriend', toUser(item).id)" >Unfriend</v-btn>
     </div>
+  </div>
     <h1>Blocked by myself</h1>
     <div v-for="item in currentuser.friends.blocked">
-      <router-link :to="'/profile/'+toUser(item).id">
-        <v-chip>
-          <v-avatar>
-            <img :src="toUser(item).avatar" :alt="toUser(item).name">
-          </v-avatar>
-          {{ toUser(item).username }}
-        </v-chip>
-      </router-link>
+      <UserChip :item="toUser(item)"></UserChip>
       <v-btn @click="changeFriend('/internal-api/friends/unblock', toUser(item).id)" >Unblock</v-btn>
     </div>
     <h1>Accepted by myself</h1>
     <div v-for="item in currentuser.friends.accepted">
-      <router-link :to="'/profile/'+toUser(item).id">
-        <v-chip>
-          <v-avatar>
-            <img :src="toUser(item).avatar" :alt="toUser(item).name">
-          </v-avatar>
-          {{ toUser(item).username }}
-        </v-chip>
-      </router-link>
+      <UserChip :item="toUser(item)"></UserChip>
       <v-btn @click="changeFriend('/internal-api/friends/unfriend', toUser(item).id)" >Unfriend</v-btn>
     </div>
     <h1>Denied by myself</h1>
     <div v-for="item in currentuser.friends.denied">
-      <router-link :to="'/profile/'+toUser(item).id" >{{ toUser(item).username }}</router-link>
+      <UserChip :item="toUser(item)"></UserChip>
       <v-btn @click="changeFriend('/internal-api/friends/unblock', toUser(item).id)" >Unblock</v-btn>
     </div>
 </div>
@@ -62,12 +36,14 @@
   import { store } from '../../store.js';
   import { eventBus } from '../../eventBus.js';
   import MarkdownCreator from '../MarkdownCreator'
+  import UserChip from '../UserChip'
   const $ = require("jquery");
   const axios = require("axios");
   export default {
     props: ['baseUrl'],
     components: {
-      MarkdownCreator
+      MarkdownCreator,
+      UserChip
     },
     mounted: function () {
     },

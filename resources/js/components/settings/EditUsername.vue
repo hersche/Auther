@@ -2,10 +2,10 @@
   <div v-if="currentuser.allow_username_change">
     <div class="text-center">
       <h1>{{ $t("Change") }} {{ $t("login") }}</h1>
-      <p>Because your username and password was generated randomly / you logged in with a external provider like google, you can change your username once here.</p>
+      <p>Because your username and password was generated randomly / you logged in with a external provider like google, you can change your username and password once here.</p>
       <p>When you set this info, you can login with these information.</p>
       <p>HOWEVER: You can still login with the provider and you can set this login-information later.</p>
-      <p>You can find this in the menu under Settings. <b>After you performed this action or after 7 days, this option will disappear.</b></p>
+      <p>You can find this in the menu under Settings. <b>After you performed this action, this option will disappear.</b></p>
       <v-text-field
         label="New username"
         v-model="username"

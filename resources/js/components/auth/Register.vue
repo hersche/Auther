@@ -23,16 +23,23 @@
           v-model="username"
           :label="$t('Username')"
           name="username"
-          :rules="[rules.required, usernameAvaible]"
+          :rules="[rules.required, usernameAvaible,usernameRules]"
           hint="You can not change this name after registration"
           required
         ></v-text-field>
         <v-alert
-        :value="usernameAvaible"
+        :value="usernameAvaible&&usernameRules"
         type="success"
         style="background-color:green"
         >
           Username is avaible
+        </v-alert>
+        <v-alert
+        :value="usernameRules==false"
+        type="error"
+        style="background-color:red"
+        >
+          Spaces in username are not allowed
         </v-alert>
         <v-alert
         :value="usernameAvaible==false"
@@ -50,11 +57,6 @@
         <MarkdownCreator theText="" theId="bio" :theTitle="$t('Biographie')" :theHint="$t('Some words about you')+'...'" ></MarkdownCreator>
         <v-switch v-model="public" :label="$t('Public')+' '+$t('account')"></v-switch>
         <input type="hidden" name="public" :value="Number(public)" />
-        <v-text-field
-          v-model="tags"
-          label="Tags"
-          name="tags"
-        ></v-text-field>
         <v-text-field
           v-model="password"
           :append-icon="showPassword ? 'visibility_off' : 'visibility'"
@@ -102,6 +104,12 @@
     computed: {
       loggeduserid(){
         return store.state.loginId
+      },
+      usernameRules () {
+        if(this.username.indexOf(' ')<0){
+          return true
+        }
+        return false
       },
       usernameAvaible(){
         if(this.username==""){

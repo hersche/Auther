@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('Register') }}</div>
 
                 <div class="card-body">
-                  @if (config("app.localauthenabled")=="1"||config("app.registerenabled"))
+                  @if (config("app.localauthenabled")=="1"&&config("app.disableregister")=="0")
                     <form method="POST" action="/register">
                         @csrf
 

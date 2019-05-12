@@ -3,10 +3,11 @@
     <div class="text-center" v-if="twofactor!=undefined">
     <h1>{{ $t("2factor") }} {{ $t("settings") }}</h1>
     <p>Always take care about the QR-Code and it's secret. Don't let stranger take a photo.</p>
+    <p>Also, if this is the time you enable it, save a copy of your recovery-code somewhere!</p>
     <v-expansion-panel v-if="twofactorstatenr>0">
       <v-expansion-panel-content>
     <template v-slot:header>
-      <div>Show QR-Code and secret</div>
+      <div>Show QR-Code, secret and recovery-code</div>
     </template>
     <v-card>
       <v-card-text class="text-center"><img  :src="twofactor.url" />

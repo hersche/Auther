@@ -65,7 +65,8 @@ class RegisterController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function register(Request $request)
-    {
+    { 
+      if((config('app.localauthenabled')==="1")&&(config('app.disableregister')==="0")){
         $this->validator($request->all())->validate();
 
         $user = User::create($request->except(['avatar','background','_token']));
@@ -115,7 +116,7 @@ class RegisterController extends Controller
           }
           return redirect("/email/resend");
         }
-
+      }
     }
 
     /**

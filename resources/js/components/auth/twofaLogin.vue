@@ -15,12 +15,31 @@
               v-on:keyup.enter="submitLogin()"
               required
               ></v-text-field>
-              
-
               </v-form>
                       <v-btn @click="submitLogin()">
                           {{ $t('Login') }}
                       </v-btn>
+                      
+                      <v-form
+                        ref="form"
+                        id="oneTimePasswordForm"
+                        v-model="recoveryvalid"
+                        lazy-validation
+                        >
+                        <input type="hidden" name="_token" :value="csrf">
+                        <v-text-field
+                          label="2fa-token-recovery-code"
+                          v-on:keyup.enter="recoveryLogin()"
+                          v-model="recoverycode"
+                          required
+                          ></v-text-field>
+                          
+
+                          </v-form>
+                                  <v-btn @click="recoveryLogin()">
+                                      {{ $t('Apply') }} {{ $t('recovery-code') }}
+                                  </v-btn>
+                      
                       <v-btn @click="cancelProcess()">
                           {{ $t('Cancel') }} {{ $t('login') }}
                       </v-btn>
@@ -38,6 +57,8 @@
     data(){
       return {
         valid:true,
+        recoveryvalid:true,
+        recoverycode:'',
         email:'',
         password:'',
         show1:false,
@@ -59,6 +80,18 @@
         axios.post("/internal-api/twofactor/cancel",{"_token":this.csrf})  
         .then(function (response) {
           this.$router.push("/")
+       })
+       .catch(function (error) {
+         console.log(error);
+       })
+      },
+      recoveryLogin(){
+        let that = this
+        axios.post("/internal-api/twofactor/recovery",{"_token":this.csrf,"recovery-secret":this.recoverycode,"ajaxLogin":"1"})  
+        .then(function (response) {
+          //console.log("recovery-login: ",JSON.parse(response.request.response).data)
+          eventBus.$emit('login',JSON.parse(response.request.response).data)
+          that.$router.push("/")
        })
        .catch(function (error) {
          console.log(error);

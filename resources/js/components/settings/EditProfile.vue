@@ -6,34 +6,25 @@
       <v-text-field
         :label="$t('Name')"
         name="name"
-         :value="currentuser.name"
+        :value="currentuser.name"
         required
         ></v-text-field>
-    <div class="form-group">
-        <label>{{ $t("Avatar") }}</label>
-    <Cropper v-bind:theurl="currentuser.avatar" v-bind:width="180" v-bind:height="180" type="circle" name="avatar" ></Cropper>
-  </div>
-    <div class="form-group">
-        <label>{{ $t("Background") }}</label>
-            <Cropper v-bind:theurl="currentuser.background" v-bind:width="800" v-bind:height="394" type="square" name="background" ></Cropper>
-    </div>
-            <v-switch v-model="public" :label="$t('Public')+' '+$t('account')"></v-switch>
-            <input type="hidden" name="public" :value="Number(public)" />
-          <MarkdownCreator :theText="currentuser.bio" theId="bio" :theTitle="$t('Biographie')" ></MarkdownCreator>
-          <v-text-field
-            label="Tags"
-            name="tags"
-            :value="currentuser.tagString"
-            ></v-text-field>
-
-
+        <div class="form-group">
+          <label>{{ $t("Avatar") }}</label>
+          <Cropper v-bind:theurl="currentuser.avatar" v-bind:width="180" v-bind:height="180" type="circle" name="avatar" ></Cropper>
+        </div>
+        <div class="form-group">
+          <label>{{ $t("Background") }}</label>
+          <Cropper v-bind:theurl="currentuser.background" v-bind:width="800" v-bind:height="394" type="square" name="background" ></Cropper>
+        </div>
+        <v-switch v-model="public" :label="$t('Public')+' '+$t('account')"></v-switch>
+        <input type="hidden" name="public" :value="Number(public)" />
+        <MarkdownCreator :theText="currentuser.bio" theId="bio" :theTitle="$t('Biographie')" ></MarkdownCreator>
     </form>
-
     <v-btn @click="submitAction();"color="green" ><v-icon>save</v-icon>{{ $t('Save') }}</v-btn> <!-- <button @click="deleteAction();" class="btn btn-danger" >Delete</button> -->
-    </div>
+  </div>
 </template>
 <script>
-  
   import { store } from '../../store.js';
   import { eventBus } from '../../eventBus.js';
   import MarkdownCreator from '../MarkdownCreator'
@@ -66,10 +57,6 @@
     },
 
     methods: {
-      rmBr(str) {
-        return str.replace(/<br\s*\/?>/mg,"");
-      },
-
       submitAction() {
         let that = this;
         var d = new FormData($("#theForm")[0])
