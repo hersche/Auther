@@ -96,7 +96,7 @@
    { path: '/profile/:profileId', component: profileComp },
    { path: '/search/:term', component: searchComp },
    { path: '/login', component: loginComp },
-   { path: '/checkLogin', component: checkLoginComp },
+   { path: '/settings/checkLogin', component: checkLoginComp },
    { path: '/admin/users', component: useradminComp },
    { path: '/admin/projects', component: projects },
    { path: '/admin/roles', component: roles },

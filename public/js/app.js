@@ -93460,7 +93460,7 @@ var routes = [{
   path: '/login',
   component: loginComp
 }, {
-  path: '/checkLogin',
+  path: '/settings/checkLogin',
   component: checkLoginComp
 }, {
   path: '/admin/users',
