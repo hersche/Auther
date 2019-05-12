@@ -95,7 +95,8 @@ Auth::routes(['verify' => true]);
  // Authentication Routes...
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->middleware('2fa');
-Route::post('/checkLogin', 'Auth\SocialiteController@login')->middleware('2fa');
+// the below should be done by usual login(?)
+//Route::post('/checkLogin', 'Auth\LoginController@login')->middleware('2fa');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 // Registration Routes...

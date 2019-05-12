@@ -80,11 +80,16 @@ class SocialiteController extends Controller
           } else {
             // social is not verfied yet, maybe it's a email-based attack?
             // check by a login, to enable it!
-            session()->put([
-              'auth.social_provider' => $social->provider,
-              'auth.social_local_user_id' => $user->id,
-            ]);
-            return redirect('/#/settings/checkLogin');
+            if(config('app.localauthenabled')==="1"){
+              session()->put([
+                'auth.social_provider' => $social->provider,
+                'auth.social_local_user_id' => $user->id,
+              ]);
+              return redirect('/#/settings/checkLogin');
+            } else {
+              $social->verified=true;
+              $social->save();
+            }
           }
         } else {
           // this login-method is disabled by the user.
@@ -111,6 +116,9 @@ class SocialiteController extends Controller
         if ($social->exists&&$social->verified&&$social->enabled) {
             return [$user,$social];
         }
+        if(!$social->exists){
+          $social->enabled=true;
+        }
         if (!$user->exists) {
             $user->name = $providerUser->getName();
             $user->username = $providerUser->getNickname().str_random(10);
@@ -118,11 +126,10 @@ class SocialiteController extends Controller
             $user->avatar = $providerUser->getAvatar();
             $user->password = bcrypt(str_random(30));
             $user->save();
-            
+            $social->verified=true;
             // if user doesn't exist yet, social need to be fine.
             // this protection is meaned for existing users
-            $social->enabled=true;
-            $social->verified=true;
+
 	    //$social->save();
             if(config("app.userneedverify")=="0"){
               $role = config('roles.models.role')::where('slug', '=', 'user')->first();
