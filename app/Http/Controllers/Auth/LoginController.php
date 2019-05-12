@@ -7,6 +7,7 @@ use Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\User;
+use App\SocialAccount;
 use App\Http\Resources\User as UserRessource;
 use App\Support\Google2FAAuthenticator;
 use PragmaRX\Google2FALaravel\Support\Authenticator;
@@ -110,11 +111,11 @@ class LoginController extends Controller
                   // we check if it's a recheck for socialite-logins on existing user.
                   if(!empty($request->session()->get('auth.social_provider'))){
                     //auth.social_local_user_id
-                    $social = SocialAccount::find([
+                    $social = SocialAccount::firstOrNew([
                       'user_id' => $request->session()->get('auth.social_local_user_id'),
                       'provider' => $request->session()->get('auth.social_provider')
                     ]);
-                    if(!empty($social)){
+                    if($social->exists){
                       $social->verified=true;
                       $social->enabled=true;
                       $social->save();

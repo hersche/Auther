@@ -106,11 +106,11 @@ class SocialiteController extends Controller
      */
     protected function findOrCreateUser($providerName, $providerUser)
     {
-        $social = SocialAccount::firstOrCreate([
+        $social = SocialAccount::firstOrNew([
             'provider_user_id' => $providerUser->getId(),
             'provider' => $providerName
         ]);
-        $user = User::firstOrCreate([
+        $user = User::firstOrNew([
             'email' => $providerUser->getEmail()
         ]);
         if ($social->exists&&$social->verified&&$social->enabled) {
