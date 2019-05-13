@@ -55,8 +55,12 @@
           if(this.init){
             this.init=false
             this.tmpBio = u.bio
-            this.public = u.public 
-            this.track_logins = u.track_logins
+            if(u.public!=NaN&&u.public!=undefined){
+              this.public = u.public 
+            }
+            if(u.track_logins!=NaN&&u.track_logins!=undefined){
+              this.track_logins = u.track_logins
+            }
           }
         }
         return u
