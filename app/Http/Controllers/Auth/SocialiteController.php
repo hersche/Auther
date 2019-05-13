@@ -69,6 +69,9 @@ class SocialiteController extends Controller
               'auth.social_id' => $providerUser->getId()
             ]);
             DB::commit();
+            if($user->track_logins){
+              $user->notify(new \App\Notifications\GenericNotification(["msg"=>"You logged in via ".$social->provider, "appname"=>config("app.name"),"link"=>""]));
+            }
             if($user->allow_username_change){
               return redirect('/#/settings/editusername');
             } else {

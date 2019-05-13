@@ -89,7 +89,7 @@
       return {
         mediaType: '',
         public: false,
-        track_logins:true,
+        track_logins:false,
         editpicloaded:false,
         showdismissiblealert: false,
         avatarCropped: null,

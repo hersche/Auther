@@ -127,7 +127,9 @@ class LoginController extends Controller
                     }
                   }
                   if(Auth::user()->track_logins){
-                    Auth::user()->notify(new \App\Notifications\GenericNotification(["msg"=>"You logged in.", "appname"=>config("app.name"),"link"=>""]));
+                    Auth::user()->notify(new \App\Notifications\GenericNotification(["msg"=>"You logged in", "appname"=>config("app.name"),"link"=>""]));
+                  //  $browser = get_browser(null, true);
+                  //  Auth::user()->notify(new \App\Notifications\GenericNotification(["msg"=>"You logged in on ".$browser['browser']." ".$browser['version']." (@".$browser['platform'].")", "appname"=>config("app.name"),"link"=>""]));
                   }
                   return new UserRessource(Auth::user());
                 } else {
