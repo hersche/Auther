@@ -52,9 +52,12 @@
       currentuser: function(){
         var u = store.getters.getUserById(store.state.loginId)
         if(u!=undefined){
-          this.tmpBio = u.bio
-          this.public = u.public 
-          this.track_logins = u.track_logins
+          if(this.init){
+            this.init=false
+            this.tmpBio = u.bio
+            this.public = u.public 
+            this.track_logins = u.track_logins
+          }
         }
         return u
       },
@@ -89,6 +92,7 @@
       return {
         mediaType: '',
         public: false,
+        init:true,
         track_logins:false,
         editpicloaded:false,
         showdismissiblealert: false,

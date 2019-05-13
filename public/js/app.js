@@ -2417,8 +2417,8 @@ __webpack_require__.r(__webpack_exports__);
         return "liked";
       }
     },
-    emitMarkNotifications: function emitMarkNotifications(url) {
-      _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$emit('getNotifications', url);
+    emitMarkNotifications: function emitMarkNotifications(url) {// TODO handle actions, but in a better way than in laratube
+      //eventBus.$emit('getNotifications',url);
     },
     getMediaById2: function getMediaById2(id) {
       console.log("mediabyid " + id);
@@ -5287,6 +5287,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 
@@ -5313,7 +5315,12 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
       var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId);
 
       if (u != undefined) {
-        this.tmpBio = u.bio;
+        if (this.init) {
+          this.init = false;
+          this.tmpBio = u.bio;
+          this["public"] = u["public"];
+          this.track_logins = u.track_logins;
+        }
       }
 
       return u;
@@ -5346,6 +5353,8 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
     return {
       mediaType: '',
       "public": false,
+      init: true,
+      track_logins: false,
       editpicloaded: false,
       showdismissiblealert: false,
       avatarCropped: null,
@@ -50457,6 +50466,22 @@ var render = function() {
               _c("input", {
                 attrs: { type: "hidden", name: "public" },
                 domProps: { value: Number(_vm.public) }
+              }),
+              _vm._v(" "),
+              _c("v-switch", {
+                attrs: { label: _vm.$t("Track") + " " + _vm.$t("logins") },
+                model: {
+                  value: _vm.track_logins,
+                  callback: function($$v) {
+                    _vm.track_logins = $$v
+                  },
+                  expression: "track_logins"
+                }
+              }),
+              _vm._v(" "),
+              _c("input", {
+                attrs: { type: "hidden", name: "track_logins" },
+                domProps: { value: Number(_vm.track_logins) }
               }),
               _vm._v(" "),
               _c("MarkdownCreator", {
