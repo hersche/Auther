@@ -2235,6 +2235,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -2554,13 +2555,10 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(Number(_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId));
       var pu = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(Number(this.$route.params.profileId));
 
-      if (u.friends != undefined) {
-        console.log("pending", u.friends.pending);
-
+      if (u.friends != undefined && u.id != 0) {
         if (u.friends.accepted.indexOf(pu.username) > -1) {
           return 1;
         } else if (u.friends.pending.indexOf(pu.username) > -1) {
-          console.log("return 2");
           return 2;
         } else if (u.friends.denied.indexOf(pu.username) > -1) {
           return 3;
@@ -2761,8 +2759,30 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue_markdown__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-markdown */ "./node_modules/vue-markdown/dist/vue-markdown.common.js");
-/* harmony import */ var vue_markdown__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_markdown__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../store.js */ "./resources/js/store.js");
+/* harmony import */ var vue_markdown__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-markdown */ "./node_modules/vue-markdown/dist/vue-markdown.common.js");
+/* harmony import */ var vue_markdown__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_markdown__WEBPACK_IMPORTED_MODULE_1__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2808,10 +2828,51 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
+var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['item'],
   components: {
-    VueMarkdown: vue_markdown__WEBPACK_IMPORTED_MODULE_0___default.a
+    VueMarkdown: vue_markdown__WEBPACK_IMPORTED_MODULE_1___default.a
+  },
+  methods: {
+    changeFriend: function changeFriend(url, uid) {
+      axios.post(url, {
+        fid: uid,
+        _token: this.csrf
+      }).then(function (response) {
+        _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].commit("setUsers", JSON.parse(response.request.response).data);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  },
+  computed: {
+    friendstatus: function friendstatus() {
+      var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(Number(_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId));
+      var pu = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(Number(this.item.id));
+
+      if (u.friends != undefined && u.id != 0) {
+        if (u.friends.accepted.indexOf(pu.username) > -1) {
+          return 1;
+        } else if (u.friends.pending.indexOf(pu.username) > -1) {
+          return 2;
+        } else if (u.friends.denied.indexOf(pu.username) > -1) {
+          return 3;
+        } else if (u.friends.blocked.indexOf(pu.username) > -1) {
+          return 4;
+        } else if (u.friends.pendingRequests.indexOf(pu.username) > -1) {
+          return 5;
+        }
+      }
+
+      return 0;
+    },
+    loginId: function loginId() {
+      return _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId;
+    }
   },
   data: function data() {
     return {
@@ -5495,6 +5556,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -5522,6 +5594,13 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
     currentuser: function currentuser() {
       var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId);
       return u;
+    },
+    dataEmpty: function dataEmpty() {
+      if (this.currentuser.friends.pendingRequests.length == 0 && this.currentuser.friends.pending.length == 0 && this.currentuser.friends.blocked.length == 0 && this.currentuser.friends.accepted.length == 0 && this.currentuser.friends.denied.length == 0) {
+        return true;
+      }
+
+      return false;
     }
   },
   methods: {
@@ -46792,7 +46871,187 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "v-card-text",
-                [_c("VueMarkdown", { attrs: { source: _vm.item.bio } })],
+                [
+                  _vm.loginId != _vm.item.id
+                    ? _c("div", [
+                        _vm.friendstatus == 0
+                          ? _c(
+                              "div",
+                              [
+                                _vm._v("No friend-thing yet \n        "),
+                                _c(
+                                  "v-btn",
+                                  {
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.changeFriend(
+                                          "/internal-api/friends/friendRequest",
+                                          _vm.item.id
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Send friendrequest")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-btn",
+                                  {
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.changeFriend(
+                                          "/internal-api/friends/block",
+                                          _vm.item.id
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Block")]
+                                )
+                              ],
+                              1
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.friendstatus == 1
+                          ? _c(
+                              "div",
+                              [
+                                _vm._v("Accepted friend\n      "),
+                                _c(
+                                  "v-btn",
+                                  {
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.changeFriend(
+                                          "/internal-api/friends/block",
+                                          _vm.item.id
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Block")]
+                                )
+                              ],
+                              1
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.friendstatus == 2
+                          ? _c(
+                              "div",
+                              [
+                                _vm._v("Your request is pending\n      "),
+                                _c(
+                                  "v-btn",
+                                  {
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.changeFriend(
+                                          "/internal-api/friends/block",
+                                          _vm.item.id
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Block")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-btn",
+                                  {
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.changeFriend(
+                                          "/internal-api/friends/unfriend",
+                                          _vm.item.id
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Unfriend")]
+                                )
+                              ],
+                              1
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.friendstatus == 3
+                          ? _c(
+                              "div",
+                              [
+                                _vm._v("Denied friend\n      "),
+                                _c(
+                                  "v-btn",
+                                  {
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.changeFriend(
+                                          "/internal-api/friends/acceptRequest",
+                                          _vm.item.id
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Accept request")]
+                                )
+                              ],
+                              1
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.friendstatus == 4
+                          ? _c(
+                              "div",
+                              [
+                                _vm._v("Blocked friend\n      "),
+                                _c(
+                                  "v-btn",
+                                  {
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.changeFriend(
+                                          "/internal-api/friends/unblock",
+                                          _vm.item.id
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Unblock")]
+                                )
+                              ],
+                              1
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.friendstatus == 5
+                          ? _c(
+                              "div",
+                              [
+                                _vm._v("Pending request friend\n        "),
+                                _c(
+                                  "v-btn",
+                                  {
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.changeFriend(
+                                          "/internal-api/friends/acceptRequest",
+                                          _vm.item.id
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Accept request")]
+                                )
+                              ],
+                              1
+                            )
+                          : _vm._e()
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c("VueMarkdown", { attrs: { source: _vm.item.bio } })
+                ],
                 1
               ),
               _vm._v(" "),
@@ -50269,7 +50528,10 @@ var render = function() {
             _vm._m(0),
             _vm._v(" "),
             _c("v-text-field", {
-              attrs: { label: "New username", type: "text" },
+              attrs: {
+                label: _vm.$t("New") + " " + _vm.$t("username"),
+                type: "text"
+              },
               model: {
                 value: _vm.username,
                 callback: function($$v) {
@@ -50421,199 +50683,237 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _vm.currentuser.friends != undefined
-    ? _c(
-        "div",
-        [
-          _c("h1", [_vm._v("Open requests from others")]),
-          _vm._v(" "),
-          _vm._l(_vm.currentuser.friends.pendingRequests, function(item) {
-            return _c(
+    ? _c("div", [
+        _vm.currentuser.friends.pendingRequests.length > 0
+          ? _c(
               "div",
               [
-                _c("UserChip", { attrs: { item: _vm.toUser(item) } }),
+                _c("h1", [_vm._v("Open requests from others")]),
                 _vm._v(" "),
-                _c(
-                  "v-btn",
-                  {
-                    on: {
-                      click: function($event) {
-                        _vm.changeFriend(
-                          "/internal-api/friends/acceptRequest",
-                          _vm.toUser(item).id
-                        )
-                      }
-                    }
-                  },
-                  [_vm._v("Accept request")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "v-btn",
-                  {
-                    on: {
-                      click: function($event) {
-                        _vm.changeFriend(
-                          "/internal-api/friends/denyRequest",
-                          _vm.toUser(item).id
-                        )
-                      }
-                    }
-                  },
-                  [_vm._v("Deny request")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "v-btn",
-                  {
-                    on: {
-                      click: function($event) {
-                        _vm.changeFriend(
-                          "/internal-api/friends/block",
-                          _vm.toUser(item).id
-                        )
-                      }
-                    }
-                  },
-                  [_vm._v("Block")]
-                )
-              ],
-              1
-            )
-          }),
-          _vm._v(" "),
-          _vm.currentuser.friends.pending.length > 0
-            ? _c(
-                "div",
-                [
-                  _c("h1", [_vm._v("Open requests by myself")]),
-                  _vm._v(" "),
-                  _vm._l(_vm.currentuser.friends.pending, function(item) {
-                    return _c(
-                      "div",
-                      [
-                        _c("UserChip", { attrs: { item: _vm.toUser(item) } }),
-                        _vm._v(" "),
-                        _c(
-                          "v-btn",
-                          {
-                            on: {
-                              click: function($event) {
-                                _vm.changeFriend(
-                                  "/internal-api/friends/block",
-                                  _vm.toUser(item).id
-                                )
-                              }
+                _vm._l(_vm.currentuser.friends.pendingRequests, function(item) {
+                  return _c(
+                    "div",
+                    [
+                      _c("UserChip", { attrs: { item: _vm.toUser(item) } }),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          on: {
+                            click: function($event) {
+                              _vm.changeFriend(
+                                "/internal-api/friends/acceptRequest",
+                                _vm.toUser(item).id
+                              )
                             }
-                          },
-                          [_vm._v("Block")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "v-btn",
-                          {
-                            on: {
-                              click: function($event) {
-                                _vm.changeFriend(
-                                  "/internal-api/friends/unfriend",
-                                  _vm.toUser(item).id
-                                )
-                              }
+                          }
+                        },
+                        [_vm._v("Accept request")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          on: {
+                            click: function($event) {
+                              _vm.changeFriend(
+                                "/internal-api/friends/denyRequest",
+                                _vm.toUser(item).id
+                              )
                             }
-                          },
-                          [_vm._v("Unfriend")]
-                        )
-                      ],
-                      1
-                    )
-                  })
-                ],
-                2
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _c("h1", [_vm._v("Blocked by myself")]),
-          _vm._v(" "),
-          _vm._l(_vm.currentuser.friends.blocked, function(item) {
-            return _c(
+                          }
+                        },
+                        [_vm._v("Deny request")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          on: {
+                            click: function($event) {
+                              _vm.changeFriend(
+                                "/internal-api/friends/block",
+                                _vm.toUser(item).id
+                              )
+                            }
+                          }
+                        },
+                        [_vm._v("Block")]
+                      )
+                    ],
+                    1
+                  )
+                })
+              ],
+              2
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.currentuser.friends.pending.length > 0
+          ? _c(
               "div",
               [
-                _c("UserChip", { attrs: { item: _vm.toUser(item) } }),
+                _c("h1", [_vm._v("Open requests by myself")]),
                 _vm._v(" "),
-                _c(
-                  "v-btn",
-                  {
-                    on: {
-                      click: function($event) {
-                        _vm.changeFriend(
-                          "/internal-api/friends/unblock",
-                          _vm.toUser(item).id
-                        )
-                      }
-                    }
-                  },
-                  [_vm._v("Unblock")]
-                )
+                _vm._l(_vm.currentuser.friends.pending, function(item) {
+                  return _c(
+                    "div",
+                    [
+                      _c("UserChip", { attrs: { item: _vm.toUser(item) } }),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          on: {
+                            click: function($event) {
+                              _vm.changeFriend(
+                                "/internal-api/friends/block",
+                                _vm.toUser(item).id
+                              )
+                            }
+                          }
+                        },
+                        [_vm._v("Block")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          on: {
+                            click: function($event) {
+                              _vm.changeFriend(
+                                "/internal-api/friends/unfriend",
+                                _vm.toUser(item).id
+                              )
+                            }
+                          }
+                        },
+                        [_vm._v("Unfriend")]
+                      )
+                    ],
+                    1
+                  )
+                })
               ],
-              1
+              2
             )
-          }),
-          _vm._v(" "),
-          _c("h1", [_vm._v("Accepted by myself")]),
-          _vm._v(" "),
-          _vm._l(_vm.currentuser.friends.accepted, function(item) {
-            return _c(
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.currentuser.friends.blocked.length > 0
+          ? _c(
               "div",
               [
-                _c("UserChip", { attrs: { item: _vm.toUser(item) } }),
+                _c("h1", [_vm._v("Blocked by myself")]),
                 _vm._v(" "),
-                _c(
-                  "v-btn",
-                  {
-                    on: {
-                      click: function($event) {
-                        _vm.changeFriend(
-                          "/internal-api/friends/unfriend",
-                          _vm.toUser(item).id
-                        )
-                      }
-                    }
-                  },
-                  [_vm._v("Unfriend")]
-                )
+                _vm._l(_vm.currentuser.friends.blocked, function(item) {
+                  return _c(
+                    "div",
+                    [
+                      _c("UserChip", { attrs: { item: _vm.toUser(item) } }),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          on: {
+                            click: function($event) {
+                              _vm.changeFriend(
+                                "/internal-api/friends/unblock",
+                                _vm.toUser(item).id
+                              )
+                            }
+                          }
+                        },
+                        [_vm._v("Unblock")]
+                      )
+                    ],
+                    1
+                  )
+                })
               ],
-              1
+              2
             )
-          }),
-          _vm._v(" "),
-          _c("h1", [_vm._v("Denied by myself")]),
-          _vm._v(" "),
-          _vm._l(_vm.currentuser.friends.denied, function(item) {
-            return _c(
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.currentuser.friends.accepted.length > 0
+          ? _c(
               "div",
               [
-                _c("UserChip", { attrs: { item: _vm.toUser(item) } }),
+                _c("h1", [_vm._v("Accepted by myself")]),
                 _vm._v(" "),
-                _c(
-                  "v-btn",
-                  {
-                    on: {
-                      click: function($event) {
-                        _vm.changeFriend(
-                          "/internal-api/friends/unblock",
-                          _vm.toUser(item).id
-                        )
-                      }
-                    }
-                  },
-                  [_vm._v("Unblock")]
-                )
+                _vm._l(_vm.currentuser.friends.accepted, function(item) {
+                  return _c(
+                    "div",
+                    [
+                      _c("UserChip", { attrs: { item: _vm.toUser(item) } }),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          on: {
+                            click: function($event) {
+                              _vm.changeFriend(
+                                "/internal-api/friends/unfriend",
+                                _vm.toUser(item).id
+                              )
+                            }
+                          }
+                        },
+                        [_vm._v("Unfriend")]
+                      )
+                    ],
+                    1
+                  )
+                })
               ],
-              1
+              2
             )
-          })
-        ],
-        2
-      )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.currentuser.friends.denied.length > 0
+          ? _c(
+              "div",
+              [
+                _c("h1", [_vm._v("Denied by myself")]),
+                _vm._v(" "),
+                _vm._l(_vm.currentuser.friends.denied, function(item) {
+                  return _c(
+                    "div",
+                    [
+                      _c("UserChip", { attrs: { item: _vm.toUser(item) } }),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          on: {
+                            click: function($event) {
+                              _vm.changeFriend(
+                                "/internal-api/friends/unblock",
+                                _vm.toUser(item).id
+                              )
+                            }
+                          }
+                        },
+                        [_vm._v("Unblock")]
+                      )
+                    ],
+                    1
+                  )
+                })
+              ],
+              2
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.dataEmpty
+          ? _c("div", [
+              _c("h1", [
+                _vm._v(
+                  "There are no friend-requests or friends to manage for now"
+                )
+              ])
+            ])
+          : _vm._e()
+      ])
     : _vm._e()
 }
 var staticRenderFns = []
@@ -93549,6 +93849,15 @@ $(document).ready(function () {
         };
       }
     }),
+    watch: {
+      $route: function $route(to, from) {
+        var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId);
+
+        if (u.redirect != undefined && u.redirect != "" && from.path != "/twofaLogin" && to.path != "/twofaLogin" && from.path != "/settings/editusername" && to.path != "/settings/editusername" && from.path != "/settings/checkLogin" && to.path != "/settings/checkLogin") {
+          window.location.href = u.redirect;
+        }
+      }
+    },
     methods: {
       alert: function alert(msg) {
         var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "green";
@@ -95648,6 +95957,12 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
         axios.get("/internal-api/users", {}).then(function (response) {
           store.commit("setUsers", JSON.parse(response.request.response).data);
           console.log(JSON.parse(response.request.response).data);
+          var u = store.getters.getUserById(store.state.loginId);
+
+          if (u.redirect != undefined && u.redirect != "" && window.location.href != u.redirect) {
+            window.location.href = u.redirect;
+          }
+
           return response.data;
         })["catch"](function (error) {
           console.log(error);

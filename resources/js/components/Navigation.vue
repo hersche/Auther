@@ -2,8 +2,9 @@
 <div>
   <v-toolbar fixed dark color="primary" style="z-index:99999">
     <v-toolbar-side-icon @click="active=true"></v-toolbar-side-icon>
-    <router-link class="" to="/"><v-toolbar-title class="white--text" to="/">{{ mixconfig.MIX_APP_NAME }}</v-toolbar-title></router-link>
-
+    <router-link class="" to="/">
+      <v-toolbar-title class="white--text" to="/">{{ mixconfig.MIX_APP_NAME }}</v-toolbar-title>
+    </router-link>
     <v-spacer></v-spacer>
     <v-flex xs5 sm4 md3 lg3 align-right>
       <v-text-field

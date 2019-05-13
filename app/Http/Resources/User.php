@@ -71,6 +71,7 @@ class User extends JsonResource
           'public' => $this->public,
           'roles' => $simpleRoleArray,
           'admin' => $admin,
+          'redirect' => $request->session()->get('auth.redirectUrl'),
           'allow_username_change' => $this->allow_username_change,
           'email' => $email,
           'friends' => [

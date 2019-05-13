@@ -7,7 +7,7 @@
       <p>HOWEVER: You can still login with the provider and you can set this login-information later.</p>
       <p>You can find this in the menu under Settings. <b>After you performed this action, this option will disappear.</b></p>
       <v-text-field
-        label="New username"
+        :label="$t('New')+' '+$t('username')"
         v-model="username"
         type="text"
         ></v-text-field>

@@ -120,6 +120,11 @@
           .then(function (response) {
             store.commit("setUsers",JSON.parse(response.request.response).data)
            console.log(JSON.parse(response.request.response).data);
+           let u = store.getters.getUserById(store.state.loginId)
+           if(u.redirect!=undefined&&u.redirect!=""&&window.location.href!=u.redirect
+            ){
+             window.location.href = u.redirect;
+            }
            return response.data
          })
          .catch(function (error) {

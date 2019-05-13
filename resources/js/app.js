@@ -148,6 +148,17 @@ var app = new Vue({
         return { x: 0, y: 0 }
       }
    }),
+   watch:{
+     $route (to, from){
+       let u = store.getters.getUserById(store.state.loginId)
+       if(u.redirect!=undefined&&u.redirect!=""&&from.path!="/twofaLogin"&&to.path!="/twofaLogin"&&
+       from.path!="/settings/editusername"&&to.path!="/settings/editusername"&&
+       from.path!="/settings/checkLogin"&&to.path!="/settings/checkLogin"
+     ){
+         window.location.href = u.redirect;
+       }
+     }
+   },
    methods:{
      alert(msg,type="green",icon=''){
        console.log("alert-method")

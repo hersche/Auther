@@ -71,22 +71,19 @@ const axios = require('axios');
     friendstatus: function(){
       var u = store.getters.getUserById(Number(store.state.loginId))
       var pu = store.getters.getUserById(Number(this.$route.params.profileId))
-      if(u.friends!=undefined){
-        
-        console.log("pending",u.friends.pending);
-      if(u.friends.accepted.indexOf(pu.username)>-1){
-        return 1;
-      } else if(u.friends.pending.indexOf(pu.username)>-1){
-        console.log("return 2")
-        return 2;
-      } else if(u.friends.denied.indexOf(pu.username)>-1){
-        return 3;
-      } else if(u.friends.blocked.indexOf(pu.username)>-1){
-        return 4;
-      } else if(u.friends.pendingRequests.indexOf(pu.username)>-1){
-        return 5;
+      if(u.friends!=undefined&&u.id!=0){
+        if(u.friends.accepted.indexOf(pu.username)>-1){
+          return 1;
+        } else if(u.friends.pending.indexOf(pu.username)>-1){
+          return 2;
+        } else if(u.friends.denied.indexOf(pu.username)>-1){
+          return 3;
+        } else if(u.friends.blocked.indexOf(pu.username)>-1){
+          return 4;
+        } else if(u.friends.pendingRequests.indexOf(pu.username)>-1){
+          return 5;
+        }
       }
-    }
       return 0;
     },
     // a computed getter
