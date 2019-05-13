@@ -101,6 +101,7 @@ class RegisterController extends Controller
         $user->avatar = $avatar;
         $user->background = $background;
         $user->password = Hash::make($request->input('password'));
+        $user->notify(new \App\Notifications\GenericNotification(["msg"=>"You registered a account.", "appname"=>"Auther","link"=>""]));
         $user->save();
         $this->guard()->login($user);
         if(config('app.needemailverify')=="0"||!empty($user->email_verified_at)){

@@ -19,6 +19,8 @@
         </div>
         <v-switch v-model="public" :label="$t('Public')+' '+$t('account')"></v-switch>
         <input type="hidden" name="public" :value="Number(public)" />
+        <v-switch v-model="track_logins" :label="$t('Track')+' '+$t('logins')"></v-switch>
+        <input type="hidden" name="track_logins" :value="Number(track_logins)" />
         <MarkdownCreator :theText="currentuser.bio" theId="bio" :theTitle="$t('Biographie')" ></MarkdownCreator>
     </form>
     <v-btn @click="submitAction();"color="green" ><v-icon>save</v-icon>{{ $t('Save') }}</v-btn> <!-- <button @click="deleteAction();" class="btn btn-danger" >Delete</button> -->
@@ -51,6 +53,8 @@
         var u = store.getters.getUserById(store.state.loginId)
         if(u!=undefined){
           this.tmpBio = u.bio
+          this.public = u.public 
+          this.track_logins = u.track_logins
         }
         return u
       },
@@ -85,6 +89,7 @@
       return {
         mediaType: '',
         public: false,
+        track_logins:true,
         editpicloaded:false,
         showdismissiblealert: false,
         avatarCropped: null,

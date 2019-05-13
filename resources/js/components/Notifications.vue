@@ -8,9 +8,12 @@
       <h4>{{ $t("Notifications") }}</h4>
       <div v-for="item in notifications"  class="text-center">
         <div v-if="item.type==='App\\Notifications\\GenericNotification'">
-          <v-divider>{{ item.created_at }}</v-divider>
-
-
+          <p>{{ item.created_at }}</p>
+          <p>{{ item.data.appname }}</p>
+          <p>{{ item.data.msg }}</p>
+          <p>{{ item.data.link }}</p>
+          
+          <v-divider></v-divider>
 
         </div>
         
@@ -51,7 +54,8 @@ import {  store } from '../store.js';
         }
       },
       emitMarkNotifications(url) {
-        eventBus.$emit('getNotifications',url);
+        // TODO handle actions, but in a better way than in laratube
+        //eventBus.$emit('getNotifications',url);
       },
       getMediaById2(id){
         console.log("mediabyid "+id)

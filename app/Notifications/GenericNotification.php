@@ -29,7 +29,7 @@ class GenericNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['database','mail'];
     }
 
     /**
@@ -40,10 +40,14 @@ class GenericNotification extends Notification
      */
     public function toMail($notifiable)
     {
+      if(empty($this->theData["link"])){
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+                    ->line($this->theData["appname"])
+                    ->line($this->theData["msg"]);
+      }
+        return (new MailMessage)
+                    ->line($this->theData["appname"])
+                    ->action($this->theData["msg"], $this->theData["link"]);
     }
 
     /**
@@ -56,9 +60,9 @@ class GenericNotification extends Notification
     {
         return [
             "id" => $this->id,
-            "msg" => $this->theData->msg,
-            "appname" => $this->theData->appname,
-            "link" => $this->theData->link
+            "msg" => $this->theData["msg"],
+            "appname" => $this->theData["appname"],
+            "link" => $this->theData["link"]
         ];
     }
 }

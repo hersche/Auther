@@ -30,6 +30,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->text('bio')->nullable();
             $table->boolean('public')->default(false);
+            $table->boolean('track_logins')->default(true);
             $table->boolean('allow_username_change')->default(false);
             $table->string('avatar')->default('');
             $table->string('background')->default('');

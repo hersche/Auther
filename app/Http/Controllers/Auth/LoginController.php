@@ -71,6 +71,9 @@ class LoginController extends Controller
      * @return void
      */
     public function logout(Request $request) {
+        if(Auth::user()->track_logins){
+          Auth::user()->notify(new \App\Notifications\GenericNotification(["msg"=>"You logged out.", "appname"=>config("app.name"),"link"=>""]));
+        }
         $this->guard()->logout();
         $request->session()->invalidate();
         (new Authenticator(request()))->logout();
@@ -122,7 +125,10 @@ class LoginController extends Controller
                       $request->session()->put('auth.social_local_user_id',0);
                       $request->session()->put('auth.social_provider',0);
                     }
-                  }  
+                  }
+                  if(Auth::user()->track_logins){
+                    Auth::user()->notify(new \App\Notifications\GenericNotification(["msg"=>"You logged in.", "appname"=>config("app.name"),"link"=>""]));
+                  }
                   return new UserRessource(Auth::user());
                 } else {
                   Auth::logout();

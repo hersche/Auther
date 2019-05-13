@@ -2382,6 +2382,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -46089,7 +46092,17 @@ var render = function() {
             item.type === "App\\Notifications\\GenericNotification"
               ? _c(
                   "div",
-                  [_c("v-divider", [_vm._v(_vm._s(item.created_at))])],
+                  [
+                    _c("p", [_vm._v(_vm._s(item.created_at))]),
+                    _vm._v(" "),
+                    _c("p", [_vm._v(_vm._s(item.data.appname))]),
+                    _vm._v(" "),
+                    _c("p", [_vm._v(_vm._s(item.data.msg))]),
+                    _vm._v(" "),
+                    _c("p", [_vm._v(_vm._s(item.data.link))]),
+                    _vm._v(" "),
+                    _c("v-divider")
+                  ],
                   1
                 )
               : _vm._e()

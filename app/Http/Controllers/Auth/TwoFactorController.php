@@ -205,6 +205,9 @@ private function loginAction($request,$valid){
     Auth::loginUsingId($request->session()->get('twofactor-user-id'));
     $request->session()->put('twofactor-user-id',0);
     if(!empty($request->input("ajaxLogin"))){
+      if(Auth::user()->track_logins){
+        Auth::user()->notify(new \App\Notifications\GenericNotification(["msg"=>"You logged in via 2factor-login.", "appname"=>config("app.name")." (This app)","link"=>""]));
+        }
       return new UserResource(Auth::user());
     } else {
       return $this->sendLoginResponse($request);

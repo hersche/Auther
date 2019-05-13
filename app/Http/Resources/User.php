@@ -55,6 +55,10 @@ class User extends JsonResource
       //$background="";
       $bio="";
     }
+    $track_logins = false;
+    if(Auth::id()===$this->id){
+      $track_logins = $this->track_logins;
+    }    
     $simpleRoleArray = [];
     $i=0;
     foreach($this->roles as $role){
@@ -71,6 +75,7 @@ class User extends JsonResource
           'public' => $this->public,
           'roles' => $simpleRoleArray,
           'admin' => $admin,
+          'track_logins' => $track_logins,
           'redirect' => $request->session()->get('auth.redirectUrl'),
           'allow_username_change' => $this->allow_username_change,
           'email' => $email,

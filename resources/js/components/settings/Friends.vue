@@ -71,8 +71,7 @@
         var u = store.getters.getUserById(store.state.loginId)
         return u
       },
-      dataEmpty:function(){
-        
+      dataEmpty:function(){    
         if(this.currentuser.friends.pendingRequests.length==0&&this.currentuser.friends.pending.length==0&&this.currentuser.friends.blocked.length==0&&this.currentuser.friends.accepted.length==0&&this.currentuser.friends.denied.length==0){
           return true;
         }
