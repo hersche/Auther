@@ -2385,7 +2385,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
+
+
+var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['baseUrl', 'canloadmore'],
@@ -2417,8 +2421,16 @@ __webpack_require__.r(__webpack_exports__);
         return "liked";
       }
     },
-    emitMarkNotifications: function emitMarkNotifications(url) {// TODO handle actions, but in a better way than in laratube
-      //eventBus.$emit('getNotifications',url);
+    emitMarkNotifications: function emitMarkNotifications(url) {
+      // TODO handle actions, but in a better way than in laratube
+      var that = this;
+
+      if (_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId != 0) {
+        $.getJSON(url, function name(data) {
+          _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].commit("setNotifications", data);
+        });
+      } //eventBus.$emit('getNotifications',url);
+
     },
     getMediaById2: function getMediaById2(id) {
       console.log("mediabyid " + id);
@@ -46109,6 +46121,10 @@ var render = function() {
                   "div",
                   [
                     _c("p", [_vm._v(_vm._s(item.created_at))]),
+                    _vm._v(" "),
+                    item.read_at == undefined
+                      ? _c("p", [_vm._v("Unread")])
+                      : _vm._e(),
                     _vm._v(" "),
                     _c("p", [_vm._v(_vm._s(item.data.appname))]),
                     _vm._v(" "),

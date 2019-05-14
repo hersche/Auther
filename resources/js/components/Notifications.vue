@@ -9,6 +9,7 @@
       <div v-for="item in notifications"  class="text-center">
         <div v-if="item.type==='App\\Notifications\\GenericNotification'">
           <p>{{ item.created_at }}</p>
+          <p v-if="item.read_at==undefined">Unread</p>
           <p>{{ item.data.appname }}</p>
           <p>{{ item.data.msg }}</p>
           <p>{{ item.data.link }}</p>
@@ -25,6 +26,7 @@
 <script>
 import {  store } from '../store.js';
   import { eventBus } from '../eventBus.js';
+  const $ = require("jquery");
   export default {
     props: ['baseUrl','canloadmore'],
     computed:{
@@ -55,6 +57,14 @@ import {  store } from '../store.js';
       },
       emitMarkNotifications(url) {
         // TODO handle actions, but in a better way than in laratube
+        let that = this;
+        if(store.state.loginId!=0){
+          $.getJSON(url, function name(data) {
+              store.commit("setNotifications",data)
+            });
+          } 
+        
+        
         //eventBus.$emit('getNotifications',url);
       },
       getMediaById2(id){
