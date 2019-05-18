@@ -114,7 +114,7 @@
    { path: '/notifications', component: notiComp },
  ]
  
-
+store.getters.getCSRF()
  $( document ).ready(function() {
    
    store.getters.receiveUsers()

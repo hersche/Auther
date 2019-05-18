@@ -29,56 +29,12 @@ class User extends JsonResource
       $email = '';
       $google2fa_url = "";
       $admin = false;
-      if(!empty(Auth::id())){
-        if(Auth::user()->level()>(int)config('app.adminlevel')){
-          $email = $this->email;
-          $admin = true;
-        }
-        if($this->id==Auth::id()){
-          $email = $this->email;
-        }
-    }
-    $avatar = $this->avatar();
-    if((substr( $avatar, 0, 4 ) === "http")==false){
-      $avatar = env('MIX_APP_URL', "")."/".$avatar;
-    }
-    $background = $this->background();
-    if((substr( $background, 0, 4 ) === "http")==false){
-      $background = env('MIX_APP_URL', "")."/".$background;
-    }
-    $bio = $this->bio;
-    if(is_null($bio)){
-      $bio="";
-    }
-    if(!$this->public){
-      //$avatar="";
-      //$background="";
-      $bio="";
-    }
-    $track_logins = false;
-    if(Auth::id()===$this->id){
-      $track_logins = $this->track_logins;
-    }    
-    $simpleRoleArray = [];
-    $i=0;
-    foreach($this->roles as $role){
-      $simpleRoleArray[$i] = $role->slug.":".$role->level;
-      $i++;
-    }
-      return [
+      $theData = [
           'id' => $this->id,
           'name' => $this->name,
           'username' => $this->username,
-          'avatar' => $avatar,
-          'background' => $background,
-          'bio' => $bio,
           'public' => $this->public,
-          'roles' => $simpleRoleArray,
           'admin' => $admin,
-          'track_logins' => $track_logins,
-          'redirect' => $request->session()->get('auth.redirectUrl'),
-          'allow_username_change' => $this->allow_username_change,
-          'email' => $email,
           'friends' => [
             'pending' => $this->getUserUsernames($this->getPendingFriendships()),
             'accepted' => $this->getUserUsernames($this->getAcceptedFriendships()),
@@ -89,5 +45,49 @@ class User extends JsonResource
           'created_at' => $this->created_at,
           'updated_at' => $this->updated_at,
       ];
+      if(Auth::check()){
+        if(Auth::user()->level()>(int)config('app.adminlevel')){
+          $theData['email'] = $this->email;
+          $admin = true;
+        }
+        if($this->id===Auth::id()){
+          $theData['email'] = $this->email;
+          $theData['you'] = true;
+          $theData['track_logins'] = $this->track_logins;
+          $theData['allow_username_change'] = $this->allow_username_change;
+          $theData['redirect'] = $request->session()->get('auth.redirectUrl');
+          if(!empty($this->jwt_token)){
+            $theData['jwt_token'] = $this->jwt_token;
+          }
+        }
+    }
+    $avatar = $this->avatar();
+    if((substr( $avatar, 0, 4 ) === "http")==false){
+      $avatar = env('MIX_APP_URL', "")."/".$avatar;
+    }
+    $background = $this->background();
+    if((substr( $background, 0, 4 ) === "http")==false){
+      $background = env('MIX_APP_URL', "")."/".$background;
+    }
+    $theData['avatar'] = $avatar;
+    $theData['background'] = $background;
+    $bio = $this->bio;
+    if(is_null($bio)){
+      $bio="";
+    }
+    if(!$this->public){
+      //$avatar="";
+      //$background="";
+      $bio="";
+    }
+    $theData['bio'] = $bio;   
+    $simpleRoleArray = [];
+    $i=0;
+    foreach($this->roles as $role){
+      $simpleRoleArray[$i] = $role->slug.":".$role->level;
+      $i++;
+    }
+    $theData['roles'] = $simpleRoleArray;
+      return $theData;
     }
 }

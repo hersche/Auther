@@ -2280,7 +2280,8 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
         processData: false,
         complete: function complete(res) {
           if (res.status == 200) {
-            _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$emit('logout', ""); //eventBus.$emit('login',res.responseJSON.data);
+            _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$emit('logout', "");
+            localStorage.setItem('jwt_token', ''); //eventBus.$emit('login',res.responseJSON.data);
           }
         }
       });
@@ -2361,7 +2362,6 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../store.js */ "./resources/js/store.js");
 /* harmony import */ var _eventBus_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../eventBus.js */ "./resources/js/eventBus.js");
-//
 //
 //
 //
@@ -3886,7 +3886,10 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
             if (res.responseText == "{\"twofactor\":true}") {
               that.$router.push('/twofaLogin');
             } else {
-              _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$emit('login', res.responseJSON.data);
+              if (res.responseJSON.data.jwt_token !== undefined) {
+                _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$emit('login', res.responseJSON.data);
+                localStorage.setItem('jwt_token', res.responseJSON.data.jwt_token);
+              }
             }
           } else if (res.status == 401) {
             _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$emit('alert', "Login failed");
@@ -93868,6 +93871,7 @@ var routes = [{
   path: '/notifications',
   component: notiComp
 }];
+_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getCSRF();
 $(document).ready(function () {
   _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.receiveUsers();
 
@@ -95846,18 +95850,46 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 
 var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
-var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js"); //hacky part to guarantee the login. the variables should not be global...
+
+
+var jwt_token = localStorage.getItem('jwt_token');
+var CSRF = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+if (jwt_token != undefined && jwt_token != '') {
+  console.log("set jwt first", jwt_token);
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': CSRF,
+      'Authorization': 'Bearer ' + jwt_token
+    }
+  });
+  axios.defaults.headers.common = {
+    'X-CSRF-TOKEN': CSRF,
+    'Authorization': 'Bearer ' + jwt_token
+  };
+} else {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': CSRF
+    }
+  });
+  axios.defaults.headers.common = {
+    'X-CSRF-TOKEN': CSRF
+  };
+} // end of hacky part
+
 
 var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   state: {
-    loginId: Number($("#loggedUserId").attr("content")),
+    loginId: 0,
     users: [],
     roles: [],
     tokens: [],
     projects: [],
     twofactor: undefined,
     notifications: [],
-    CSRF: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    CSRF: ""
   },
   getters: {
     getUsersBySearch: function getUsersBySearch(state) {
@@ -96066,6 +96098,11 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   mutations: {
     setUsers: function setUsers(state, users) {
       state.users = users;
+      $.each(state.users, function (i, el) {
+        if (el.you) {
+          state.loginId = el.id;
+        }
+      });
     },
     addUser: function addUser(state, user) {
       state.users.push(user);
@@ -96077,11 +96114,31 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       state.notifications = notifications;
     },
     setCSRF: function setCSRF(state, CSRF) {
-      $.ajaxSetup({
-        headers: {
+      var jwt_token = localStorage.getItem('jwt_token');
+
+      if (jwt_token != undefined && jwt_token != '') {
+        console.log("set jwt", jwt_token);
+        $.ajaxSetup({
+          headers: {
+            'X-CSRF-TOKEN': CSRF,
+            'Authorization': 'Bearer ' + jwt_token
+          }
+        });
+        axios.defaults.headers.common = {
+          'X-CSRF-TOKEN': CSRF,
+          'Authorization': 'Bearer ' + jwt_token
+        };
+      } else {
+        $.ajaxSetup({
+          headers: {
+            'X-CSRF-TOKEN': CSRF
+          }
+        });
+        axios.defaults.headers.common = {
           'X-CSRF-TOKEN': CSRF
-        }
-      });
+        };
+      }
+
       $('meta[name="csrf-token"]').attr('content', CSRF);
       state.CSRF = CSRF;
     },

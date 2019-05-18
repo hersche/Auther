@@ -63,7 +63,8 @@ class SocialiteController extends Controller
         $social = $userAndSocial[1];
         if($social->enabled){
           if($social->verified){
-            Auth::login($user, true);
+            $jwt_token = Auth::login($user, true);
+            $user->setJwtToken($jwt_token);
             // This session variable can help to determine if user is logged-in via socialite
             session()->put([
               'auth.social_id' => $providerUser->getId()

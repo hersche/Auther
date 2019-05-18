@@ -389,6 +389,7 @@ export default {
           complete : function(res) {
             if(res.status==200){
               eventBus.$emit('logout',"");
+              localStorage.setItem('jwt_token','')
               //eventBus.$emit('login',res.responseJSON.data);
             }
           }

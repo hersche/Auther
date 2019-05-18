@@ -91,10 +91,11 @@ class LoginController extends Controller
     {
         if(config('app.localauthenabled')==="1"){
           $loginSuccess = false;
-          if (Auth::attempt(['email' => $request->input("email"), 'password' => $request->input("password")])) {
+          $jwt_token = "";
+          if ($jwt_token = Auth::attempt(['email' => $request->input("email"), 'password' => $request->input("password")])) {
             $loginSuccess = true;
           } else {
-            if(Auth::attempt(['username' => $request->input("email"), 'password' => $request->input("password")])){
+            if($jwt_token = Auth::attempt(['username' => $request->input("email"), 'password' => $request->input("password")])){
               $loginSuccess = true;
             }
           }
@@ -131,6 +132,7 @@ class LoginController extends Controller
                   //  $browser = get_browser(null, true);
                   //  Auth::user()->notify(new \App\Notifications\GenericNotification(["msg"=>"You logged in on ".$browser['browser']." ".$browser['version']." (@".$browser['platform'].")", "appname"=>config("app.name"),"link"=>""]));
                   }
+                  Auth::user()->setJwtToken($jwt_token);
                   return new UserRessource(Auth::user());
                 } else {
                   Auth::logout();

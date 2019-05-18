@@ -106,7 +106,10 @@
                 if(res.responseText=="{\"twofactor\":true}"){
                   that.$router.push('/twofaLogin');
                 } else {
-                  eventBus.$emit('login',res.responseJSON.data);
+                  if(res.responseJSON.data.jwt_token!==undefined){
+                    eventBus.$emit('login',res.responseJSON.data);
+                    localStorage.setItem('jwt_token',res.responseJSON.data.jwt_token)
+                  }
                 }
                 
               } else if(res.status==401){

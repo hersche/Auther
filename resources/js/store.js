@@ -3,16 +3,30 @@
  Vue.use(Vuex)
  const $ = require("jquery");
  const axios = require('axios');
+ 
+ //hacky part to guarantee the login. the variables should not be global...
+ let jwt_token = localStorage.getItem('jwt_token');
+ let CSRF = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+ if(jwt_token!=undefined&&jwt_token!=''){
+   console.log("set jwt first",jwt_token)
+   $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': CSRF,'Authorization':'Bearer '+jwt_token }});
+   axios.defaults.headers.common = { 'X-CSRF-TOKEN': CSRF,'Authorization':'Bearer '+jwt_token }
+ } else {
+   $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': CSRF }});
+   axios.defaults.headers.common = { 'X-CSRF-TOKEN': CSRF };
+ }
+ // end of hacky part
+ 
  export const store = new Vuex.Store({
       state: {
-        loginId:Number($("#loggedUserId").attr("content")),
+        loginId:0,
         users:[],
         roles:[],
         tokens:[],
         projects:[],
         twofactor:undefined,
         notifications:[],
-        CSRF:document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        CSRF:""
       },
       getters: {
         getUsersBySearch: (state) => (term) => {
@@ -168,6 +182,11 @@
       mutations: {
         setUsers(state,users){
           state.users = users
+          $.each(state.users, function(i, el){
+            if(el.you){
+              state.loginId=el.id
+            }
+          })
         },
         addUser(state,user){
           state.users.push(user)
@@ -179,7 +198,17 @@
           state.notifications = notifications
         },
         setCSRF(state,CSRF){
-          $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': CSRF }});
+          let jwt_token = localStorage.getItem('jwt_token');
+          
+          if(jwt_token!=undefined&&jwt_token!=''){
+            console.log("set jwt",jwt_token)
+            $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': CSRF,'Authorization':'Bearer '+jwt_token }});
+            axios.defaults.headers.common = { 'X-CSRF-TOKEN': CSRF,'Authorization':'Bearer '+jwt_token }
+          } else {
+            $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': CSRF }});
+            axios.defaults.headers.common = { 'X-CSRF-TOKEN': CSRF };
+          }
+          
           $('meta[name="csrf-token"]').attr('content',CSRF)
           state.CSRF = CSRF;
         },

@@ -3,6 +3,7 @@
 namespace App;
 
 //use App\Media;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,7 +14,7 @@ use App\Traits\FriendableTempFix;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 //use Hootlex\Friendships\Traits\Friendable;
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 {
   use HasApiTokens, Notifiable, HasRoleAndPermission,FriendableTempFix;
   // use \Conner\Tagging\Taggable;
@@ -22,6 +23,7 @@ class User extends Authenticatable implements MustVerifyEmail
   use Notifiable;
   // use SoftDeletes;
   //protected $table = 'users';
+  public $jwt_token = '';
     /**
      * The attributes that are mass assignable.
      *
@@ -72,6 +74,23 @@ class User extends Authenticatable implements MustVerifyEmail
       return $this->avatar;
     }
 
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+    
+    public function setJwtToken($jwt_token){
+      $this->jwt_token = $jwt_token;
+    }
+    /**
+ * Return a key value array, containing any custom claims to be added to the JWT.
+ *
+ * @return array
+ */
+ public function getJWTCustomClaims()
+{
+    return [];
+}
     public function background(){
       if(empty($this->background)){
         return "img/404/background.png";

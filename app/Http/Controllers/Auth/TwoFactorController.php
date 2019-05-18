@@ -202,7 +202,8 @@ private function loginAction($request,$valid){
         $request->session()->put('auth.social_provider',0);
       }
     }
-    Auth::loginUsingId($request->session()->get('twofactor-user-id'));
+    $jwt_token = Auth::loginUsingId($request->session()->get('twofactor-user-id'));
+    Auth::user()->setJwtToken($jwt_token);
     $request->session()->put('twofactor-user-id',0);
     if(!empty($request->input("ajaxLogin"))){
       if(Auth::user()->track_logins){

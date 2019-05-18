@@ -13,7 +13,6 @@
           <p>{{ item.data.appname }}</p>
           <p>{{ item.data.msg }}</p>
           <p>{{ item.data.link }}</p>
-          
           <v-divider></v-divider>
 
         </div>
