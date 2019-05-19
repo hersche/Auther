@@ -170,7 +170,7 @@ var app = new Vue({
         'thesidebar': sidebarComp
     },
 }).$mount('#app');
-
+/*
 console.log(app.$route.query.token)
 if(app.$route.query.token!=undefined){
 localStorage.setItem('jwt_token',app.$route.query.token);
@@ -186,7 +186,7 @@ let jwt_token = app.$route.query.token
  }
  store.getters.receiveUsers()
 }
-
+*/
 eventBus.$on('languageChange', lang => {
   getLang(lang)
 });

@@ -6,6 +6,12 @@
  
  //hacky part to guarantee the login. the variables should not be global...
  let jwt_token = localStorage.getItem('jwt_token');
+ console.log("gettoken",findGetParameter('token'))
+ if(findGetParameter('token')!=null){
+  jwt_token = findGetParameter('token')
+  localStorage.setItem('jwt_token',findGetParameter('token'))
+  console.log('new get',jwt_token)
+ }
  let CSRF = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
  if(jwt_token!=undefined&&jwt_token!=''){
    console.log("set jwt first",jwt_token)
@@ -226,3 +232,12 @@
         },
       }
     }) 
+
+
+function findGetParameter(parameterName) {
+    var result = null
+    if(location.hash.indexOf(parameterName+"=")>-1){
+	result = location.hash.substr(location.hash.indexOf(parameterName+"=")+(parameterName.length+1))
+    }
+    return result;
+}
