@@ -56,9 +56,7 @@
     var friendsComp = Vue.component('friends', require("./components/settings/Friends.vue").default);
     var passwordComp = Vue.component('friends', require("./components/settings/password.vue").default);
     var loginComp = Vue.component('login', require("./components/auth/Login.vue").default);
-    
-        var checkLoginComp = Vue.component('checklogin', require("./components/auth/checkLogin.vue").default);
-    
+    var checkLoginComp = Vue.component('checklogin', require("./components/auth/checkLogin.vue").default);
     var faLoginComp = Vue.component('twofaLogin', require("./components/auth/twofaLogin.vue").default);
     var twofaSettings = Vue.component('twofasettings', require("./components/settings/twofa.vue").default);
     var registerComp = Vue.component('register', require("./components/auth/Register.vue").default);
@@ -172,6 +170,23 @@ var app = new Vue({
         'thesidebar': sidebarComp
     },
 }).$mount('#app');
+
+console.log(app.$route.query.token)
+if(app.$route.query.token!=undefined){
+localStorage.setItem('jwt_token',app.$route.query.token);
+let jwt_token = app.$route.query.token
+ let CSRF = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+ if(jwt_token!=undefined&&jwt_token!=''){
+   console.log("set jwt first",jwt_token)
+   $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': CSRF,'Authorization':'Bearer '+jwt_token }});
+   axios.defaults.headers.common = { 'X-CSRF-TOKEN': CSRF,'Authorization':'Bearer '+jwt_token }
+ } else {
+   $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': CSRF }});
+   axios.defaults.headers.common = { 'X-CSRF-TOKEN': CSRF };
+ }
+ store.getters.receiveUsers()
+}
+
 eventBus.$on('languageChange', lang => {
   getLang(lang)
 });

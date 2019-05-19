@@ -63,7 +63,8 @@ class SocialiteController extends Controller
         $social = $userAndSocial[1];
         if($social->enabled){
           if($social->verified){
-            $jwt_token = Auth::login($user, true);
+            Auth::login($user, true);
+	    $jwt_token = Auth::tokenById($user->id);
             $user->setJwtToken($jwt_token);
             // This session variable can help to determine if user is logged-in via socialite
             session()->put([
@@ -74,9 +75,9 @@ class SocialiteController extends Controller
               $user->notify(new \App\Notifications\GenericNotification(["msg"=>"You logged in via ".$social->provider, "appname"=>config("app.name"),"link"=>""]));
             }
             if($user->allow_username_change){
-              return redirect('/#/settings/editusername');
+              return redirect('/#/settings/editusername?token='.$jwt_token);
             } else {
-              return redirect('/');
+              return redirect('/?token='.$jwt_token);
               // The below was failing and this->authenticated is empty?
               //return $this->authenticated($user)
               //  ?: redirect()->intended($this->redirectPath());
