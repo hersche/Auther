@@ -77,7 +77,7 @@ class SocialiteController extends Controller
             if($user->allow_username_change){
               return redirect('/#/settings/editusername?token='.$jwt_token);
             } else {
-              return redirect('/?token='.$jwt_token);
+              return redirect('/#/?token='.$jwt_token);
               // The below was failing and this->authenticated is empty?
               //return $this->authenticated($user)
               //  ?: redirect()->intended($this->redirectPath());

@@ -6,15 +6,12 @@
  
  //hacky part to guarantee the login. the variables should not be global...
  let jwt_token = localStorage.getItem('jwt_token');
- console.log("gettoken",findGetParameter('token'))
  if(findGetParameter('token')!=null){
   jwt_token = findGetParameter('token')
   localStorage.setItem('jwt_token',findGetParameter('token'))
-  console.log('new get',jwt_token)
  }
  let CSRF = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
  if(jwt_token!=undefined&&jwt_token!=''){
-   console.log("set jwt first",jwt_token)
    $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': CSRF,'Authorization':'Bearer '+jwt_token }});
    axios.defaults.headers.common = { 'X-CSRF-TOKEN': CSRF,'Authorization':'Bearer '+jwt_token }
  } else {
@@ -138,8 +135,7 @@
         receiveUsers: (state) => () => {
           axios.get("/internal-api/users",{})  
           .then(function (response) {
-            store.commit("setUsers",JSON.parse(response.request.response).data)
-           console.log(JSON.parse(response.request.response).data);
+           store.commit("setUsers",JSON.parse(response.request.response).data)
            let u = store.getters.getUserById(store.state.loginId)
            if(u.redirect!=undefined&&u.redirect!=""&&window.location.href!=u.redirect
             ){
@@ -205,9 +201,7 @@
         },
         setCSRF(state,CSRF){
           let jwt_token = localStorage.getItem('jwt_token');
-          
           if(jwt_token!=undefined&&jwt_token!=''){
-            console.log("set jwt",jwt_token)
             $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': CSRF,'Authorization':'Bearer '+jwt_token }});
             axios.defaults.headers.common = { 'X-CSRF-TOKEN': CSRF,'Authorization':'Bearer '+jwt_token }
           } else {
