@@ -2556,19 +2556,19 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       return _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getCSRF();
     },
     profileUser: function profileUser() {
-      var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(Number(this.$route.params.profileId));
+      var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(this.$route.params.profileId);
 
       if (u != undefined) {}
 
       return u;
     },
     currentuser: function currentuser() {
-      var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(Number(_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId));
+      var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId);
       return u;
     },
     friendstatus: function friendstatus() {
-      var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(Number(_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId));
-      var pu = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(Number(this.$route.params.profileId));
+      var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId);
+      var pu = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(this.$route.params.profileId);
 
       if (u.friends != undefined && u.id != 0) {
         if (u.friends.accepted.indexOf(pu.username) > -1) {
@@ -2866,8 +2866,8 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
   },
   computed: {
     friendstatus: function friendstatus() {
-      var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(Number(_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId));
-      var pu = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(Number(this.item.id));
+      var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId);
+      var pu = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(this.item.id);
 
       if (u.friends != undefined && u.id != 0) {
         if (u.friends.accepted.indexOf(pu.username) > -1) {
@@ -4098,7 +4098,7 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 
           if (res.status == 200) {
             if (res.responseJSON.data.msg == "needemailverify") {
-              window.location.href = "/email/resend";
+              window.location.href = "/email/resend?token=" + localStorage.getItem('jwt_token');
             }
           } //eventBus.$emit('login',res.responseJSON.data);
 
@@ -5869,7 +5869,7 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       }).then(function (response) {
         //store.commit("setTwofactor",JSON.parse(response.request.response).data)
         console.log("get twofactor", JSON.parse(response.request.response).data);
-        window.location.href = "/email/verify";
+        window.location.href = "/email/verify?token=" + localStorage.getItem('jwt_token');
       })["catch"](function (error) {
         console.log(error);
       });
@@ -93918,7 +93918,7 @@ $(document).ready(function () {
         var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId);
 
         if (u.redirect != undefined && u.redirect != "" && from.path != "/twofaLogin" && to.path != "/twofaLogin" && from.path != "/settings/editusername" && to.path != "/settings/editusername" && from.path != "/settings/checkLogin" && to.path != "/settings/checkLogin") {
-          window.location.href = u.redirect;
+          window.location.href = u.redirect + "?token=" + localStorage.getItem('jwt_token');
         }
       }
     },
@@ -93936,6 +93936,24 @@ $(document).ready(function () {
       'thesidebar': sidebarComp
     }
   }).$mount('#app');
+  /*
+  console.log(app.$route.query.token)
+  if(app.$route.query.token!=undefined){
+  localStorage.setItem('jwt_token',app.$route.query.token);
+  let jwt_token = app.$route.query.token
+   let CSRF = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+   if(jwt_token!=undefined&&jwt_token!=''){
+     console.log("set jwt first",jwt_token)
+     $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': CSRF,'Authorization':'Bearer '+jwt_token }});
+     axios.defaults.headers.common = { 'X-CSRF-TOKEN': CSRF,'Authorization':'Bearer '+jwt_token }
+   } else {
+     $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': CSRF }});
+     axios.defaults.headers.common = { 'X-CSRF-TOKEN': CSRF };
+   }
+   store.getters.receiveUsers()
+  }
+  */
+
   _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$on('languageChange', function (lang) {
     getLang(lang);
   });
@@ -95854,10 +95872,15 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js"); /
 
 
 var jwt_token = localStorage.getItem('jwt_token');
+
+if (findGetParameter('token') != null) {
+  jwt_token = findGetParameter('token');
+  localStorage.setItem('jwt_token', findGetParameter('token'));
+}
+
 var CSRF = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
 if (jwt_token != undefined && jwt_token != '') {
-  console.log("set jwt first", jwt_token);
   $.ajaxSetup({
     headers: {
       'X-CSRF-TOKEN': CSRF,
@@ -95954,8 +95977,6 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     },
     getUserById: function getUserById(state) {
       return function (id) {
-        id = Number(id); //return undefined
-
         var u;
 
         if (state.users != []) {
@@ -96048,11 +96069,10 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       return function () {
         axios.get("/internal-api/users", {}).then(function (response) {
           store.commit("setUsers", JSON.parse(response.request.response).data);
-          console.log(JSON.parse(response.request.response).data);
           var u = store.getters.getUserById(store.state.loginId);
 
           if (u.redirect != undefined && u.redirect != "" && window.location.href != u.redirect) {
-            window.location.href = u.redirect;
+            window.location.href = u.redirect + "?token=" + localStorage.getItem('jwt_token');
           }
 
           return response.data;
@@ -96076,7 +96096,6 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       return function () {
         axios.get("/internal-api/notifications", {}).then(function (response) {
           store.state.notifications = JSON.parse(response.request.response);
-          console.log(JSON.parse(response.request.response));
           return response.data;
         })["catch"](function (error) {
           console.log(error);
@@ -96117,7 +96136,6 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       var jwt_token = localStorage.getItem('jwt_token');
 
       if (jwt_token != undefined && jwt_token != '') {
-        console.log("set jwt", jwt_token);
         $.ajaxSetup({
           headers: {
             'X-CSRF-TOKEN': CSRF,
@@ -96156,6 +96174,16 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     }
   }
 });
+
+function findGetParameter(parameterName) {
+  var result = null;
+
+  if (location.hash.indexOf(parameterName + "=") > -1) {
+    result = location.hash.substr(location.hash.indexOf(parameterName + "=") + (parameterName.length + 1));
+  }
+
+  return result;
+}
 
 /***/ }),
 

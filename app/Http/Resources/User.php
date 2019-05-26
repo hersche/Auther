@@ -30,7 +30,7 @@ class User extends JsonResource
       $google2fa_url = "";
       $admin = false;
       $theData = [
-          'id' => $this->id,
+          'id' => $this->username,
           'name' => $this->name,
           'username' => $this->username,
           'public' => $this->public,

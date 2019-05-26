@@ -82,7 +82,7 @@
         .then(function (response) {
           //store.commit("setTwofactor",JSON.parse(response.request.response).data)
           console.log("get twofactor",JSON.parse(response.request.response).data);
-          window.location.href = "/email/verify"
+          window.location.href = "/email/verify?token="+localStorage.getItem('jwt_token')
        })
        .catch(function (error) {
          console.log(error);

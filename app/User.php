@@ -12,6 +12,7 @@ use jeremykenedy\LaravelRoles\Traits\HasRoleAndPermission;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\FriendableTempFix;
 use App\Notifications\ResetPasswordNotification;
+use App\Notifications\VerificateEmailNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 //use Hootlex\Friendships\Traits\Friendable;
 class User extends Authenticatable implements MustVerifyEmail, JWTSubject
@@ -36,7 +37,10 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     {
         return $this->hasMany(SocialAccount::class);
     }
-    
+  /*  public function sendEmailVerificationNotification()
+  {
+      $this->notify(new VerificateEmailNotification(''));
+  } */ 
     public function sendPasswordResetNotification($token)
     {
       $this->notify(new ResetPasswordNotification($token));

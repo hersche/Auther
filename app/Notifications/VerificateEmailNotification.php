@@ -7,7 +7,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Auth;
-class ResetPasswordNotification extends Notification
+class VerificateEmailNotification extends Notification
 {
     use Queueable;
     public $token = '';
@@ -42,15 +42,23 @@ class ResetPasswordNotification extends Notification
     {
         if(config("auth.guards.web.driver")==="jwt") {
             $jwt_token = Auth::tokenById(Auth::id());
-            return (new MailMessage)
-                ->line('You wanted to reset your password.')
-                ->action('Reset password', url('/password/reset/' . $this->token) . "&token=" . $jwt_token)
-                ->line('Thank you for using our application and have fun!');
+            return (new \Illuminate\Notifications\Messages\MailMessage)
+                ->subject(\Lang::getFromJson('Verify Email Address'))
+                ->line(\Lang::getFromJson('Please click the button below to verify your email address.'))
+                ->action(
+                    \Lang::getFromJson('Verify Email Address'),
+                    $this->verificationUrl($notifiable) . "&token=" . $jwt_token
+                )
+                ->line(\Lang::getFromJson('If you did not create an account, no further action is required.'));
         }
-        return (new MailMessage)
-            ->line('You wanted to reset your password.')
-            ->action('Reset password', url('/password/reset/' . $this->token))
-            ->line('Thank you for using our application and have fun!');
+        return (new \Illuminate\Notifications\Messages\MailMessage)
+            ->subject(\Lang::getFromJson('Verify Email Address'))
+            ->line(\Lang::getFromJson('Please click the button below to verify your email address.'))
+            ->action(
+                \Lang::getFromJson('Verify Email Address'),
+                $this->verificationUrl($notifiable)
+            )
+            ->line(\Lang::getFromJson('If you did not create an account, no further action is required.'));
     }
 
     /**

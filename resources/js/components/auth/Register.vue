@@ -168,7 +168,7 @@
               }
               if(res.status==200){
                 if(res.responseJSON.data.msg=="needemailverify"){
-                  window.location.href = "/email/resend";
+                  window.location.href = "/email/resend?token="+localStorage.getItem('jwt_token');
                 }
               }
               //eventBus.$emit('login',res.responseJSON.data);

@@ -153,7 +153,7 @@ var app = new Vue({
        from.path!="/settings/editusername"&&to.path!="/settings/editusername"&&
        from.path!="/settings/checkLogin"&&to.path!="/settings/checkLogin"
      ){
-         window.location.href = u.redirect;
+         window.location.href = u.redirect+"?token="+localStorage.getItem('jwt_token');
        }
      }
    },

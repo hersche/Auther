@@ -15,41 +15,65 @@ class FriendController extends Controller
     }
     
     public function friendRequest(Request $request){
+      if(Auth::check()){
       $u = User::find(Auth::id());
-      if(Auth::user()->level()>0){
-        $fu = User::find($request->input('fid'));
+      if($u->level()>0){
+        $fu = User::where("username","=",$request->input('fid'))->first();
         $u->befriend($fu);
         return UserResource::collection(User::all());
       }
+    } else {
+      return response()->json([],401);
+    }
     }
     public function acceptRequest(Request $request){
+    if(Auth::check()){
       $u = User::find(Auth::id());
-      $fu = User::find($request->input('fid'));
+      $fu = User::where("username","=",$request->input('fid'))->first();
       $u->acceptFriendRequest($fu);
       return UserResource::collection(User::all());
+    } else {
+      return response()->json([],401);
+    }
     }
     public function denyRequest(Request $request){
+      if(Auth::check()){
       $u = User::find(Auth::id());
-      $fu = User::find($request->input('fid'));
+      $fu = User::where("username","=",$request->input('fid'))->first();
       $u->denyFriendRequest($fu);
       return UserResource::collection(User::all());
+    } else {
+      return response()->json([],401);
+    }
     }
     public function unfriend(Request $request){
+      if(Auth::check()){
       $u = User::find(Auth::id());
-      $fu = User::find($request->input('fid'));
+      $fu = User::where("username","=",$request->input('fid'))->first();
       $u->unfriend($fu);
       return UserResource::collection(User::all());
+    } else {
+      return response()->json([],401);
+    }
     }
     public function block(Request $request){
+      if(Auth::check()){
       $u = User::find(Auth::id());
-      $fu = User::find($request->input('fid'));
+      $fu = User::where("username","=",$request->input('fid'))->first();
       $u->blockFriend($fu);
       return UserResource::collection(User::all());
+    } else {
+      return response()->json([],401);
+    }
     }
     public function unblock(Request $request){
+      if(Auth::check()){
       $u = User::find(Auth::id());
-      $fu = User::find($request->input('fid'));
+      $fu = User::where("username","=",$request->input('fid'))->first();
       $u->unblockFriend($fu);
       return UserResource::collection(User::all());
+    } else {
+      return response()->json([],401);
+    }
     }
 }

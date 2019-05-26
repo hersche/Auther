@@ -57,20 +57,20 @@ const axios = require('axios');
       return store.getters.getCSRF()
     },
     profileUser: function(){
-      var u = store.getters.getUserById(Number(this.$route.params.profileId))
+      var u = store.getters.getUserById(this.$route.params.profileId)
       if(u!=undefined){
         
       }
       return u
     },
     currentuser: function(){
-      var u = store.getters.getUserById(Number(store.state.loginId))
+      var u = store.getters.getUserById(store.state.loginId)
       return u
     },
     
     friendstatus: function(){
-      var u = store.getters.getUserById(Number(store.state.loginId))
-      var pu = store.getters.getUserById(Number(this.$route.params.profileId))
+      var u = store.getters.getUserById(store.state.loginId)
+      var pu = store.getters.getUserById(this.$route.params.profileId)
       if(u.friends!=undefined&&u.id!=0){
         if(u.friends.accepted.indexOf(pu.username)>-1){
           return 1;

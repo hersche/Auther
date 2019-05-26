@@ -51,11 +51,10 @@ class UserController extends Controller
       return response()->json(["email_set"=>false],401);
     }
     
-    public function destroy(Request $request,$id){
-      //echo "fooo";die();
+    public function destroy(Request $request,$username){
       if(Auth::check()){
-        if(Auth::id()===$id||Auth::user()->level()>(int)config('app.adminlevel')){
-          $u = User::find($id);
+        if(Auth::user()->username===$id||Auth::user()->level()>(int)config('app.adminlevel')){
+          $u = User::where("username","=",$username)->first();
           $u->notifications()->delete();
           $u->delete();
           return $this->get($request);
@@ -127,7 +126,7 @@ class UserController extends Controller
             }else{
                 $input = array_except($input,array('password'));
             }
-            $user = User::find($id);
+            $user = User::where("username","=",$id)->first();
             $user->update($input);
             $avatar = 'public/user/avatars/'.$user->username.'.png';
             $data = $request->input('avatar');

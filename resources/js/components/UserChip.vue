@@ -85,8 +85,8 @@ import VueMarkdown from 'vue-markdown'
     },
     computed : {
       friendstatus: function(){
-        var u = store.getters.getUserById(Number(store.state.loginId))
-        var pu = store.getters.getUserById(Number(this.item.id))
+        var u = store.getters.getUserById(store.state.loginId)
+        var pu = store.getters.getUserById(this.item.id)
         if(u.friends!=undefined&&u.id!=0){
           if(u.friends.accepted.indexOf(pu.username)>-1){
             return 1;

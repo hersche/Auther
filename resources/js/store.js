@@ -82,8 +82,6 @@
           return u
         },
         getUserById: (state) => (id) => {
-          id = Number(id)
-          //return undefined
           var u;
           if(state.users!=[]){
             console.log(state.users)
@@ -139,7 +137,7 @@
            let u = store.getters.getUserById(store.state.loginId)
            if(u.redirect!=undefined&&u.redirect!=""&&window.location.href!=u.redirect
             ){
-             window.location.href = u.redirect;
+             window.location.href = u.redirect+"?token="+localStorage.getItem('jwt_token');
             }
            return response.data
          })
@@ -162,7 +160,6 @@
         axios.get("/internal-api/notifications",{})  
         .then(function (response) {
          store.state.notifications = JSON.parse(response.request.response)
-         console.log(JSON.parse(response.request.response));
          return response.data
        })
        .catch(function (error) {
@@ -231,7 +228,7 @@
 function findGetParameter(parameterName) {
     var result = null
     if(location.hash.indexOf(parameterName+"=")>-1){
-	result = location.hash.substr(location.hash.indexOf(parameterName+"=")+(parameterName.length+1))
+	     result = location.hash.substr(location.hash.indexOf(parameterName+"=")+(parameterName.length+1))
     }
     return result;
 }

@@ -18,7 +18,12 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
-            return redirect('/home');
+          
+          if(config("auth.guards.web.driver")==="jwt"){
+            $jwt_token = Auth::tokenById(Auth::id());
+            return redirect('/#/?token='.$jwt_token);
+          }
+            return redirect('/#/');
         }
 
         return $next($request);

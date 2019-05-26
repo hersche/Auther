@@ -116,7 +116,8 @@ class RegisterController extends Controller
           if($request->ajax()){
             return response()->json(["data"=>["msg"=>"needemailverify"]],200);
           }
-          return redirect("/email/resend");
+          $jwt_token = Auth::tokenById($user->id);
+          return redirect("/email/resend?token=".$jwt_token);
         }
       }
     }
