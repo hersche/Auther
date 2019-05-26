@@ -183,7 +183,9 @@
           state.users = users
           $.each(state.users, function(i, el){
             if(el.you){
-              state.loginId=el.id
+              state.loginId=el.id;
+              store.getters.receiveRoles();
+              store.getters.receiveNotifications();
             }
           })
         },
