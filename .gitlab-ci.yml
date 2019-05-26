@@ -10,7 +10,7 @@ services:
   - mysql:5.7
 
 variables:
-  MYSQL_DATABASE: homestead
+  MYSQL_DATABASE: auther_test
   MYSQL_ROOT_PASSWORD: secret
 
 # This folder is cached between builds
@@ -33,7 +33,7 @@ before_script:
   # Copy over testing configuration.
   # Don't forget to set the database config in .env.testing correctly
   # DB_HOST=mysql
-  # DB_DATABASE=project_name
+  # DB_DATABASE=auther_test
   # DB_USERNAME=root
   # DB_PASSWORD=secret
   - cp .env.testing .env
