@@ -4407,6 +4407,8 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['baseUrl', 'height', 'width', 'name', 'type', 'theurl'],
   mounted: function mounted() {
+    var _this = this;
+
     // this.$refs.croppieRef.refresh();
     var that = this;
 
@@ -4424,8 +4426,16 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
           that.$refs.croppieRef.setZoom(0);
         });
       }
-    } //defaultInitialZoom = !isNaN(parseInt(this.$refs.croppieRef.options.initialZoom)) ? this.$refs.croppieRef.options.initialZoom : Math.max((boundaryData.width / imgData.width), (boundaryData.height / imgData.height));
+    }
 
+    var options = {
+      type: 'base64',
+      size: 'viewport',
+      format: 'png'
+    };
+    this.$refs.croppieRef.result(options, function (output) {
+      _this.croppedBase64 = output;
+    }); //defaultInitialZoom = !isNaN(parseInt(this.$refs.croppieRef.options.initialZoom)) ? this.$refs.croppieRef.options.initialZoom : Math.max((boundaryData.width / imgData.width), (boundaryData.height / imgData.height));
   },
   methods: {
     change: function change() {
@@ -4449,7 +4459,7 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
       this.croppedBase64 = output;
     },
     update: function update(val) {
-      var _this = this;
+      var _this2 = this;
 
       var options = {
         type: 'base64',
@@ -4457,7 +4467,7 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
         format: 'png'
       };
       this.$refs.croppieRef.result(options, function (output) {
-        _this.croppedBase64 = output;
+        _this2.croppedBase64 = output;
       });
     },
     rotate: function rotate(rotationAngle, event) {
@@ -5329,7 +5339,7 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
     currentuser: function currentuser() {
       var u = _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getUserById(_store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId);
 
-      if (u != undefined) {
+      if (u.id != 0) {
         if (this.init) {
           this.init = false;
           this.tmpBio = u.bio;
@@ -5363,6 +5373,8 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
         complete: function complete(res) {
           if (res.status == 200) {
             _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].commit("setUsers", res.responseJSON.data);
+            _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$emit('alert', "Profile saved");
+            that.$router.push('/profile/' + that.currentuser.id);
           } //    eventBus.$emit('userEdited',that.currentuser.id)
 
         }
@@ -96132,6 +96144,8 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       $.each(state.users, function (i, el) {
         if (el.you) {
           state.loginId = el.id;
+          store.getters.receiveRoles();
+          store.getters.receiveNotifications();
         }
       });
     },

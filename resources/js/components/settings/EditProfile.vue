@@ -51,7 +51,7 @@
       },
       currentuser: function(){
         var u = store.getters.getUserById(store.state.loginId)
-        if(u!=undefined){
+        if(u.id!=0){
           if(this.init){
             this.init=false
             this.tmpBio = u.bio
@@ -82,7 +82,9 @@
             processData: false,
             complete : function(res) {
               if(res.status==200){
-                store.commit("setUsers",res.responseJSON.data)
+                store.commit("setUsers",res.responseJSON.data);
+                eventBus.$emit('alert',"Profile saved");
+                that.$router.push('/profile/' + that.currentuser.id);
               }
               
           //    eventBus.$emit('userEdited',that.currentuser.id)

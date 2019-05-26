@@ -40,8 +40,17 @@ export default {
       }).then(function(){
         that.$refs.croppieRef.setZoom(0)
       })
+
     }
    }
+    let options = {
+      type: 'base64',
+      size: 'viewport',
+      format: 'png'
+    }
+    this.$refs.croppieRef.result(options, (output) => {
+      this.croppedBase64 = output;
+    });
    //defaultInitialZoom = !isNaN(parseInt(this.$refs.croppieRef.options.initialZoom)) ? this.$refs.croppieRef.options.initialZoom : Math.max((boundaryData.width / imgData.width), (boundaryData.height / imgData.height));
   },
   methods: {
