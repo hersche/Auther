@@ -116,8 +116,11 @@ class RegisterController extends Controller
           if($request->ajax()){
             return response()->json(["data"=>["msg"=>"needemailverify"]],200);
           }
-          $jwt_token = Auth::tokenById($user->id);
-          return redirect("/email/resend?token=".$jwt_token);
+            if(config("auth.guards.web.driver")==="jwt") {
+                $jwt_token = Auth::tokenById($user->id);
+                return redirect("/email/resend?token=" . $jwt_token);
+            }
+            return redirect("/email/resend");
         }
       }
     }
