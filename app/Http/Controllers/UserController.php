@@ -24,7 +24,7 @@ class UserController extends Controller
         if(Hash::check($request->input("oldpass"), Auth::user()->password)){
           $user = User::find(Auth::id());
           if($request->input("newpass")==$request->input("newpass2")){
-            $user->password = $request->input("newpass");
+            $user->password = Hash::make($request->input("newpass"));
             $user->save();
             return $this->get($request);
           }
