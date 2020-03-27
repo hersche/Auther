@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\User as UserRessource;
+use App\Notifications\GenericNotification;
 
 class RegisterController extends Controller
 {
@@ -65,7 +66,7 @@ class RegisterController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function register(Request $request)
-    { 
+    {
       if((config('app.localauthenabled')==="1")&&(config('app.disableregister')==="0")){
         $this->validator($request->all())->validate();
 
@@ -101,7 +102,7 @@ class RegisterController extends Controller
         $user->avatar = $avatar;
         $user->background = $background;
         $user->password = Hash::make($request->input('password'));
-        $user->notify(new \App\Notifications\GenericNotification(["msg"=>"You registered a account.", "appname"=>"Auther","link"=>""]));
+        $user->notify(new GenericNotification(["msg"=>"You registered a account.", "appname"=>"Auther","link"=>""]));
         $user->save();
         $jwt_token = $this->guard()->login($user);
         $user->setJwtToken($jwt_token);
@@ -109,8 +110,7 @@ class RegisterController extends Controller
           if($request->input('ajaxLogin')=="1"){
             return new UserRessource($user);
           } else {
-            return $this->registered($request, $user)
-                           ?: redirect($this->redirectPath());    
+            return $this->registered($request, $user) ?: redirect($this->redirectPath());
           }
         } else {
           if($request->ajax()){

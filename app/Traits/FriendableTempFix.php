@@ -4,7 +4,6 @@ namespace App\Traits;
 
 
 use Hootlex\Friendships\Models\Friendship;
-use Hootlex\Friendships\Models\FriendFriendshipGroups;
 use Hootlex\Friendships\Status;
 use Hootlex\Friendships\Traits\Friendable;
 use Illuminate\Database\Eloquent\Model;

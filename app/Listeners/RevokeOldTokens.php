@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Listeners;
+
 use Laravel\Passport\Events\AccessTokenCreated;
-use DB;
+use Illuminate\Support\Facades\DB;
+
 class RevokeOldTokens
 {
     public function handle(AccessTokenCreated $event)

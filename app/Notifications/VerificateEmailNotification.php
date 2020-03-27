@@ -4,9 +4,7 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 class VerificateEmailNotification extends Notification
 {
     use Queueable;

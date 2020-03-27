@@ -1,15 +1,16 @@
 <template>
-  <div class="">
-      <h1 class="text-center">{{ $t('Register') }}</h1>
+  <v-card class="">
+      <v-card-title><h1>{{ $t('Register') }}</h1></v-card-title>
+      <v-card-text>
       <v-form ref="form" id="theForm" v-model="valid" lazy-validation>
         <input type="hidden" name="ajaxLogin" value="1">
         <input type="hidden" name="_token" :value="csrf">
         <div class="form-group col-12">
-          <label class="col-md-4 col-form-label text-md-right">{{ $t('Avatar') }}</label>
+          <v-label>{{ $t('Avatar') }}</v-label>
           <Cropper v-bind:width="180" v-bind:height="180" type="circle" name="avatar" ></Cropper>
         </div>
         <div class="form-group col-12">
-          <label class="col-md-4 col-form-label text-md-right">{{ $t('Background') }}</label>
+          <v-label>{{ $t('Background') }}</v-label>
           <Cropper v-bind:width="800" v-bind:height="394" type="square" name="background" theurl="/img/404/background.png" ></Cropper>
         </div>
         <v-text-field
@@ -42,7 +43,7 @@
           Spaces in username are not allowed
         </v-alert>
         <v-alert
-        :value="usernameAvaible==false"
+        :value="usernameAvaible==false&&this.username!=''"
         type="error"
         style="background-color:red"
         >
@@ -59,7 +60,7 @@
         <input type="hidden" name="public" :value="Number(public)" />
         <v-text-field
           v-model="password"
-          :append-icon="showPassword ? 'visibility_off' : 'visibility'"
+          :append-icon="showPassword ? 'visibility' : 'visibility_off'"
           :rules="[rules.required, rules.min]"
           :type="showPassword ? 'text' : 'password'"
           name="password"
@@ -70,7 +71,7 @@
         ></v-text-field>
         <v-text-field
           v-model="confirmPassword"
-          :append-icon="showConfirmPassword ? 'visibility_off' : 'visibility'"
+          :append-icon="showConfirmPassword ? 'visibility' : 'visibility_off'"
           :rules="[rules.required, rules.min]"
           :type="showConfirmPassword ? 'text' : 'password'"
           :label="$t('Confirm Password')"
@@ -80,8 +81,11 @@
           @click:append="showConfirmPassword = !showConfirmPassword"
         ></v-text-field>
         </v-form>
+      </v-card-text>
+      <v-card-actions>
         <v-btn @click="submitAction()">{{ $t('Register') }}</v-btn>
-  </div>
+      </v-card-actions>
+  </v-card>
 </template>
 
 

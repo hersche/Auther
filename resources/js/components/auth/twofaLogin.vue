@@ -19,27 +19,28 @@
                       <v-btn @click="submitLogin()">
                           {{ $t('Login') }}
                       </v-btn>
-                      
+
                       <v-form
                         ref="form"
-                        id="oneTimePasswordForm"
+                        id="oneTimePasswordRecoveryForm"
                         v-model="recoveryvalid"
                         lazy-validation
                         >
                         <input type="hidden" name="_token" :value="csrf">
+                          <input type="hidden" name="ajaxLogin" value="1">
                         <v-text-field
                           label="2fa-token-recovery-code"
                           v-on:keyup.enter="recoveryLogin()"
                           v-model="recoverycode"
                           required
                           ></v-text-field>
-                          
+
 
                           </v-form>
                                   <v-btn @click="recoveryLogin()">
                                       {{ $t('Apply') }} {{ $t('recovery-code') }}
                                   </v-btn>
-                      
+
                       <v-btn @click="cancelProcess()">
                           {{ $t('Cancel') }} {{ $t('login') }}
                       </v-btn>
@@ -48,7 +49,6 @@
 
 
 <script>
- const $ = require("jquery");
  const axios = require("axios");
   import { store } from '../../store.js';
   import { eventBus } from '../../eventBus.js';
@@ -63,11 +63,6 @@
         password:'',
         show1:false,
         checkbox:false,
-        rules: {
-          required: value => !!value || 'Required.',
-          min: v => v.length >= 8 || 'Min 8 characters',
-          emailMatch: () => ('The email and password you entered don\'t match')
-        }
       }
     },
     computed: {
@@ -77,7 +72,7 @@
     },
     methods:{
       cancelProcess(){
-        axios.post("/internal-api/twofactor/cancel",{"_token":this.csrf})  
+        axios.post("/internal-api/twofactor/cancel",{"_token":this.csrf})
         .then(function (response) {
           this.$router.push("/")
        })
@@ -87,7 +82,7 @@
       },
       recoveryLogin(){
         let that = this
-        axios.post("/internal-api/twofactor/recovery",{"_token":this.csrf,"recovery-secret":this.recoverycode,"ajaxLogin":"1"})  
+        axios.post("/internal-api/twofactor/recovery",{"_token":this.csrf,"recovery-secret":this.recoverycode,"ajaxLogin":"1"})
         .then(function (response) {
           //console.log("recovery-login: ",JSON.parse(response.request.response).data)
           eventBus.$emit('login',JSON.parse(response.request.response).data)
@@ -110,7 +105,10 @@
               if(res.status==200){
                 eventBus.$emit('login',res.responseJSON.data);
               } else if(res.status==401){
+                this.password = '';
                 eventBus.$emit('alert',"2-factor auth failed");
+              } else if(res.status==500){
+                  eventBus.$emit('alert',"System-error");
               }
               console.log("received login")
             //  eventBus.$emit('refreshMedia',that.currentmedia.id);

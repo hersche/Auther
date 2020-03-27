@@ -7,4 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class ProjectStatus extends Model
 {
     //
+
+    private function ping(){
+
+    }
 }

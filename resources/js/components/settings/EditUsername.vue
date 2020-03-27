@@ -55,7 +55,6 @@
   import { store } from '../../store.js';
   import { eventBus } from '../../eventBus.js';
   import MarkdownCreator from '../MarkdownCreator'
-  const $ = require("jquery");
   const axios = require("axios");
   export default {
     props: ['baseUrl','mixconfig'],
@@ -97,7 +96,7 @@
       submitAction() {
         let that = this;
         if(this.usernameAvaible){
-        axios.post("/internal-api/setlogin",{"username":this.username,"password":this.password,"confirm_password":this.confirmPassword,"_token":this.csrf})  
+        axios.post("/internal-api/setlogin",{"username":this.username,"password":this.password,"confirm_password":this.confirmPassword,"_token":this.csrf})
             .then(function (response) {
               store.commit("setUsers",JSON.parse(response.request.response).data)
               that.$router.push("/profile/"+that.currentuser.id);
@@ -107,7 +106,7 @@
            })
          }
         return false;
-        
+
       },
     },
     data(){

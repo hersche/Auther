@@ -3,7 +3,7 @@
  Vue.use(Vuex)
  const $ = require("jquery");
  const axios = require('axios');
- 
+
  //hacky part to guarantee the login. the variables should not be global...
  let jwt_token = localStorage.getItem('jwt_token');
  if(findGetParameter('token')!=null){
@@ -19,7 +19,7 @@
    axios.defaults.headers.common = { 'X-CSRF-TOKEN': CSRF };
  }
  // end of hacky part
- 
+
  export const store = new Vuex.Store({
       state: {
         loginId:0,
@@ -34,7 +34,7 @@
       getters: {
         getUsersBySearch: (state) => (term) => {
           var sr = []
-          $.each(state.users, function(i, el){
+          state.users.forEach(function(el,i){
             // Only public users or exactly known usernames should be found for privacy
             // Additional, private users are almost empty, but this is for friend-requests
             if(el.username==term){
@@ -60,7 +60,7 @@
           },
         getProjectsBySearch: (state) => (term) => {
           var sr = []
-          $.each(state.projects, function(i, el){
+          state.projects.forEach( function(el, i){
             if(el.title.indexOf(term)>-1){
               if(sr.indexOf(el)==-1){
                 sr.push(el)
@@ -103,13 +103,11 @@
           }
           if(u==undefined){
             u={id:0,name:"None",admin:false,avatar:'/img/404/avatar.png',background:'/img/404/background.png'}
-            //u=new User(0,"None","/img/404/avatar.png","/img/404/background.png","None-profile",{},"",false)
           }
           return u
         },
         getProjectByClientId: (state) => (id) => {
           id = Number(id)
-          //return undefined
           var u;
           if(state.projects!=[]){
             console.log(state.users)
@@ -117,21 +115,21 @@
           }
           if(u==undefined){
             u={id:0,name:"None",admin:false,avatar:'/img/404/avatar.png',background:'/img/404/background.png'}
-            //u=new User(0,"None","/img/404/avatar.png","/img/404/background.png","None-profile",{},"",false)
           }
           return u
         },
         getCSRF: (state) => () => {
-          let that = this
-          $.getJSON('/internal-api/refresh-csrf').done(function(data){
-            if(data.csrf != store.state.CSRF){
-              store.commit("setCSRF",data.csrf)
-            }
-          });
+            axios.get("/internal-api/refresh-csrf",{})
+                .then(function (response) {
+                    store.commit("setCSRF",response.data.csrf)
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
           return state.CSRF
         },
         receiveUsers: (state) => () => {
-          axios.get("/internal-api/users",{})  
+          axios.get("/internal-api/users",{})
           .then(function (response) {
            store.commit("setUsers",JSON.parse(response.request.response).data)
            let u = store.getters.getUserById(store.state.loginId)
@@ -146,7 +144,7 @@
          })
        },
        receiveRoles: (state) => () => {
-         axios.get("/internal-api/role",{})  
+         axios.get("/internal-api/role",{})
          .then(function (response) {
            store.state.roles = JSON.parse(response.request.response)
           console.log(JSON.parse(response.request.response));
@@ -157,7 +155,7 @@
         })
       },
       receiveNotifications: (state) => () => {
-        axios.get("/internal-api/notifications",{})  
+        axios.get("/internal-api/notifications",{})
         .then(function (response) {
          store.state.notifications = JSON.parse(response.request.response)
          return response.data
@@ -167,7 +165,7 @@
        })
      },
       receiveProjects: (state) => () => {
-        axios.get("/internal-api/project",{})  
+        axios.get("/internal-api/project",{})
         .then(function (response) {
           store.state.projects = JSON.parse(response.request.response).data
          console.log("receive projects",JSON.parse(response.request.response));
@@ -181,7 +179,7 @@
       mutations: {
         setUsers(state,users){
           state.users = users
-          $.each(state.users, function(i, el){
+          state.users.forEach(function(el, i){
             if(el.you){
               state.loginId=el.id;
               store.getters.receiveRoles();
@@ -207,8 +205,8 @@
             $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': CSRF }});
             axios.defaults.headers.common = { 'X-CSRF-TOKEN': CSRF };
           }
-          
-          $('meta[name="csrf-token"]').attr('content',CSRF)
+          var csrfElement = document.getElementById('csrf-token')
+          csrfElement.setAttribute('content',CSRF)
           state.CSRF = CSRF;
         },
         setLoginId(state,loginId){
@@ -224,7 +222,7 @@
           state.roles = roles
         },
       }
-    }) 
+    })
 
 
 function findGetParameter(parameterName) {

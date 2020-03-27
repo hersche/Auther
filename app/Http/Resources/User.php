@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class User extends JsonResource
 {
@@ -55,7 +55,9 @@ class User extends JsonResource
           $theData['you'] = true;
           $theData['track_logins'] = $this->track_logins;
           $theData['allow_username_change'] = $this->allow_username_change;
-          $theData['redirect'] = $request->session()->get('auth.redirectUrl');
+          if(Auth::guard('web')->check()){
+              $theData['redirect'] = $request->session()->get('auth.redirectUrl');
+          }
           if(!empty($this->jwt_token)){
             $theData['jwt_token'] = $this->jwt_token;
           }
@@ -80,7 +82,7 @@ class User extends JsonResource
       //$background="";
       $bio="";
     }
-    $theData['bio'] = $bio;   
+    $theData['bio'] = $bio;
     $simpleRoleArray = [];
     $i=0;
     foreach($this->roles as $role){

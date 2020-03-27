@@ -1,11 +1,11 @@
 <template>
   <div class="container">
-      <div class="row justify-content-center">
-          <div class="col-md-8">
-              <div class="card">
-                  <div class="card-header">Reset Password</div>
+      <v-card-text class="row justify-content-center">
+          <v-card-title class="col-md-8">
+              <v-card>
+                  <v-card-title>Reset Password</v-card-title>
 
-                  <div class="card-body">
+                  <v-card-text>
                       <form method="POST" action="" aria-label="Reset Password">
 
                           <input type="hidden" name="_token" :value="csrf">
@@ -40,8 +40,12 @@
                               </div>
                           </div>
                       </form>
-                  </div>
-              </div>
+                  </v-card-text>
+
+
+
+
+              </v-card>
           </div>
       </div>
   </div>

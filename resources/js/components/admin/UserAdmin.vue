@@ -52,6 +52,7 @@
               </v-btn>
               <v-btn small :to="'/profile/'+props.item.id" color="green"><v-icon>send</v-icon> Go to profile</v-btn>
               <v-btn  @click="openConfirm(props.item.id)" small color="red"><v-icon>delete_sweep</v-icon> Delete</v-btn>
+                <v-btn  @click="openDisableConfirm(props.item.id)" small color="red"> Disable</v-btn>
             </v-card-text>
             <v-card-actions>
 
@@ -63,33 +64,64 @@
         <form id="hiddenCSRFForm" class="d-none">
           <input type="hidden" name="_token" :value="csrf">
         </form>
-        <v-dialog
-  v-model="deleteDialog"
-  width="500"
->
-  <v-card>
-    <v-card-title class="headline grey lighten-2" primary-title>
-      {{ $t('Delete') }} {{ $t('user') }} {{ this.tmpid.name }}?
-    </v-card-title>
-    <v-card-text>
-      This action can not be reverted!
-    </v-card-text>
-    <v-divider></v-divider>
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn
-        color="red"
-        flat
-        @click="deleteDialog = false"
-      >{{ $t('No') }}</v-btn>
-      <v-btn
-        color="green"
-        flat
-        @click="deleteAction()"
-      >{{ $t('Yes') }}</v-btn>
-    </v-card-actions>
-  </v-card>
-</v-dialog>
+
+
+      <v-dialog
+          v-model="disableDialog"
+          width="500"
+      >
+          <v-card>
+              <v-card-title class="headline grey lighten-2" primary-title>
+                  {{ $t('Disable') }} {{ $t('user') }} {{ this.tmpid.name }}?
+              </v-card-title>
+              <v-card-text>
+                  This action can be reverted!
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                      color="red"
+                      flat
+                      @click="disableDialog = false"
+                  >{{ $t('No') }}</v-btn>
+                  <v-btn
+                      color="green"
+                      flat
+                      @click="disableAction()"
+                  >{{ $t('Yes') }}</v-btn>
+              </v-card-actions>
+          </v-card>
+      </v-dialog>
+
+
+      <v-dialog
+          v-model="deleteDialog"
+          width="500"
+      >
+          <v-card>
+              <v-card-title class="headline grey lighten-2" primary-title>
+                  {{ $t('Delete') }} {{ $t('user') }} {{ this.tmpid.name }}?
+              </v-card-title>
+              <v-card-text>
+                  This action can not be reverted!
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                      color="red"
+                      flat
+                      @click="deleteDialog = false"
+                  >{{ $t('No') }}</v-btn>
+                  <v-btn
+                      color="green"
+                      flat
+                      @click="deleteAction()"
+                  >{{ $t('Yes') }}</v-btn>
+              </v-card-actions>
+          </v-card>
+      </v-dialog>
       </div>
     </template>
 <script>
@@ -103,6 +135,7 @@
       return {
         tmpid: 0,
         deleteDialog:false,
+        disableDialog:false,
         selectedRoles:[],
         search:''
       }
@@ -149,6 +182,10 @@
         this.tmpid = store.getters.getUserById(id)
         this.deleteDialog=true
       },
+        openDisableConfirm(id){
+            this.tmpid = store.getters.getUserById(id)
+            this.disableDialog=true
+        },
       changeRoles(id) {
         var sr = this.selectedRoles[id];
         var d = new FormData($("#urolesform"+id)[0]);
@@ -168,6 +205,24 @@
         });
         return false;
       },
+        disableAction() {
+            let that = this
+            $.ajax({
+                url: '/internal-api/user/disable/'+this.tmpid.id,
+                type: 'POST',
+                data:new FormData($("#hiddenCSRFForm")[0]),
+                cache: false,
+                contentType: false,
+                processData: false,
+                complete : function(res) {
+                    if(res.status==200){
+                        that.deleteDialog=false
+                        store.commit("setUsers",res.responseJSON.data)
+                    }
+                }
+            });
+            return false;
+        },
       deleteAction() {
         let that = this
         $.ajax({

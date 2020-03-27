@@ -1,0 +1,39 @@
+FROM php:7.4-fpm
+
+RUN apt-get update && apt-get install -y default-mysql-client zlib1g-dev git nano zip libpng-dev libzip-dev libmemcached-dev libmagickwand-dev \
+    && docker-php-ext-install gd pdo_mysql zip
+
+RUN pecl install imagick && docker-php-ext-enable imagick
+
+# Install the php memcached extension
+RUN curl -L -o /tmp/memcached.tar.gz "https://github.com/php-memcached-dev/php-memcached/archive/master.tar.gz" \
+  && mkdir -p memcached \
+  && tar -C memcached -zxvf /tmp/memcached.tar.gz --strip 1 \
+  && ( \
+    cd memcached \
+    && phpize \
+    && ./configure \
+    && make -j$(nproc) \
+    && make install \
+  ) \
+  && rm -r memcached \
+  && rm /tmp/memcached.tar.gz \
+  && docker-php-ext-enable memcached
+
+RUN curl -sS https://getcomposer.org/installer | php \
+        && mv composer.phar /usr/local/bin/ \
+        && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer
+
+COPY . /var/www
+WORKDIR /var/www
+
+RUN rm /var/www/public/public; ln -s /var/www/storage/app/public /var/www/public/
+
+RUN echo "172.28.2.2 horain" >> /etc/hosts
+RUN echo "172.20.0.2 auther" >> /etc/hosts
+
+# RUN composer install --prefer-source --no-interaction
+
+RUN chmod -R 777 /var/www/storage
+
+ENV PATH="~/.composer/vendor/bin:./vendor/bin:${PATH}"
