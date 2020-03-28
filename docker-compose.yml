@@ -1,54 +1,67 @@
-
-version: '2'
+version: '3'
 services:
-    web:
-        build:
-            context: ./
-            dockerfile: docker/web.docker
-        container_name: auther-nginx
-        volumes:
-            - ./:/var/www
-        ports:
-            - "8090:80"
-        links:
-            - app
-        logging:
-          options:
-            max-size: 50m
-        networks:
-          vpcbr:
-            ipv4_address: 172.20.0.2
-    app:
-        build:
-            context: ./
-            dockerfile: docker/app.docker
-        container_name: auther-php
-        volumes:
-            - ./:/var/www
-        environment:
-            - "REDIS_PORT=6379"
-            - "REDIS_HOST=cache"
-        logging:
-          options:
-            max-size: 50m
-        networks:
-          vpcbr:
-            ipv4_address: 172.20.0.3
-    database:
-        image: mysql:5.6
-        container_name: auther-mysql
-        environment:
-            - "MYSQL_ROOT_PASSWORD=defaultPassword"
-            - "MYSQL_DATABASE=auther"
-        ports:
-            - "33062:3306"
-        networks:
-          vpcbr:
-            ipv4_address: 172.20.0.4
+
+  #PHP Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile-php
+    image: php
+    container_name: auther-app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: auther-app
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      auther-app-network:
+        ipv4_address: 172.42.0.2
+    extra_hosts:
+      - "chihuti:172.43.0.1"
+      - "auther:172.42.0.2"
+
+
+  #Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: auther-nginx
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "8090:80"
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      auther-app-network:
+        ipv4_address: 172.42.0.3
+    extra_hosts:
+      - "auther-app:172.42.0.2"
+
+  #MySQL Service
+  db:
+    image: mysql:latest
+    container_name: auther-db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "33067:3306"
+    environment:
+      MYSQL_DATABASE: auther
+      MYSQL_ROOT_PASSWORD: defaultPassword
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      auther-app-network:
+        ipv4_address: 172.42.0.4
+
+#Docker Networks
 networks:
-  vpcbr:
-    driver: bridge
+  auther-app-network:
     ipam:
-     config:
-       - subnet: 172.20.0.0/16
-         gateway: 172.20.0.1
+      driver: default
+      config:
+        - subnet: 172.42.0.0/16
