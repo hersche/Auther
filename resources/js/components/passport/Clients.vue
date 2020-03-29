@@ -6,8 +6,8 @@
 
 <template>
     <div>
-        <div class="card card-default">
-            <div class="card-header">
+        <v-card>
+            <v-card-title>
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span>
                         OAuth Clients
@@ -17,9 +17,9 @@
                         Create New Client
                     </a>
                 </div>
-            </div>
+            </v-card-title>
 
-            <div class="card-body">
+            <v-card-text>
                 <!-- Current Clients -->
                 <p class="mb-0" v-if="clients.length === 0">
                     You have not created any OAuth clients.
@@ -69,11 +69,11 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
+            </v-card-text>
+        </v-card>
 
         <!-- Create Client Modal -->
-        <div class="modal fade" id="modal-create-client" tabindex="-1" role="dialog">
+        <div v-if="showCreateModal" class="modal fade" id="modal-create-client" tabindex="-1" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -141,7 +141,7 @@
         </div>
 
         <!-- Edit Client Modal -->
-        <div class="modal fade" id="modal-edit-client" tabindex="-1" role="dialog">
+        <div v-if="showEditModal" class="modal fade" id="modal-edit-client" tabindex="-1" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -219,6 +219,8 @@ const $ = require("jquery");
          */
         data() {
             return {
+                showEditModal: false,
+                showCreateModal: false,
                 clients: [],
 
                 createForm: {
@@ -279,7 +281,7 @@ const $ = require("jquery");
              * Show the form for creating new clients.
              */
             showCreateClientForm() {
-                $('#modal-create-client').modal('show');
+                this.showCreateModal = true;
             },
 
             /**
@@ -299,8 +301,7 @@ const $ = require("jquery");
                 this.editForm.id = client.id;
                 this.editForm.name = client.name;
                 this.editForm.redirect = client.redirect;
-
-                $('#modal-edit-client').modal('show');
+                this.showEditModal = true;
             },
 
             /**

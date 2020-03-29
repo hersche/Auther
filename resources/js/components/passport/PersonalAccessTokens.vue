@@ -7,8 +7,8 @@
 <template>
     <div>
         <div>
-            <div class="card card-default">
-                <div class="card-header">
+            <v-card>
+                <v-card-title class="card-header">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span>
                             Personal Access Tokens
@@ -18,9 +18,9 @@
                             Create New Token
                         </a>
                     </div>
-                </div>
+                </v-card-title>
 
-                <div class="card-body">
+                <v-card-text>
                     <!-- No Tokens Notice -->
                     <p class="mb-0" v-if="tokens.length === 0">
                         You have not created any personal access tokens.
@@ -51,12 +51,12 @@
                             </tr>
                         </tbody>
                     </table>
-                </div>
-            </div>
+                </v-card-text>
+            </v-card>
         </div>
 
         <!-- Create Token Modal -->
-        <div class="modal fade" id="modal-create-token" tabindex="-1" role="dialog">
+        <div class="modal fade" v-if="showCreateModal" id="modal-create-token" tabindex="-1" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -124,7 +124,7 @@
         </div>
 
         <!-- Access Token Modal -->
-        <div class="modal fade" id="modal-access-token" tabindex="-1" role="dialog">
+        <div class="modal fade" v-if="showEditModal" id="modal-access-token" tabindex="-1" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -164,7 +164,8 @@ const $ = require("jquery");
         data() {
             return {
                 accessToken: null,
-
+                showCreateModal: false,
+                showEditModal: false,
                 tokens: [],
                 scopes: [],
 
@@ -227,7 +228,7 @@ const $ = require("jquery");
              * Show the form for creating new tokens.
              */
             showCreateTokenForm() {
-                $('#modal-create-token').modal('show');
+                this.showCreateModal = true;
             },
 
             /**
@@ -279,11 +280,9 @@ const $ = require("jquery");
              * Show the given access token to the user.
              */
             showAccessToken(accessToken) {
-                $('#modal-create-token').modal('hide');
-
                 this.accessToken = accessToken;
-
-                $('#modal-access-token').modal('show');
+                this.showCreateModal = false;
+                this.showEditModal = true;
             },
 
             /**

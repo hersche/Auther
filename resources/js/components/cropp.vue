@@ -27,7 +27,6 @@
 </template>
 
 <script>
-    const $ = require("jquery");
     export default {
         props: ['baseUrl', 'height', 'width', 'name', 'type', 'theurl'],
         mounted() {
@@ -71,7 +70,7 @@
                         that.$refs.croppieRef.setZoom(0)
                     });
                 }
-                reader.readAsDataURL($("#" + this.name + "Upload")[0].files[0]);
+                reader.readAsDataURL(document.getElementById(this.name + "Upload").files[0]);
             },
             // CALBACK USAGE
             result(output) {
