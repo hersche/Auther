@@ -53,6 +53,8 @@ return [
 
     'debug' => env('APP_DEBUG', false),
 
+    'ssl_url' => env('APP_SSL_URL', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application URL
