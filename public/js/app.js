@@ -3876,7 +3876,9 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
       this.minChars = "10";
     }
 
-    if (false) {}
+    if (true) {
+      vue__WEBPACK_IMPORTED_MODULE_0___default.a.set(this.externalLoginEnabled, 'google', true);
+    }
 
     if (false) {}
 
@@ -56021,7 +56023,7 @@ var render = function() {
             _vm._v("\n                Forgot Your Password?\n            ")
           ]),
           _vm._v(" "),
-          _vm.mixconfig.MIX_GOOGLE_AUTH_ENABLED == "1"
+          _vm.externalLoginEnabled["google"]
             ? _c("a", { attrs: { href: "/oauth/google" } }, [
                 _c("img", {
                   attrs: {
@@ -56032,7 +56034,7 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _vm.externalLoginEnabled["google"]
+          _vm.externalLoginEnabled["github"]
             ? _c("v-btn", { attrs: { href: "/oauth/github" } }, [
                 _vm._v(
                   "\n                " +
@@ -56051,7 +56053,7 @@ var render = function() {
                     _vm._s(_vm.$t("Login")) +
                     " " +
                     _vm._s(_vm.$t("with")) +
-                    " Google\n            "
+                    " Gitlab\n            "
                 )
               ])
             : _vm._e(),

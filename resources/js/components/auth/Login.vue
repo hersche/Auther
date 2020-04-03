@@ -36,14 +36,14 @@
                 <v-btn href="/password/reset">
                     Forgot Your Password?
                 </v-btn>
-                <a href="/oauth/google" v-if="mixconfig.MIX_GOOGLE_AUTH_ENABLED=='1'">
+                <a href="/oauth/google" v-if="externalLoginEnabled['google']">
                     <img src="/img/loginwith/google/btn_google_signin_dark_normal_web.png"/>
                 </a>
-                <v-btn href="/oauth/github" v-if="externalLoginEnabled['google']">
+                <v-btn href="/oauth/github" v-if="externalLoginEnabled['github']">
                     {{ $t('Login') }} {{ $t('with') }} Github
                 </v-btn>
                 <v-btn href="/oauth/gitlab" v-if="externalLoginEnabled['gitlab']">
-                    {{ $t('Login') }} {{ $t('with') }} Google
+                    {{ $t('Login') }} {{ $t('with') }} Gitlab
                 </v-btn>
                 <v-btn href="/oauth/facebook" v-if="externalLoginEnabled['facebook']">
                     {{ $t('Login') }} {{ $t('with') }} Facebook
@@ -94,26 +94,27 @@
                 this.minChars = process.env.MIX_MIN_PASSWORDLENGTH;
             }
 
+
             if(process.env.MIX_GOOGLE_AUTH_ENABLED == '1'){
-                Vue.set(externalLoginEnabled, 'google', true)
+                Vue.set(this.externalLoginEnabled, 'google', true)
             }
             if(process.env.MIX_GITHUB_AUTH_ENABLED == '1'){
-                Vue.set(externalLoginEnabled, 'github', true)
+                Vue.set(this.externalLoginEnabled, 'github', true)
             }
             if(process.env.MIX_GITLAB_AUTH_ENABLED == '1'){
-                Vue.set(externalLoginEnabled, 'gitlab', true)
+                Vue.set(this.externalLoginEnabled, 'gitlab', true)
             }
             if(process.env.MIX_FACEBOOK_AUTH_ENABLED == '1'){
-                Vue.set(externalLoginEnabled, 'facebook', true)
+                Vue.set(this.externalLoginEnabled, 'facebook', true)
             }
             if(process.env.MIX_BITBUCKET_AUTH_ENABLED == '1'){
-                Vue.set(externalLoginEnabled, 'bitbucket', true)
+                Vue.set(this.externalLoginEnabled, 'bitbucket', true)
             }
             if(process.env.MIX_LINKEDIN_AUTH_ENABLED == '1'){
-                Vue.set(externalLoginEnabled, 'linkedin', true)
+                Vue.set(this.externalLoginEnabled, 'linkedin', true)
             }
             if(process.env.MIX_TWITTER_AUTH_ENABLED == '1'){
-                Vue.set(externalLoginEnabled, 'twitter', true)
+                Vue.set(this.externalLoginEnabled, 'twitter', true)
             }
         },
         computed: {
