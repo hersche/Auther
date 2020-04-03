@@ -3760,8 +3760,10 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../store.js */ "./resources/js/store.js");
-/* harmony import */ var _eventBus_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../eventBus.js */ "./resources/js/eventBus.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../store.js */ "./resources/js/store.js");
+/* harmony import */ var _eventBus_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../eventBus.js */ "./resources/js/eventBus.js");
 //
 //
 //
@@ -3830,6 +3832,7 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['baseUrl', 'mixconfig'],
   data: function data() {
@@ -3839,6 +3842,15 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
       valid: true,
       email: '',
       password: '',
+      externalLoginEnabled: {
+        'google': false,
+        'twitter': false,
+        'github': false,
+        'facebook': false,
+        'gitlab': false,
+        'bitbucket': false,
+        'linkedin': false
+      },
       showPassword: false,
       rememberMe: false,
       minChars: 8,
@@ -3863,14 +3875,28 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
     if ("10" != undefined) {
       this.minChars = "10";
     }
+
+    if (false) {}
+
+    if (false) {}
+
+    if (false) {}
+
+    if (false) {}
+
+    if (false) {}
+
+    if (false) {}
+
+    if (false) {}
   },
   computed: {
     csrf: function csrf() {
-      return _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].getters.getCSRF();
+      return _store_js__WEBPACK_IMPORTED_MODULE_1__["store"].getters.getCSRF();
     },
     loggeduserid: function loggeduserid() {
       // console.log(this.mixconfig.MIX_MIN_PASSWORDLENGTH)
-      return _store_js__WEBPACK_IMPORTED_MODULE_0__["store"].state.loginId;
+      return _store_js__WEBPACK_IMPORTED_MODULE_1__["store"].state.loginId;
     }
   },
   methods: {
@@ -3891,12 +3917,12 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
               that.$router.push('/twofaLogin');
             } else {
               if (res.responseJSON.data.jwt_token !== undefined) {
-                _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$emit('login', res.responseJSON.data);
+                _eventBus_js__WEBPACK_IMPORTED_MODULE_2__["eventBus"].$emit('login', res.responseJSON.data);
                 localStorage.setItem('jwt_token', res.responseJSON.data.jwt_token);
               }
             }
           } else if (res.status == 401) {
-            _eventBus_js__WEBPACK_IMPORTED_MODULE_1__["eventBus"].$emit('alert', "Login failed");
+            _eventBus_js__WEBPACK_IMPORTED_MODULE_2__["eventBus"].$emit('alert', "Login failed");
           }
 
           console.log("received login"); //  eventBus.$emit('refreshMedia',that.currentmedia.id);
@@ -56006,7 +56032,7 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _vm.mixconfig.MIX_GITHUB_AUTH_ENABLED == "1"
+          _vm.externalLoginEnabled["google"]
             ? _c("v-btn", { attrs: { href: "/oauth/github" } }, [
                 _vm._v(
                   "\n                " +
@@ -56018,7 +56044,7 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _vm.mixconfig.MIX_GITLAB_AUTH_ENABLED == "1"
+          _vm.externalLoginEnabled["gitlab"]
             ? _c("v-btn", { attrs: { href: "/oauth/gitlab" } }, [
                 _vm._v(
                   "\n                " +
@@ -56030,7 +56056,7 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _vm.mixconfig.MIX_FACEBOOK_AUTH_ENABLED == "1"
+          _vm.externalLoginEnabled["facebook"]
             ? _c("v-btn", { attrs: { href: "/oauth/facebook" } }, [
                 _vm._v(
                   "\n                " +
@@ -56042,7 +56068,7 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _vm.mixconfig.MIX_TWITTER_AUTH_ENABLED == "1"
+          _vm.externalLoginEnabled["twitter"]
             ? _c("v-btn", { attrs: { href: "/oauth/twitter" } }, [
                 _vm._v(
                   "\n                " +
@@ -56054,7 +56080,7 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _vm.mixconfig.MIX_BITBUCKET_AUTH_ENABLED == "1"
+          _vm.externalLoginEnabled["bitbucket"]
             ? _c("v-btn", { attrs: { href: "/oauth/bitbucket" } }, [
                 _vm._v(
                   "\n                " +
@@ -56066,14 +56092,14 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _vm.mixconfig.MIX_BITBUCKET_AUTH_ENABLED == "1"
+          _vm.externalLoginEnabled["linkedin"]
             ? _c("v-btn", { attrs: { href: "/oauth/linkedin" } }, [
                 _vm._v(
                   "\n                " +
                     _vm._s(_vm.$t("Login")) +
                     " " +
                     _vm._s(_vm.$t("with")) +
-                    " Bitbucket\n            "
+                    " Linkedin\n            "
                 )
               ])
             : _vm._e()
@@ -104172,8 +104198,8 @@ exports.dateTranslation = dateTranslation;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /var/www/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /var/www/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /xtra/htdocs_ext/freetimeprojects/auther/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /xtra/htdocs_ext/freetimeprojects/auther/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

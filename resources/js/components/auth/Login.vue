@@ -39,23 +39,23 @@
                 <a href="/oauth/google" v-if="mixconfig.MIX_GOOGLE_AUTH_ENABLED=='1'">
                     <img src="/img/loginwith/google/btn_google_signin_dark_normal_web.png"/>
                 </a>
-                <v-btn href="/oauth/github" v-if="mixconfig.MIX_GITHUB_AUTH_ENABLED=='1'">
+                <v-btn href="/oauth/github" v-if="externalLoginEnabled['google']">
                     {{ $t('Login') }} {{ $t('with') }} Github
                 </v-btn>
-                <v-btn href="/oauth/gitlab" v-if="mixconfig.MIX_GITLAB_AUTH_ENABLED=='1'">
+                <v-btn href="/oauth/gitlab" v-if="externalLoginEnabled['gitlab']">
                     {{ $t('Login') }} {{ $t('with') }} Google
                 </v-btn>
-                <v-btn href="/oauth/facebook" v-if="mixconfig.MIX_FACEBOOK_AUTH_ENABLED=='1'">
+                <v-btn href="/oauth/facebook" v-if="externalLoginEnabled['facebook']">
                     {{ $t('Login') }} {{ $t('with') }} Facebook
                 </v-btn>
-                <v-btn href="/oauth/twitter" v-if="mixconfig.MIX_TWITTER_AUTH_ENABLED=='1'">
+                <v-btn href="/oauth/twitter" v-if="externalLoginEnabled['twitter']">
                     {{ $t('Login') }} {{ $t('with') }} Twitter
                 </v-btn>
-                <v-btn href="/oauth/bitbucket" v-if="mixconfig.MIX_BITBUCKET_AUTH_ENABLED=='1'">
+                <v-btn href="/oauth/bitbucket" v-if="externalLoginEnabled['bitbucket']">
                     {{ $t('Login') }} {{ $t('with') }} Bitbucket
                 </v-btn>
-                <v-btn href="/oauth/linkedin" v-if="mixconfig.MIX_BITBUCKET_AUTH_ENABLED=='1'">
-                    {{ $t('Login') }} {{ $t('with') }} Bitbucket
+                <v-btn href="/oauth/linkedin" v-if="externalLoginEnabled['linkedin']">
+                    {{ $t('Login') }} {{ $t('with') }} Linkedin
                 </v-btn>
             </v-card-actions>
         </v-card>
@@ -64,6 +64,7 @@
 
 <script>
     const $ = require("jquery");
+    import Vue from 'vue'
     import {store} from '../../store.js';
     import {eventBus} from '../../eventBus.js';
 
@@ -74,6 +75,7 @@
                 valid: true,
                 email: '',
                 password: '',
+                externalLoginEnabled:{'google':false,'twitter':false,'github':false,'facebook':false,'gitlab':false,'bitbucket':false,'linkedin':false},
                 showPassword: false,
                 rememberMe: false,
                 minChars: 8,
@@ -90,6 +92,28 @@
             }
             if(process.env.MIX_MIN_PASSWORDLENGTH != undefined){
                 this.minChars = process.env.MIX_MIN_PASSWORDLENGTH;
+            }
+
+            if(process.env.MIX_GOOGLE_AUTH_ENABLED == '1'){
+                Vue.set(externalLoginEnabled, 'google', true)
+            }
+            if(process.env.MIX_GITHUB_AUTH_ENABLED == '1'){
+                Vue.set(externalLoginEnabled, 'github', true)
+            }
+            if(process.env.MIX_GITLAB_AUTH_ENABLED == '1'){
+                Vue.set(externalLoginEnabled, 'gitlab', true)
+            }
+            if(process.env.MIX_FACEBOOK_AUTH_ENABLED == '1'){
+                Vue.set(externalLoginEnabled, 'facebook', true)
+            }
+            if(process.env.MIX_BITBUCKET_AUTH_ENABLED == '1'){
+                Vue.set(externalLoginEnabled, 'bitbucket', true)
+            }
+            if(process.env.MIX_LINKEDIN_AUTH_ENABLED == '1'){
+                Vue.set(externalLoginEnabled, 'linkedin', true)
+            }
+            if(process.env.MIX_TWITTER_AUTH_ENABLED == '1'){
+                Vue.set(externalLoginEnabled, 'twitter', true)
             }
         },
         computed: {

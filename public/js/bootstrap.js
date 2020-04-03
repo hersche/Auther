@@ -36922,7 +36922,7 @@ if (token) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /var/www/resources/js/bootstrap.js */"./resources/js/bootstrap.js");
+module.exports = __webpack_require__(/*! /xtra/htdocs_ext/freetimeprojects/auther/resources/js/bootstrap.js */"./resources/js/bootstrap.js");
 
 
 /***/ })
