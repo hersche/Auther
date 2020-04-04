@@ -34,7 +34,6 @@ class User extends JsonResource
           'name' => $this->name,
           'username' => $this->username,
           'public' => $this->public,
-          'admin' => $admin,
           'friends' => [
             'pending' => $this->getUserUsernames($this->getPendingFriendships()),
             'accepted' => $this->getUserUsernames($this->getAcceptedFriendships()),
@@ -63,6 +62,7 @@ class User extends JsonResource
           }
         }
     }
+    $theData['admin'] = $admin;
     $avatar = $this->avatar();
     if((substr( $avatar, 0, 4 ) === "http")==false){
       $avatar = env('MIX_APP_URL', "")."/".$avatar;
