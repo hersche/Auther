@@ -37,11 +37,16 @@ RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
 RUN docker-php-ext-configure gd
 RUN docker-php-ext-install gd
 
+
 # Add user for laravel application
 RUN groupadd -g 1000 www
 RUN useradd -u 1000 -ms /bin/bash -g www www
 
-RUN curl -o- -L https://yarnpkg.com/install.sh | bash
+RUN su www -c 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash'
+
+RUN echo 'export NVM_DIR="$([ -z "/var/www/.nvm" ] && printf %s "/var/www/.nvm" || printf %s "/var/www/.nvm/nvm")"' >> /var/www/.bashrc; echo '[ -s /var/www/.nvm/nvm.sh" ] && \. "/var/www/.nvm/nvm.sh" # This loads nvm' >> /var/www/.bashrc;   echo "nvm use 14" >> /var/www/.bashrc
+
+RUN su www -c 'source ~/.nvm/nvm.sh; nvm install 14; npm install --global yarn; npm install -g sass; npm --global install typescript'
 
 RUN curl -sS https://getcomposer.org/installer | php \
         && mv composer.phar /usr/local/bin/ \
@@ -52,7 +57,7 @@ COPY . /var/www
 
 # Copy existing application directory permissions
 COPY --chown=www:www . /var/www
-
+RUN rm -rf /var/www/public/public; ln -s /var/www/storage/app/public /var/www/public/
 # Change current user to www
 USER www
 
